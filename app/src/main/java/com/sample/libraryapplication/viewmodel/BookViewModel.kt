@@ -1,11 +1,18 @@
 package com.sample.libraryapplication.viewmodel
 
+import android.content.Intent
+import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.repository.BookRepository
+import com.sample.libraryapplication.view.BookActivity
+import javax.inject.Inject
 
-class BookViewModel(private var bookRepository: BookRepository) : ViewModel() {
+class BookViewModel: BaseViewModel()  {
+    @Inject
+    lateinit var bookRepository: BookRepository
 
     val isBookNameEmpty = MutableLiveData<Boolean>()
     val isBookPriceEmpty = MutableLiveData<Boolean>()
@@ -15,6 +22,10 @@ class BookViewModel(private var bookRepository: BookRepository) : ViewModel() {
     var selectedBook: BookEntity? = null
     var bookName: String? = null
     var bookPrice: String? = null
+
+    override fun registerWithComponent() {
+        LibraryApplication.instance.libraryComponent.inject( this)
+    }
 
     private fun addNewBook(book: BookEntity) {
         bookRepository.insertBook(book)
@@ -54,4 +65,4 @@ class BookViewModel(private var bookRepository: BookRepository) : ViewModel() {
         } else
             shouldFinishActivity.value = false
     }
-}
+ }

@@ -9,16 +9,17 @@ class LibraryApplication : Application() {
 
     companion object {
         lateinit var instance: LibraryApplication
+        lateinit var roomDatabaseModule : RoomDatabaseModule
     }
     lateinit var libraryComponent: LibraryComponent
 
     override fun onCreate() {
         super.onCreate()
         instance = this
-
+        roomDatabaseModule = RoomDatabaseModule(this)
         libraryComponent = DaggerLibraryComponent
             .builder()
-            .roomDatabaseModule(RoomDatabaseModule(this))
+            .roomDatabaseModule(roomDatabaseModule)
             .build()
     }
 }

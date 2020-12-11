@@ -1,47 +1,48 @@
 package com.sample.libraryapplication.view
 
+import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
-import com.sample.libraryapplication.dagger.factory.BookListViewModelFactory
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.ActivityBookListBinding
 import com.sample.libraryapplication.viewmodel.BookListViewModel
 import kotlinx.android.synthetic.main.activity_book_list.*
+import java.lang.ref.WeakReference
 import javax.inject.Inject
+
 
 class BookListActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = BookListActivity::class.java.simpleName
+        val TAG = BookListActivity::class.java.simpleName
     }
-
+    @Inject
+    lateinit var bookClickHandlers: BookClickHandlers
     private lateinit var binding: ActivityBookListBinding
     private lateinit var bookListViewModel: BookListViewModel
-    private lateinit var bookListClickHandlers: BookListClickHandlers
     private var categoryArrayAdapter: ArrayAdapter<CategoryEntity>? = null
     private var booksAdapter: BooksAdapter? = null
     private var selectedCategory: CategoryEntity? = null
 
-    @Inject
-    lateinit var bookListViewModelFactory: BookListViewModelFactory
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        ActivityWeakRef.updateActivity(TAG,this);
         injectDagger()
 
         createViewModel()
@@ -52,8 +53,7 @@ class BookListActivity : AppCompatActivity() {
     }
 
     private fun createViewModel() {
-        bookListViewModel = ViewModelProviders.of(this, bookListViewModelFactory)[BookListViewModel::class.java]
-        bookListClickHandlers = BookListClickHandlers()
+        bookListViewModel = ViewModelProvider(this).get(BookListViewModel::class.java)
     }
 
     private fun injectDagger() {
@@ -93,35 +93,22 @@ class BookListActivity : AppCompatActivity() {
         binding = ActivityBookListBinding.inflate(layoutInflater)
         binding.viewModel = bookListViewModel
         binding.lifecycleOwner = this
-        binding.clickHandlers = bookListClickHandlers
+        binding.clickHandlers = bookClickHandlers
         setContentView(binding.root)
     }
 
-    inner class BookListClickHandlers {
-        fun onFABClicked(view: View) {
-            val intent = Intent(view.context, BookActivity::class.java)
-            intent.putExtra("selected_category_id", selectedCategory?.categoryID)
-            startActivity(intent)
-        }
-
-        fun onCategorySelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            Log.d(TAG, "onCategorySelected")
-            selectedCategory = parent?.getItemAtPosition(position) as? CategoryEntity
-            updateBookList(selectedCategory?.categoryID)
-        }
-    }
-
-    private fun updateBookList(categoryID: Long?) {
+    fun updateBookList(categoryID: Long?) {
+        selectedCategory?.id = categoryID
         categoryID?.let {
             Log.d(TAG, "categoryID: $categoryID")
             bookListViewModel.getBooksListSelectedCategory(categoryID).observe(this, Observer { list ->
                 if (!isDestroyed) {
-                    Log.d(TAG, "updateBookList::observe")
+                    Log.d(TAG, "updateBookList::observer")
                     list.forEach {
                         Log.d(TAG, "Book Name: ${it.bookName} - Book Price: ${it.bookUnitPrice}")
                     }
                     if (list.isNotEmpty()) {
-                        if (list[0].bookCategoryID == selectedCategory?.categoryID)
+                        if (list[0].bookCategoryID == categoryID)
                             showBookList(list)
                     } else
                         showBookList(listOf())
@@ -166,10 +153,10 @@ class BookListActivity : AppCompatActivity() {
      * Called after insert-update-delete processes
      * */
     private fun setUpdatedBookList() {
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             if (!isDestroyed) {
                 Log.d(TAG, "setUpdatedBookList called")
-                updateBookList(selectedCategory?.categoryID)
+                updateBookList(selectedCategory?.id)
             }
         }, 100)
     }

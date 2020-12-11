@@ -6,7 +6,7 @@ import com.sample.libraryapplication.database.entity.BookEntity
 class BooksDiffCallback(private val oldBooksList: List<BookEntity>?, private val newBooksList: List<BookEntity>?) : DiffUtil.Callback() {
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldBooksList?.get(oldItemPosition)?.bookID == newBooksList?.get(newItemPosition)?.bookID
+        return oldBooksList?.get(oldItemPosition)?.id == newBooksList?.get(newItemPosition)?.id
     }
 
     override fun getOldListSize(): Int {

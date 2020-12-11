@@ -1,17 +1,21 @@
 package com.sample.libraryapplication.view
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.AdapterView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
-import com.sample.libraryapplication.dagger.factory.BookViewModelFactory
 import com.sample.libraryapplication.database.entity.BookEntity
+import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.ActivityBookBinding
+import com.sample.libraryapplication.viewmodel.BookListViewModel
 import com.sample.libraryapplication.viewmodel.BookViewModel
 import kotlinx.android.synthetic.main.activity_book.*
-import javax.inject.Inject
 
 class BookActivity : AppCompatActivity() {
 
@@ -23,9 +27,6 @@ class BookActivity : AppCompatActivity() {
     private var isUpdateBook: Boolean = false
     private var selectedBook: BookEntity? = null
     private var selectedCategoryId: Long? = null
-
-    @Inject
-    lateinit var bookViewModelFactory: BookViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +55,7 @@ class BookActivity : AppCompatActivity() {
     }
 
     private fun createViewModel() {
-        bookViewModel = ViewModelProviders.of(this, bookViewModelFactory)[BookViewModel::class.java]
+        bookViewModel = ViewModelProvider(this).get(BookViewModel::class.java)
         bookViewModel.selectedCategoryId = selectedCategoryId
         bookViewModel.selectedBook = selectedBook
         bookViewModel.isUpdateBook = isUpdateBook

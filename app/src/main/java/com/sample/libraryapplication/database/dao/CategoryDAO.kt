@@ -18,6 +18,6 @@ interface CategoryDAO {
     @Query("SELECT * FROM categories")
     fun getAllCategories() : LiveData<List<CategoryEntity>>
 
-    @Query("SELECT * FROM categories WHERE category_id == :categoryID")
-    fun getCategory(categoryID: Long) : CategoryEntity?
+    @Query("SELECT * FROM categories WHERE id == :id")
+    fun getCategory(id: Long) : CategoryEntity?
 }

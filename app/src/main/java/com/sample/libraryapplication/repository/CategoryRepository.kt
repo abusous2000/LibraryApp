@@ -7,9 +7,11 @@ import com.sample.libraryapplication.database.entity.CategoryEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class CategoryRepository(libraryDatabase: LibraryDatabase) {
-
+@Singleton
+class CategoryRepository @Inject constructor(libraryDatabase: LibraryDatabase) {
     private var categoryDAO: CategoryDAO = libraryDatabase.getCategoryDAO()
 
     fun getCategories(): LiveData<List<CategoryEntity>> {

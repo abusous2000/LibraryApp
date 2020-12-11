@@ -11,7 +11,7 @@
 
         <variable
             name="clickHandlers"
-            type="com.sample.libraryapplication.view.BookListActivity.BookListClickHandlers" />
+            type="com.sample.libraryapplication.view.BookClickHandlers" />
 
         <variable
             name="spinnerAdapter"

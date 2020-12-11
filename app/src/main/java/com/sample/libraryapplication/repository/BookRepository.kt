@@ -7,8 +7,11 @@ import com.sample.libraryapplication.database.entity.BookEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class BookRepository(libraryDatabase: LibraryDatabase) {
+@Singleton
+class BookRepository @Inject constructor(libraryDatabase: LibraryDatabase) {
 
     private var bookDAO: BookDAO = libraryDatabase.getBookDAO()
 

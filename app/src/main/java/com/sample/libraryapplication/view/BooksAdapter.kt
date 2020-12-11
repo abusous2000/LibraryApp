@@ -1,18 +1,28 @@
 package com.sample.libraryapplication.view
 
+import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.databinding.ListItemBookBinding
 import com.sample.libraryapplication.utils.BooksDiffCallback
+import javax.inject.Inject
+
 
 class BooksAdapter(private var bookList: List<BookEntity>?) : RecyclerView.Adapter<BooksAdapter.BookViewHolder>() {
+    @Inject
+    lateinit var bookClickHandler: BookClickHandlers
 
+    init{
+        LibraryApplication.instance.libraryComponent.inject(this)
+    }
     fun updateBookList(newBooksList: List<BookEntity>?) {
         val diffResult = DiffUtil.calculateDiff(BooksDiffCallback(bookList, newBooksList), false)
         bookList = newBooksList
@@ -29,9 +39,11 @@ class BooksAdapter(private var bookList: List<BookEntity>?) : RecyclerView.Adapt
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
         holder.dataBinding.setVariable(BR.book, bookList?.get(position))
+        holder.dataBinding.setVariable(BR.clickHandlers, bookClickHandler)
+//        holder.dataBinding.imageView.setImageResource(bookList!!.get(position).resourceId)
     }
 
     class BookViewHolder(binding: ListItemBookBinding) : RecyclerView.ViewHolder(binding.root) {
         var dataBinding = binding
     }
-}
+ }

@@ -1,43 +1,38 @@
 package com.sample.libraryapplication.database.entity
 
-import android.content.Intent
 import android.os.Parcel
 import android.os.Parcelable
-import android.view.View
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
-import androidx.room.PrimaryKey
-import com.sample.libraryapplication.view.BookActivity
+import com.sample.libraryapplication.R
 import java.util.*
 
 @Entity(tableName = "books",
-    foreignKeys = [ForeignKey(entity = CategoryEntity::class, parentColumns = ["category_id"], childColumns = ["book_category_id"], onDelete = CASCADE)])
-class BookEntity() : Parcelable {
-
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "book_id")
-    var bookID: Long? = null
+    foreignKeys = [ForeignKey(entity = CategoryEntity::class, parentColumns = ["id"], childColumns = ["book_category_id"], onDelete = CASCADE)])
+class BookEntity(): Parcelable, BaseEntity() {
     @ColumnInfo(name = "book_name")
     var bookName: String? = null
     @ColumnInfo(name = "book_unit_price")
     var bookUnitPrice: Double? = null
-    @ColumnInfo(name = "book_category_id")
+    @ColumnInfo(name = "book_category_id")//, index = true)
     var bookCategoryID: Long? = null
-
-    constructor(bookID: Long?, bookName: String?, bookUnitPrice: Double?, bookCategoryID: Long?) : this() {
-        this.bookID = bookID
+    var resourceId: Int = R.drawable.ic_launcher_background
+    constructor(id: Long?, bookName: String?, bookUnitPrice: Double?, bookCategoryID: Long?, resourceId: Int = R.drawable.ic_launcher_background):this() {
+        this.id = id
         this.bookName = bookName
         this.bookUnitPrice = bookUnitPrice
         this.bookCategoryID = bookCategoryID
+        this.resourceId = resourceId
     }
 
     constructor(parcel: Parcel) : this() {
-        bookID = parcel.readValue(Long::class.java.classLoader) as? Long
+        id = parcel.readValue(Long::class.java.classLoader) as? Long
         bookName = parcel.readString()
         bookUnitPrice = parcel.readValue(Double::class.java.classLoader) as? Double
         bookCategoryID = parcel.readValue(Long::class.java.classLoader) as? Long
+        resourceId = parcel.readInt()
     }
 
     // for DiffUtil class
@@ -45,31 +40,23 @@ class BookEntity() : Parcelable {
         if (this === other) return true
         if (other !is BookEntity) return false
         val book = other as? BookEntity
-        return bookID == book?.bookID
+        return id == book?.id
                 && bookName == book?.bookName
                 && bookUnitPrice == book?.bookUnitPrice
                 && bookCategoryID == book?.bookCategoryID
+                && resourceId == book?.resourceId
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(bookID, bookName, bookUnitPrice, bookCategoryID)
+        return Objects.hash(id, bookName, bookUnitPrice, bookCategoryID)
     }
-
-    // databinding onClick
-    fun onBookItemClicked(view: View, book: BookEntity) {
-        val intent = Intent(view.context, BookActivity::class.java)
-        intent.putExtra("selected_category_id", book.bookCategoryID)
-        intent.putExtra("selected_book", book)
-        intent.putExtra("is_update_book", true)
-        view.context.startActivity(intent)
-    }
-
     // parcelable stuff
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeValue(bookID)
+        parcel.writeValue(id)
         parcel.writeString(bookName)
         parcel.writeValue(bookUnitPrice)
         parcel.writeValue(bookCategoryID)
+        parcel.writeInt(resourceId)
     }
 
     override fun describeContents(): Int {
