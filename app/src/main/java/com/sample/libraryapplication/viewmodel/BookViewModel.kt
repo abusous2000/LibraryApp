@@ -1,18 +1,15 @@
 package com.sample.libraryapplication.viewmodel
 
-import android.content.Intent
-import android.view.View
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.sample.libraryapplication.LibraryApplication
+import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.database.entity.BookEntity
-import com.sample.libraryapplication.repository.BookRepository
-import com.sample.libraryapplication.view.BookActivity
 import javax.inject.Inject
 
 class BookViewModel: BaseViewModel()  {
     @Inject
-    lateinit var bookRepository: BookRepository
+    lateinit var boCategory: BOCategory
+
 
     val isBookNameEmpty = MutableLiveData<Boolean>()
     val isBookPriceEmpty = MutableLiveData<Boolean>()
@@ -25,14 +22,15 @@ class BookViewModel: BaseViewModel()  {
 
     override fun registerWithComponent() {
         LibraryApplication.instance.libraryComponent.inject( this)
+        selectedCategoryId?.let { boCategory.find(it) }
     }
 
     private fun addNewBook(book: BookEntity) {
-        bookRepository.insertBook(book)
+        boCategory.addBook(book)
     }
 
     private fun updateBook(book: BookEntity) {
-        bookRepository.updateBook(book)
+        boCategory.updateBook(book)
     }
 
     fun setBookName(charSequence: CharSequence) {
@@ -47,6 +45,7 @@ class BookViewModel: BaseViewModel()  {
         isBookNameEmpty.value = bookName.isNullOrEmpty()
         isBookPriceEmpty.value = bookPrice.isNullOrEmpty()
 
+        selectedCategoryId?.let { boCategory.find(it) }
         if (!bookName.isNullOrEmpty() && !bookPrice.isNullOrEmpty()) {
             if (isUpdateBook) {
                 selectedBook?.let { book ->

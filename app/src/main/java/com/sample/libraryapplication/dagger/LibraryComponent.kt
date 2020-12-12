@@ -1,5 +1,6 @@
-package com.sample.libraryapplication.dagger.component
+package com.sample.libraryapplication.dagger
 
+import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.dagger.module.RoomDatabaseModule
 import com.sample.libraryapplication.view.BookActivity
 import com.sample.libraryapplication.view.BookListActivity
@@ -12,6 +13,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(modules = [RoomDatabaseModule::class])
 interface LibraryComponent {
+    fun inject(boCategory: BOCategory)
     fun inject(booksAdapter: BooksAdapter)
     fun inject(bookListViewModel: BookListViewModel)
     fun inject(bookViewModel: BookViewModel)

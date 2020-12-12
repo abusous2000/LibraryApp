@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.LibraryDatabase
@@ -102,11 +103,10 @@ class RoomDatabaseModule(application: Application) {
                 val categories: List<CategoryEntity>? = response.body()// as List<CategoryEntity>
                 if (categories != null) {
                     for (category in categories) {
-                        Log.e("RoomDatabaseModule","inserting category:${category.toString()}")
-                        categoryDAO.addCategory(CategoryEntity(category.id,category.categoryName,category.categoryDesc))
+                        Log.d("RoomDatabaseModule","inserting category:${category.toString()}")
+                        categoryDAO.insert(CategoryEntity(category.id,category.categoryName,category.categoryDesc))
                     }
                 }
-
                 categoriesCreated = true;
             }
 
@@ -122,16 +122,16 @@ class RoomDatabaseModule(application: Application) {
             ) {
                 var i = 0
                 //Poll unitil categroies creates
-                while (categoriesCreated == false && i < 10 ) {
+                while (categoriesCreated == false && i < 100 ) {
                     Thread.sleep(50L)
                     ++i
                 }
                 Log.d("RoomDatabaseModule", "Creating books where i=$i and categoriesCreated=$categoriesCreated")
                 val books: List<BookEntity>? = response.body()// as List<BookEntity>
-                if (books != null) {
+                if (categoriesCreated && books != null) {
                     for (book in books) {
-                        Log.e("RoomDatabaseModule","inserting book:${book.toString()}")
-                        bookDAO.addBook(BookEntity(book.id,book.bookName,book.bookUnitPrice,book.bookCategoryID,bookResources[book.resourceId]))
+                        Log.d("RoomDatabaseModule","inserting book:${book.toString()}")
+                        bookDAO.insert(BookEntity(book.id,book.bookName,book.bookUnitPrice,book.bookCategoryID,bookResources[book.resourceId]))
                     }
                 }
             }

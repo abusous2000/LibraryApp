@@ -22,9 +22,9 @@ import androidx.room.Entity
 class CategoryEntity : BaseEntity {
 
     @ColumnInfo(name = "category_name")
-    lateinit var categoryName: String
+    var categoryName: String
     @ColumnInfo(name = "category_description")
-    lateinit var categoryDesc: String
+    var categoryDesc: String
 
     constructor(id: Long?, categoryName: String, categoryDesc: String):super() {
         this.id =  id

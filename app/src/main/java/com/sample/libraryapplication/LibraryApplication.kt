@@ -1,8 +1,8 @@
 package com.sample.libraryapplication
 
 import android.app.Application
-import com.sample.libraryapplication.dagger.component.DaggerLibraryComponent
-import com.sample.libraryapplication.dagger.component.LibraryComponent
+import com.sample.libraryapplication.dagger.DaggerLibraryComponent
+import com.sample.libraryapplication.dagger.LibraryComponent
 import com.sample.libraryapplication.dagger.module.RoomDatabaseModule
 
 class LibraryApplication : Application() {
