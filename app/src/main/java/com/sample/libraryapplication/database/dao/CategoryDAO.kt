@@ -10,9 +10,10 @@ interface CategoryDAO: BaseDAO<CategoryEntity> {
     companion object{
         const val TABLE_NAME = "categories"
     }
-    @Query("SELECT * FROM $TABLE_NAME ")
-    fun findAll() : LiveData<List<CategoryEntity>>
+    override fun getTableName(): String{
+        return TABLE_NAME;
+    }
 
-    @Query("SELECT * FROM $TABLE_NAME WHERE id == :id")
-    fun find(id: Long) : CategoryEntity?
+    @Query("SELECT * FROM categories WHERE id == :id")
+    fun findCategory(id: Long) : LiveData<CategoryEntity>?
 }

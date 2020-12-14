@@ -1,13 +1,9 @@
 package com.sample.libraryapplication.view
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -22,20 +18,18 @@ import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.ActivityBookListBinding
 import com.sample.libraryapplication.viewmodel.BookListViewModel
 import kotlinx.android.synthetic.main.activity_book_list.*
-import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 
 class BookListActivity : AppCompatActivity() {
-
     companion object {
         val TAG = BookListActivity::class.java.simpleName
     }
     @Inject
     lateinit var bookClickHandlers: BookClickHandlers
     private lateinit var binding: ActivityBookListBinding
-    private lateinit var bookListViewModel: BookListViewModel
-    private var categoryArrayAdapter: ArrayAdapter<CategoryEntity>? = null
+    lateinit var bookListViewModel: BookListViewModel
+    private var categoryArrayAdapter: ArrayAdapter<String>? = null
     private var booksAdapter: BooksAdapter? = null
     private var selectedCategory: CategoryEntity? = null
 
@@ -60,7 +54,7 @@ class BookListActivity : AppCompatActivity() {
         LibraryApplication.instance.libraryComponent.inject(this)
     }
 
-    private fun observeViewModel() {
+    fun observeViewModel() {
         bookListViewModel.isLoading.value = true
         bookListViewModel.allCategories.observe(this, Observer { list ->
             if (!isDestroyed) {
@@ -76,13 +70,14 @@ class BookListActivity : AppCompatActivity() {
     private fun setDataToSpinner(categoryList: List<CategoryEntity>?) {
         categoryList?.let { list ->
             if (list.isNotEmpty()) {
+                var catNames: List<String> = list.map { it.categoryName }.toList()
                 if (categoryArrayAdapter == null) {
-                    categoryArrayAdapter = ArrayAdapter(this, R.layout.list_item_category, list)
+                     categoryArrayAdapter = ArrayAdapter(this, R.layout.list_item_category, catNames)
                     categoryArrayAdapter?.setDropDownViewResource(R.layout.list_item_category)
                     binding.spinnerAdapter = categoryArrayAdapter
                 } else {
                     categoryArrayAdapter?.clear()
-                    categoryArrayAdapter?.addAll(list)
+                    categoryArrayAdapter?.addAll(catNames)
                     categoryArrayAdapter?.notifyDataSetChanged()
                 }
             }
@@ -158,6 +153,28 @@ class BookListActivity : AppCompatActivity() {
                 Log.d(TAG, "setUpdatedBookList called")
                 updateBookList(selectedCategory?.id)
             }
-        }, 100)
+        }, 3000)
+//        var tmp = boCategory.findAll()
+//        if ( tmp?.value?.size == 0){
+//            Handler(Looper.getMainLooper()).postDelayed({
+//                AsyncTask.execute { LibraryApplication.roomDatabaseModule.libraryDatabase.runInTransaction {
+//                    addSampleBooksToDatabase()
+//                 }}
+//
+//            }, 15000)
+//        }
+//
+
+//        Handler(Looper.getMainLooper()).postDelayed({
+//            AsyncTask.execute { LibraryApplication.roomDatabaseModule.libraryDatabase.runInTransaction {
+//                var tmp = boCategory.findAll()
+//                if ( tmp?.value?.size == 0)
+//                    addSampleBooksToDatabase()
+//                else
+//                    Log.d(TAG, "No need to rebuild DB, it is already populated")
+//            }}
+//
+//        }, 15000)
     }
+
 }

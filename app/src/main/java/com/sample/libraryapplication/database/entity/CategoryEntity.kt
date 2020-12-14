@@ -31,9 +31,4 @@ class CategoryEntity : BaseEntity {
         this.categoryDesc = categoryDesc
         this.categoryName = categoryName
     }
-    // for spinner
-    override fun toString(): String {
-        return categoryName
-    }
-
-}
+ }

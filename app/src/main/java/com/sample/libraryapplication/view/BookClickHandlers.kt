@@ -30,10 +30,11 @@ class BookClickHandlers @Inject constructor(){
     }
 
     fun onCategorySelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        Log.d(BookClickHandlers.TAG, "onCategorySelected")
-        selectedCategory = parent?.getItemAtPosition(position) as? CategoryEntity
+        Log.d(BookClickHandlers.TAG, "onCategorySelected:$position")
         var bookListActivity = ActivityWeakRef.activityMap.get(BookListActivity.TAG)?.get() as BookListActivity
-        bookListActivity?.updateBookList(selectedCategory?.id)
+        selectedCategory = bookListActivity.bookListViewModel.allCategories.value!!.get(position)
+        if ( bookListActivity != null && selectedCategory?.id != null )
+            bookListActivity.updateBookList(selectedCategory?.id)
     }
 
 }

@@ -1,25 +1,45 @@
 package com.sample.libraryapplication.database.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
-import com.sample.libraryapplication.database.entity.CategoryEntity
+import androidx.lifecycle.MutableLiveData
+import androidx.room.*
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
+import com.sample.libraryapplication.database.entity.BookEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 interface BaseDAO<T> {
-//    companion object{
-//        const val TABLE_NAME = "BaseDAO"
-//    }
-//    @Query("SELECT * FROM $TABLE_NAME ")
-//    fun findAll() : LiveData<List<T>>
-
-    @Insert
-    fun insert(entity: T) : Long
-
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(entity: T?) : Long
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(entity: List<T>)
     @Update
-    fun update(entity: T)
+    fun update(entity: T?)
 
     @Delete
     fun delete(entity: T?)
+
+    @RawQuery
+    fun findById(query: SupportSQLiteQuery): T
+
+    fun getTableName(): String
+    open fun find(id: Long): LiveData<T>{
+        var query = SimpleSQLiteQuery("SELECT * FROM " + getTableName() + " WHERE id = $id LIMIT 1")
+
+        return MutableLiveData(findById(query));
+    }
+    @RawQuery
+    fun findAll2(query: SupportSQLiteQuery):  List<T>
+
+    open fun findAll(): MutableLiveData<List<T>>{
+        var lv = MutableLiveData(listOf<T>())
+        CoroutineScope(Dispatchers.IO).launch {
+            var list= findAll2(SimpleSQLiteQuery("SELECT * FROM " + getTableName()))
+
+            lv.postValue(list)
+        }
+        return lv
+    }
  }
