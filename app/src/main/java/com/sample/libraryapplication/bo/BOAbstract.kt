@@ -22,7 +22,9 @@ abstract class BOAbstract<T: BaseEntity> {
         if ( getEntity() != null ) {
             Log.d(TAG,"Inserting:" + getEntity()?.value?.id)
             CoroutineScope(Dispatchers.IO).launch {
-                     getDAO().insert(getEntity()?.value)
+                     var newId = getDAO().insert(getEntity()?.value)
+                     if ( getEntity()?.value?.id == null )
+                        getEntity()?.value?.id = newId
                }
         }
     }

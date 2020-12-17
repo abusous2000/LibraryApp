@@ -31,10 +31,10 @@ interface BaseDAO<T> {
         return MutableLiveData(findById(query));
     }
     @RawQuery
-    fun findAll2(query: SupportSQLiteQuery):  List<T>
+    fun findAll2(query: SupportSQLiteQuery):  MutableList<T>
 
-    open fun findAll(): MutableLiveData<List<T>>{
-        var lv = MutableLiveData(listOf<T>())
+    open fun findAll(): MutableLiveData<MutableList<T>>{
+        var lv = MutableLiveData(mutableListOf<T>())
         CoroutineScope(Dispatchers.IO).launch {
             var list= findAll2(SimpleSQLiteQuery("SELECT * FROM " + getTableName()))
 

@@ -6,6 +6,7 @@ import android.os.Looper
 import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -13,9 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
+import com.sample.libraryapplication.bo.BOCategory
+import com.sample.libraryapplication.database.DBPopulator
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.ActivityBookListBinding
+import com.sample.libraryapplication.utils.MyMQTTHandler
 import com.sample.libraryapplication.viewmodel.BookListViewModel
 import kotlinx.android.synthetic.main.activity_book_list.*
 import javax.inject.Inject
@@ -27,22 +31,44 @@ class BookListActivity : AppCompatActivity() {
     }
     @Inject
     lateinit var bookClickHandlers: BookClickHandlers
+    @Inject
+    lateinit var myMQTTHandler: MyMQTTHandler
+
     private lateinit var binding: ActivityBookListBinding
     lateinit var bookListViewModel: BookListViewModel
     private var categoryArrayAdapter: ArrayAdapter<String>? = null
     private var booksAdapter: BooksAdapter? = null
     private var selectedCategory: CategoryEntity? = null
+    @Inject
+    lateinit var dbPopulator: DBPopulator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ActivityWeakRef.updateActivity(TAG,this);
+        ActivityWeakRef.updateActivity(TAG, this);
         injectDagger()
-
         createViewModel()
-
         setBinding()
 
+        if (dbPopulator.doesDbExist(this) == false) {
+            dbPopulator.dbPopulated.observe(this, Observer {
+                    if (it) {
+                        postDBStart()
+                    }
+            })
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                    Log.d(TAG, "onCreate: repopulating DB from main thread")
+                    dbPopulator.populateDB()
+                }, 100)
+       } else{
+            postDBStart()
+        }
+        myMQTTHandler.connect(this)
+    }
+
+    private fun postDBStart() {
+        boCategory.categories = boCategory.findAll() as MutableLiveData<MutableList<CategoryEntity>>
         observeViewModel()
     }
 
@@ -55,12 +81,18 @@ class BookListActivity : AppCompatActivity() {
     }
 
     fun observeViewModel() {
+        boCategory.categoryListUpdated.observe(this, Observer {
+            if ( it ) {
+                setDataToSpinner(boCategory.categories.value)
+                boCategory.categoryListUpdated.postValue(false)
+            }
+        })
         bookListViewModel.isLoading.value = true
-        bookListViewModel.allCategories.observe(this, Observer { list ->
+        boCategory.categories.observe(this, Observer { list ->
             if (!isDestroyed) {
                 bookListViewModel.isLoading.value = false
                 list.forEach {
-                    Log.d(TAG, "Category Name: ${it.categoryName} - Category Desc: ${it.categoryDesc}")
+                    Log.d(TAG+": observeViewModel", "${it.id}-->Category Name: ${it.categoryName} - Category Desc: ${it.categoryDesc}")
                 }
                 setDataToSpinner(list)
             }
@@ -70,11 +102,12 @@ class BookListActivity : AppCompatActivity() {
     private fun setDataToSpinner(categoryList: List<CategoryEntity>?) {
         categoryList?.let { list ->
             if (list.isNotEmpty()) {
-                var catNames: List<String> = list.map { it.categoryName }.toList()
+                var catNames = list.map { it.categoryName }.toList()
                 if (categoryArrayAdapter == null) {
                      categoryArrayAdapter = ArrayAdapter(this, R.layout.list_item_category, catNames)
                     categoryArrayAdapter?.setDropDownViewResource(R.layout.list_item_category)
                     binding.spinnerAdapter = categoryArrayAdapter
+                    binding.lifecycleOwner = this
                 } else {
                     categoryArrayAdapter?.clear()
                     categoryArrayAdapter?.addAll(catNames)
@@ -91,27 +124,35 @@ class BookListActivity : AppCompatActivity() {
         binding.clickHandlers = bookClickHandlers
         setContentView(binding.root)
     }
-
-    fun updateBookList(categoryID: Long?) {
-        selectedCategory?.id = categoryID
-        categoryID?.let {
-            Log.d(TAG, "categoryID: $categoryID")
-            bookListViewModel.getBooksListSelectedCategory(categoryID).observe(this, Observer { list ->
-                if (!isDestroyed) {
-                    Log.d(TAG, "updateBookList::observer")
-                    list.forEach {
-                        Log.d(TAG, "Book Name: ${it.bookName} - Book Price: ${it.bookUnitPrice}")
-                    }
-                    if (list.isNotEmpty()) {
-                        if (list[0].bookCategoryID == categoryID)
-                            showBookList(list)
-                    } else
-                        showBookList(listOf())
-                }
-            })
+    fun updateBookList(category: CategoryEntity) {
+        selectedCategory=category
+        bookListViewModel.boCategory.removeObserver(this)
+         selectedCategory?.id?.let {
+              bookListViewModel.getBooksListSelectedCategory(it)
+              bookListViewModel.boCategory.books.observe(this, CategoryBooksObserver())
         }
     }
-
+    private var observerCounter = 0
+    inner class CategoryBooksObserver: Observer<List<BookEntity>>{
+        init{
+            observerCounter++
+        }
+        override fun onChanged(list: List<BookEntity>?) {
+            if (list != null && !isDestroyed) {
+                Log.d(TAG, "updateBookList::observer: observerCounter=${observerCounter} updating RecycleView via LiveData for books with categoryId:" + selectedCategory?.id)
+                list.forEach {
+                    Log.d(TAG, "Book Name: ${it.bookName} - Book Price: ${it.bookUnitPrice}- Category: ${it.bookCategoryID}\"")
+                }
+                if (list.isNotEmpty()) {
+                    if (list[0].bookCategoryID == selectedCategory?.id)
+                        showBookList(list)
+                    else
+                        Log.d(TAG, "no need to update list")
+                } else
+                    showBookList(listOf())
+            }
+        }
+    }
     private fun showBookList(bookList: List<BookEntity>) {
         if (booksAdapter == null) {
             recycler_view_books.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
@@ -132,7 +173,8 @@ class BookListActivity : AppCompatActivity() {
             if (swipeDir == ItemTouchHelper.LEFT) {
                 if (viewHolder is BooksAdapter.BookViewHolder) {
                     bookListViewModel.deleteBook(viewHolder.dataBinding.book as BookEntity)
-                    setUpdatedBookList()
+                    //I found no need for this, it is here for record keeping
+                    //setUpdatedBookList()
                 }
             }
         }
@@ -140,41 +182,46 @@ class BookListActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        setUpdatedBookList()
+        //I found no need for this, it is here for record keeping
+        //setUpdatedBookList()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if ( bookListViewModel.boCategory.booksInitalized())
+            bookListViewModel.boCategory.books.removeObservers(this)
+        myMQTTHandler.disconnect()
+    }
     /**
      * This method is needed because of Livedata and room library's queries both work asynchronously.
      * Called after insert-update-delete processes
      * */
-    private fun setUpdatedBookList() {
-        Handler(Looper.getMainLooper()).postDelayed({
+    @Inject
+    lateinit var boCategory: BOCategory
+
+    val delay :Long = 2500
+    inner class ServeCategoryList(val handler: Handler, var delay: Long = 2500) : Runnable {
+        override fun run() {
             if (!isDestroyed) {
                 Log.d(TAG, "setUpdatedBookList called")
-                updateBookList(selectedCategory?.id)
+                if (selectedCategory == null) {
+                    if (boCategory.categories.value?.size!! > 0)
+                        selectedCategory = boCategory.categories.value?.get(0)
+                }
+                if (selectedCategory != null)
+                    updateBookList(selectedCategory!!)
+                else {
+                    Log.d(TAG, "re-running ServeCategoryList in: $delay")
+                    handler.postDelayed(this, delay)
+                }
             }
-        }, 3000)
-//        var tmp = boCategory.findAll()
-//        if ( tmp?.value?.size == 0){
-//            Handler(Looper.getMainLooper()).postDelayed({
-//                AsyncTask.execute { LibraryApplication.roomDatabaseModule.libraryDatabase.runInTransaction {
-//                    addSampleBooksToDatabase()
-//                 }}
-//
-//            }, 15000)
-//        }
-//
+        }
+    }
+    //I found no need for this, it is here for record keeping
+    private fun setUpdatedBookList() {
+        var localHandler = Handler(Looper.getMainLooper())
 
-//        Handler(Looper.getMainLooper()).postDelayed({
-//            AsyncTask.execute { LibraryApplication.roomDatabaseModule.libraryDatabase.runInTransaction {
-//                var tmp = boCategory.findAll()
-//                if ( tmp?.value?.size == 0)
-//                    addSampleBooksToDatabase()
-//                else
-//                    Log.d(TAG, "No need to rebuild DB, it is already populated")
-//            }}
-//
-//        }, 15000)
+        localHandler.postDelayed( ServeCategoryList(localHandler), delay)
     }
 
 }

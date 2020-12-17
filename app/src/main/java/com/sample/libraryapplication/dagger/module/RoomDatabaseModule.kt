@@ -10,6 +10,9 @@ import com.sample.libraryapplication.database.DBPopulator
 import com.sample.libraryapplication.database.LibraryDatabase
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,13 +28,16 @@ class RoomDatabaseModule(application: Application) {
         private const val EDUCATIONAL_BOOKS_CATEGORY_ID = 1L
         private const val NOVELS_CATEGORY_ID = 2L
         private const val OTHER_BOOKS_CATEGORY_ID = 3L
+        const val DB_NAME = "library_database"
     }
 
     private val databaseCallback = object : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
             Log.d("RoomDatabaseModule", "onCreate")
-            populateDB()
+            CoroutineScope(Dispatchers.IO).launch {
+                populateDB()
+            }
         }
     }
     fun populateDB(){
@@ -39,12 +45,14 @@ class RoomDatabaseModule(application: Application) {
         dbPopulator.populateDB()
     }
 
+
     @Singleton
     @Provides
     fun providesRoomDatabase(): LibraryDatabase {
-        libraryDatabase = Room.databaseBuilder(libraryApplication, LibraryDatabase::class.java, "library_database")
+
+        libraryDatabase = Room.databaseBuilder(libraryApplication, LibraryDatabase::class.java, DB_NAME)
             .fallbackToDestructiveMigration()
-            .addCallback(databaseCallback)
+//            .addCallback(databaseCallback)
 //            .allowMainThreadQueries()
             .build()
         return libraryDatabase

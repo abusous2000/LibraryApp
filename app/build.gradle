@@ -67,5 +67,9 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.okhttp3:okhttp:$okio_version"
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
-    implementation("com.squareup.okhttp3:logging-interceptor:$okhttp_version")
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
+    def paho_version = "1.1.0"
+    def paho_service_version = "1.1.1"
+    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:$paho_version"
+    implementation "org.eclipse.paho:org.eclipse.paho.android.service:$paho_service_version"
 }

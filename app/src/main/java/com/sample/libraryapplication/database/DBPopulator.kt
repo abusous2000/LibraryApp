@@ -1,11 +1,14 @@
 package com.sample.libraryapplication.database
 
+import android.content.Context
 import android.os.Looper
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.bo.BOBook
 import com.sample.libraryapplication.bo.BOCategory
+import com.sample.libraryapplication.dagger.module.RoomDatabaseModule
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.utils.BooksRestfulService
@@ -16,12 +19,14 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class DBPopulator @Inject constructor() {
+    private val TAG = "DBPopulator"
     init {
         LibraryApplication.instance.libraryComponent.inject(this)
     }
@@ -32,11 +37,17 @@ class DBPopulator @Inject constructor() {
     lateinit var boBook: BOBook
     var bookList = arrayListOf<BookEntity>()
     var categoryList = arrayListOf<CategoryEntity>()
-    var dbIsBeingPopulated = false
+    val dbPopulated =  MutableLiveData<Boolean>()
     var categoriesLoaded = false
     var booksLoaded = false
+
+
+    fun doesDbExist(context: Context): Boolean {
+        val dbFile: File = context.getDatabasePath(RoomDatabaseModule.DB_NAME)
+        return dbFile.exists()
+    }
     fun populateDB() {
-        dbIsBeingPopulated = true;
+        dbPopulated.postValue(true)
         val bookResources = intArrayOf(R.drawable.ic_baseline_adb_24, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_background)
   //        val gson = GsonBuilder().serializeNulls().create()
         LibraryApplication.instance.libraryComponent.inject(this)
@@ -58,6 +69,10 @@ class DBPopulator @Inject constructor() {
         call.enqueue(object : Callback<List<CategoryEntity>> {
             override fun onResponse(call: Call<List<CategoryEntity>>, response: Response<List<CategoryEntity>>
             ) {
+                if ( !response.isSuccessful() ){
+                    Log.d("RoomDatabaseModule","Failed to get Books in JSON")
+                    return;
+                }
                 if ( Looper.getMainLooper().thread.id == Thread.currentThread().id)
                     Log.d("RoomDatabaseModule","++++++++++++++++Main thread")
                 else
@@ -69,25 +84,21 @@ class DBPopulator @Inject constructor() {
                 }
                 val categories: List<CategoryEntity>? = response.body()// as List<CategoryEntity>
                 if (categories != null) {
-//                    boCategory.categoryDAO.insertAll(categories)
                     for (category in categories) {
                         Log.d("RoomDatabaseModule","Parsed category:${category.toString()}")
                         categoryList.add(category)
-//                        boCategory.setEntity(category).insert()
-
                     }
                     boCategory.categoryDAO.insertAll(categoryList)
-                    boCategory.categories = boCategory.findAll()
                     categoriesLoaded = true;
+                    Log.d("RoomDatabaseModule","Insert into db:${categoryList.size} categories")
                 }
-
-            }
+           }
 
             override fun onFailure(call: Call<List<CategoryEntity>>, t: Throwable) {
                 Log.e("RoomDatabaseModule", t.message!!)
             }
         })
-
+        Thread.sleep(200L)
         var call2: Call<List<BookEntity>> = booksRestfulService.getBooks()
         call2.enqueue(object : Callback<List<BookEntity>> {
             override fun onResponse(call: Call<List<BookEntity>>, response: Response<List<BookEntity>>
@@ -104,19 +115,25 @@ class DBPopulator @Inject constructor() {
                 }
                 Log.d("RoomDatabaseModule", "Creating books where i=$i and categoriesCreated=$categoriesLoaded")
                 val books: List<BookEntity>? = response.body()// as List<BookEntity>
-                if ( categoriesLoaded && books != null) {
+                if ( books != null) {
                     for (book in books) {
                         Log.d("RoomDatabaseModule","Parsed book:${book.toString()}")
                         book.resourceId=bookResources[book.resourceId]
                         bookList.add(book)
-//                        boBook.setEntity(book).insert()
                     }
-
-                    boBook.bookDAO.insertAll(books)
-                    booksLoaded = true
+                    Log.d("RoomDatabaseModule","parsed into db:${bookList.size} books")
+                    if ( categoriesLoaded) {
+                        boBook.bookDAO.insertAll(books)
+                        booksLoaded = true
+                        dbPopulated.postValue(true)
+                        Log.d("RoomDatabaseModule","Insert into db:${bookList.size} books")
+                    }
+                    else
+                        Log.d(TAG, "onResponse: No books were cretated")
                 }
-
-            }
+                else
+                    Log.d(TAG, "onResponse: No books were cretated")
+           }
 
             override fun onFailure(call: Call<List<BookEntity>>, t: Throwable) {
                 Log.e("RoomDatabaseModule", t.message!!)

@@ -4,6 +4,7 @@ import com.sample.libraryapplication.bo.BOBook
 import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.dagger.module.RoomDatabaseModule
 import com.sample.libraryapplication.database.DBPopulator
+import com.sample.libraryapplication.utils.MyMQTTHandler
 import com.sample.libraryapplication.view.BookActivity
 import com.sample.libraryapplication.view.BookListActivity
 import com.sample.libraryapplication.view.BooksAdapter
@@ -24,4 +25,5 @@ interface LibraryComponent {
     fun inject(bookListActivity: BookListActivity)
     fun inject(boBook: BOBook)
     fun inject(dbPopulator: DBPopulator)
+    fun inject(myMQTTHandler: MyMQTTHandler)
 }
