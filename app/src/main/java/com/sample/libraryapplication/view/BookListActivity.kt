@@ -30,6 +30,8 @@ class BookListActivity : AppCompatActivity() {
         val TAG = BookListActivity::class.java.simpleName
     }
     @Inject
+    lateinit var boCategory: BOCategory
+    @Inject
     lateinit var bookClickHandlers: BookClickHandlers
     @Inject
     lateinit var myMQTTHandler: MyMQTTHandler
@@ -174,8 +176,6 @@ class BookListActivity : AppCompatActivity() {
             if (swipeDir == ItemTouchHelper.LEFT) {
                 if (viewHolder is BooksAdapter.BookViewHolder) {
                     bookListViewModel.deleteBook(viewHolder.dataBinding.book as BookEntity)
-                    //I found no need for this, it is here for record keeping
-                    //setUpdatedBookList()
                 }
             }
         }
@@ -193,36 +193,4 @@ class BookListActivity : AppCompatActivity() {
             bookListViewModel.boCategory.books.removeObservers(this)
         myMQTTHandler.disconnect()
     }
-    /**
-     * This method is needed because of Livedata and room library's queries both work asynchronously.
-     * Called after insert-update-delete processes
-     * */
-    @Inject
-    lateinit var boCategory: BOCategory
-
-    val delay :Long = 2500
-    inner class ServeCategoryList(val handler: Handler, var delay: Long = 2500) : Runnable {
-        override fun run() {
-            if (!isDestroyed) {
-                Log.d(TAG, "setUpdatedBookList called")
-                if (selectedCategory == null) {
-                    if (boCategory.categories.value?.size!! > 0)
-                        selectedCategory = boCategory.categories.value?.get(0)
-                }
-                if (selectedCategory != null)
-                    updateBookList(selectedCategory!!)
-                else {
-                    Log.d(TAG, "re-running ServeCategoryList in: $delay")
-                    handler.postDelayed(this, delay)
-                }
-            }
-        }
-    }
-    //I found no need for this, it is here for record keeping
-    private fun setUpdatedBookList() {
-        var localHandler = Handler(Looper.getMainLooper())
-
-        localHandler.postDelayed( ServeCategoryList(localHandler), delay)
-    }
-
 }
