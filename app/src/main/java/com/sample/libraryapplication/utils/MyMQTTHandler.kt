@@ -16,13 +16,18 @@ data class TopicHandler(val topic: String, val messageCallBack: ((topic: String,
 }
 class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
     companion object {
+        const val TOPIC_PREFS = "TOPIC_PREFS"
+        const val BROKER_PREFS = "BROKER_PREFS"
+
         private val TAG = "MyMQTTHandler"
     }
+    private val default_broker: String = "tcp://broker.hivemq.com"
+    private val default_topic: String = "abusous2000/myTopic"
     var topicHandlers = mutableSetOf<TopicHandler>()
     lateinit var broker: String
     lateinit var topic: String
-    val prefs: PrefsRespository by lazy {
-        PrefsRespository(context)
+    val myPrefs: MyPrefsRespository by lazy {
+        MyPrefsRespository(context)
     }
     val gson = GsonBuilder().serializeNulls().create()
     val bookActionEvents = arrayOf<String>(ActionEvent.INSERT_BOOK_AE,ActionEvent.UPDATE_BOOK_AE,ActionEvent.DELETE_BOOK_AE)
@@ -38,11 +43,14 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
 
     fun connect(context: Context){
         this.context = context
-        var prefMap = mapOf<String,String>(PrefsRespository.Companion.BROKER_PREFS to prefs.getBroker(),
-                                                            PrefsRespository.Companion.TOPIC_PREFS to prefs.getTopic())
-//        prefs.saveBroker(prefMap)
-        topicHandlers.add( TopicHandler(prefs.getTopic()))
-        super.connect(context,prefs.getBroker())
+         if ( myPrefs.contains(BROKER_PREFS) == false){
+             val prefMap = mapOf<String,String>(BROKER_PREFS to myPrefs.getString(BROKER_PREFS,default_broker),
+                                                                 TOPIC_PREFS to myPrefs.getString(TOPIC_PREFS,default_topic))
+             myPrefs.save(prefMap);
+         }
+
+        topicHandlers.add( TopicHandler(myPrefs.getString(BROKER_PREFS)))
+        connect(context,myPrefs.getString(TOPIC_PREFS))
     }
     override fun onConnectComplete(reconnect: Boolean, serverURI: String?){
         topicHandlers.forEach({
@@ -80,9 +88,12 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
                     Log.d(BookListActivity.TAG, "category:\"${category.categoryName}\" has been received")
                     when (actionEvent.actionEvent) {
                         ActionEvent.INSERT_CATEGORY_AE-> {
-                            boCategory.setEntity(category).insert()
-                            boCategory.categories.value?.add(category)
-                            boCategory.categoryListUpdated.postValue(true)
+                            with(boCategory) {
+                                setEntity(category).insert()
+                                //This is a hack, for some reason observer of categories are not notified only once
+                                categories.value?.add(category)
+                                categoryListUpdated.postValue(true)
+                            }
                         }
                         ActionEvent.UPDATE_CATEGORY_AE->boCategory.setEntity(category).update()
                         ActionEvent.DELETE_CATEGORY_AE->boCategory.setEntity(category).delete()

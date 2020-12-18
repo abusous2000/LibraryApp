@@ -81,6 +81,7 @@ class BookListActivity : AppCompatActivity() {
     }
 
     fun observeViewModel() {
+        //This is a hack, for some reason observer of categories are not notified only once
         boCategory.categoryListUpdated.observe(this, Observer {
             if ( it ) {
                 setDataToSpinner(boCategory.categories.value)

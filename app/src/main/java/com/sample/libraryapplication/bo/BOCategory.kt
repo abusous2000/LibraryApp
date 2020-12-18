@@ -20,6 +20,7 @@ class BOCategory @Inject constructor(): BOAbstract<CategoryEntity>(){
     lateinit var category: LiveData<CategoryEntity>
     lateinit var books: LiveData<List<BookEntity>>
     var categories = MutableLiveData(mutableListOf<CategoryEntity>())
+    //This is a hack, for some reason observer of categories are not notified only once
     public var categoryListUpdated = MutableLiveData<Boolean>()
     @Inject
     lateinit var boBook: BOBook
