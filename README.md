@@ -11,7 +11,16 @@ done the following improvements:
 - the DAO layer has been made to be more generic
 - simplified Dagger 2 integration, and removed several unneeded classes
 - Initial DB is no longer hard coded, and it's now retrieved at startup via Restful webservices using **Retrofit 2**
-- The app subscribes to **MQTT Broker** and listens to incoming messages to execute CRUD operations, like adding and deleting books & categories.
+- The app subscribes to **MQTT Broker** and listens to incoming messages
+  to execute CRUD operations, like adding and deleting books &
+  categories. here's a sample payload that you can send from the command
+  line using:
+  - **mosquitto_pub** -h broker.hivemq.com -t "abusous2000/myTopic" -m
+    '{"actionEvent":"insertBook","data":"{ \"bookName\": \"Sam Fan#5\",
+    \"bookUnitPrice\":44.30, \"bookCategoryID\":1,
+    \"resourceId\":2131165295}"}'
+  - **mosquitto_pub** -h broker.hivemq.com -t "abusous2000/myTopic" -m '{"actionEvent":"insertCategory","data":"{\"categoryName\":\"My Best Collection4\",\"categoryDesc\":\"The Best Collection\"}"}'
+
 
 ![Main Image](https://raw.githubusercontent.com/abusous2000/LibraryApp/master/MainImage.png)
 
