@@ -27,7 +27,7 @@ class BookListViewModel(): BaseViewModel() {
     }
 
     fun getBooksListSelectedCategory(categoryID: Long) : LiveData<List<BookEntity>> {
-        var selectedCategory = boCategory.categories?.value?.filter { it.id == categoryID }?.first() as CategoryEntity
+        var selectedCategory = boCategory.categories.value?.filter { it.id == categoryID }?.first() as CategoryEntity
 
         with(boCategory){
             setEntity(selectedCategory)

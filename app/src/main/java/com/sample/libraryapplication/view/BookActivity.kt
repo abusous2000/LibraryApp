@@ -1,21 +1,17 @@
 package com.sample.libraryapplication.view
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.AdapterView
+import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.BookEntity
-import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.ActivityBookBinding
-import com.sample.libraryapplication.viewmodel.BookListViewModel
 import com.sample.libraryapplication.viewmodel.BookViewModel
-import kotlinx.android.synthetic.main.activity_book.*
+//import kotlinx.android.synthetic.main.activity_book.*
 
 class BookActivity : AppCompatActivity() {
 
@@ -76,13 +72,13 @@ class BookActivity : AppCompatActivity() {
     private fun observeViewModel() {
         bookViewModel.isBookNameEmpty.observe(this, Observer {
             if (!isDestroyed) {
-                if (it) et_name.error = getString(R.string.warning_book_name)
+                if (it) findViewById<EditText>(R.id.et_name).error = getString(R.string.warning_book_name)
             }
         })
 
         bookViewModel.isBookPriceEmpty.observe(this, Observer {
             if (!isDestroyed) {
-                if (it) et_price.error = getString(R.string.warning_book_price)
+                if (it) findViewById<EditText>(R.id.et_price).error = getString(R.string.warning_book_price)
             }
         })
 

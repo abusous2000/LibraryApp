@@ -29,12 +29,14 @@ class BookClickHandlers @Inject constructor(){
         view.context.startActivity(intent)
     }
 
-    fun onCategorySelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+    fun onCategorySelected(@Suppress("UNUSED_PARAMETER") parent: AdapterView<*>?,
+                           @Suppress("UNUSED_PARAMETER") view: View?, position: Int,
+                           @Suppress("UNUSED_PARAMETER") id: Long) {
         Log.d(BookClickHandlers.TAG, "onCategorySelected:$position")
         var bookListActivity = ActivityWeakRef.activityMap.get(BookListActivity.TAG)?.get() as BookListActivity
         //Check if the list was populated. It could be empty on startup since the DB takes longer to populate
-        if ( bookListActivity.boCategory.categories?.value?.size!! > 0 )
-            selectedCategory = bookListActivity.boCategory.categories?.value!!.get(position)
+        if ( bookListActivity.boCategory.categories.value?.size!! > 0 )
+            selectedCategory = bookListActivity.boCategory.categories.value!!.get(position)
         if ( selectedCategory != null )
             bookListActivity.updateBookList(selectedCategory!!)
     }

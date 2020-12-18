@@ -21,7 +21,7 @@ import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.ActivityBookListBinding
 import com.sample.libraryapplication.utils.MyMQTTHandler
 import com.sample.libraryapplication.viewmodel.BookListViewModel
-import kotlinx.android.synthetic.main.activity_book_list.*
+//import kotlinx.android.synthetic.main.activity_book_list.*
 import javax.inject.Inject
 
 
@@ -158,6 +158,7 @@ class BookListActivity : AppCompatActivity() {
     }
     private fun showBookList(bookList: List<BookEntity>) {
         if (booksAdapter == null) {
+            var recycler_view_books = findViewById<RecyclerView>(R.id.recycler_view_books)
             recycler_view_books.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
             booksAdapter = BooksAdapter(bookList)
             recycler_view_books.adapter = booksAdapter

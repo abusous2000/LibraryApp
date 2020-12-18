@@ -29,14 +29,6 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
     val myPrefs: MyPrefsRespository by lazy {
         MyPrefsRespository(context)
     }
-    val gson = GsonBuilder().serializeNulls().create()
-    val bookActionEvents = arrayOf<String>(ActionEvent.INSERT_BOOK_AE,ActionEvent.UPDATE_BOOK_AE,ActionEvent.DELETE_BOOK_AE)
-    val categoryActionEvents = arrayOf<String>(ActionEvent.INSERT_CATEGORY_AE,ActionEvent.UPDATE_CATEGORY_AE,ActionEvent.DELETE_CATEGORY_AE)
-    @Inject
-    lateinit var boCategory: BOCategory
-    @Inject
-    lateinit var boBook: BOBook
-
     init{
         LibraryApplication.instance.libraryComponent.inject(this)
     }
@@ -57,9 +49,16 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
             subscribeTopic(it.topic)
         })
     }
-
     override fun onConnectionLost(cause: Throwable?){
     }
+
+    val gson = GsonBuilder().serializeNulls().create()
+    val bookActionEvents = arrayOf<String>(ActionEvent.INSERT_BOOK_AE,ActionEvent.UPDATE_BOOK_AE,ActionEvent.DELETE_BOOK_AE)
+    val categoryActionEvents = arrayOf<String>(ActionEvent.INSERT_CATEGORY_AE,ActionEvent.UPDATE_CATEGORY_AE,ActionEvent.DELETE_CATEGORY_AE)
+    @Inject
+    lateinit var boCategory: BOCategory
+    @Inject
+    lateinit var boBook: BOBook
     override fun onDefaultMessageArrived(topic: String?, message: MqttMessage?) {
         val json = String(message?.payload!!)
         Log.d(BookListActivity.TAG, "Receive MQTTMessage: $json---> on Topic:$topic")
