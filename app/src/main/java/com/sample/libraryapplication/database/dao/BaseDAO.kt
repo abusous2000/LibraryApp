@@ -22,10 +22,11 @@ interface BaseDAO<T> {
     fun delete(entity: T?)
 
     @RawQuery
-    fun findById(query: SupportSQLiteQuery): T
+    fun findById(query: SupportSQLiteQuery): T?
 
     fun getTableName(): String
-    open fun find(id: Long): LiveData<T>{
+    //TODO: For some reason, if you use this..an exception will be thrown unless you run the DB from the main thread; which is risky
+    open fun find(id: Long): LiveData<T>?{
         var query = SimpleSQLiteQuery("SELECT * FROM " + getTableName() + " WHERE id = $id LIMIT 1")
 
         return MutableLiveData(findById(query));
