@@ -1,5 +1,6 @@
 # LibraryApp
-This is a small (but involved) App that is based on [Library App](https://github.com/theozgurr/LibraryApp) that was developed by **Ozgur Tas**
+![MP3Player with TM32F7 Architectural Overview](https://raw.githubusercontent.com/abusous2000/MP3PlayerUsingSTM32F7/master/docs/STM32F769i-MP3Player.png)
+This is a small (but very involved) App that is based on [**Library App**](https://github.com/theozgurr/LibraryApp) that was developed by **Ozgur Tas**
 It does what Mr Tas implemented, however, I've done the following improvements:
 
 - removed the repository layer and replaced it with a Business Object layer. In the near future, I will upgrade it to function more like [JBoss Hibernate](https://docs.jboss.org/hibernate/orm/current/quickstart/html_single/) (a popular ORM framework)
