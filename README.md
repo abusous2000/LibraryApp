@@ -1,6 +1,11 @@
 # LibraryApp
-This is a small (but very involved) App that is based on [**Library App**](https://github.com/theozgurr/LibraryApp) that was developed by **Ozgur Tas**
-It does what Mr Tas implemented, however, I've done the following improvements:
+This is a small (but very involved) Android App that is based on
+[**Library App**](https://github.com/theozgurr/LibraryApp) developed by
+**Ozgur Tas**. Although it is a simple App, however, it demonstrates
+many technologies in one app such as MVVM pattern, RecyclerView, Dagger
+2, Data Binding, Kotlin Coroutines, Room DB, and LiveData. As
+demonstrated, my version does what Mr. Tas implemented, however, I've
+done the following improvements:
 
 - removed the repository layer and replaced it with a Business Object layer. In the near future, I will upgrade it to function more like [JBoss Hibernate](https://docs.jboss.org/hibernate/orm/current/quickstart/html_single/) (a popular ORM framework)
 - the DAO layer has been made to be more generic
