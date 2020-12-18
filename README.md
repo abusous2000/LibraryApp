@@ -1,5 +1,6 @@
 # LibraryApp
-![Main Image](https://raw.githubusercontent.com/abusous2000/MP3PlayerUsingSTM32F7/master/docs/STM32F769i-MP3Player.png)
+![Main Image](https://raw.githubusercontent.com/abusous2000/LibraryApp/master/MainImage.png)
+
 This is a small (but very involved) App that is based on [**Library App**](https://github.com/theozgurr/LibraryApp) that was developed by **Ozgur Tas**
 It does what Mr Tas implemented, however, I've done the following improvements:
 
