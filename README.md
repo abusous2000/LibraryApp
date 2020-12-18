@@ -1,6 +1,4 @@
 # LibraryApp
-![Main Image](https://raw.githubusercontent.com/abusous2000/LibraryApp/master/MainImage.png)
-
 This is a small (but very involved) App that is based on [**Library App**](https://github.com/theozgurr/LibraryApp) that was developed by **Ozgur Tas**
 It does what Mr Tas implemented, however, I've done the following improvements:
 
@@ -9,7 +7,7 @@ It does what Mr Tas implemented, however, I've done the following improvements:
 - simplified Dagger 2 integration, and removed several unneeded classes
 - Initial DB is no longer hard coded, and it's now retrieved at startup via Restful webservices using **Retrofit 2**
 - The app subscribes to **MQTT Broker** and listens to incoming messages to execute CRUD operations, like adding and deleting books & categories.
-
+![Main Image](https://raw.githubusercontent.com/abusous2000/LibraryApp/master/MainImage.png)
 Let me know what you think guys
 Peace,
 
