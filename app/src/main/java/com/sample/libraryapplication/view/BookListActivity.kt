@@ -21,7 +21,6 @@ import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.ActivityBookListBinding
 import com.sample.libraryapplication.utils.MyMQTTHandler
 import com.sample.libraryapplication.viewmodel.BookListViewModel
-//import kotlinx.android.synthetic.main.activity_book_list.*
 import javax.inject.Inject
 
 

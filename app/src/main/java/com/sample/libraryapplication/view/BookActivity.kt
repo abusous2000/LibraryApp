@@ -1,7 +1,6 @@
 package com.sample.libraryapplication.view
 
 import android.os.Bundle
-import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -11,7 +10,6 @@ import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.databinding.ActivityBookBinding
 import com.sample.libraryapplication.viewmodel.BookViewModel
-//import kotlinx.android.synthetic.main.activity_book.*
 
 class BookActivity : AppCompatActivity() {
 
