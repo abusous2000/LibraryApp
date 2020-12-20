@@ -18,7 +18,7 @@ following improvements:
   - **mosquitto_pub** -h **broker.hivemq.com** -t "**abusous2000/myTopic**" -m
     '{"actionEvent":"insertBook","data":"{ \\"bookName\": \\"Sam Fan#5\\",
     \\"bookUnitPrice\\":44.30, \\"bookCategoryID\\":1,
-    \"resourceId\\":4}"}'
+    \\"resourceId\\":4}"}'
   - **mosquitto_pub** -h **broker.hivemq.com** -t "**abusous2000/myTopic**" -m '{"actionEvent":"insertCategory","data":"{\\"categoryName\":\\"My Best Collection4\\",\\"categoryDesc\":\\"The Best Collection\\"}"}'
 
 
