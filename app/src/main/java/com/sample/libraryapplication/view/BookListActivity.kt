@@ -1,10 +1,14 @@
 package com.sample.libraryapplication.view
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -53,15 +57,15 @@ class BookListActivity : AppCompatActivity() {
 
         if (dbPopulator.doesDbExist(this) == false) {
             dbPopulator.dbPopulated.observe(this, Observer {
-                    if (it) {
-                        postDBStart()
-                    }
+                if (it) {
+                    postDBStart()
+                }
             })
 
             Handler(Looper.getMainLooper()).postDelayed({
-                    Log.d(TAG, "onCreate: repopulating DB from main thread")
-                    dbPopulator.populateDB()
-                }, 100)
+                Log.d(TAG, "onCreate: repopulating DB from main thread")
+                dbPopulator.populateDB()
+            }, 100)
        } else{
             postDBStart()
         }
@@ -84,7 +88,7 @@ class BookListActivity : AppCompatActivity() {
     fun observeViewModel() {
         //This is a hack, for some reason observer of categories are not notified only once
         boCategory.categoryListUpdated.observe(this, Observer {
-            if ( it ) {
+            if (it) {
                 setDataToSpinner(boCategory.categories.value)
                 boCategory.categoryListUpdated.postValue(false)
             }
@@ -94,7 +98,10 @@ class BookListActivity : AppCompatActivity() {
             if (!isDestroyed) {
                 bookListViewModel.isLoading.value = false
                 list.forEach {
-                    Log.d(TAG+": observeViewModel", "${it.id}-->Category Name: ${it.categoryName} - Category Desc: ${it.categoryDesc}")
+                    Log.d(
+                        TAG + ": observeViewModel",
+                        "${it.id}-->Category Name: ${it.categoryName} - Category Desc: ${it.categoryDesc}"
+                    )
                 }
                 setDataToSpinner(list)
             }
@@ -106,7 +113,11 @@ class BookListActivity : AppCompatActivity() {
             if (list.isNotEmpty()) {
                 var catNames = list.map { it.categoryName }.toList()
                 if (categoryArrayAdapter == null) {
-                     categoryArrayAdapter = ArrayAdapter(this, R.layout.list_item_category, catNames)
+                     categoryArrayAdapter = ArrayAdapter(
+                         this,
+                         R.layout.list_item_category,
+                         catNames
+                     )
                     categoryArrayAdapter?.setDropDownViewResource(R.layout.list_item_category)
                     binding.spinnerAdapter = categoryArrayAdapter
                     binding.lifecycleOwner = this
@@ -118,12 +129,51 @@ class BookListActivity : AppCompatActivity() {
             }
         }
     }
+    data class DataModel(var icon: Int, var name: String)
+    lateinit var drawerItemTitles: Array<String>
+    inner class DrawerItemClickListener : AdapterView.OnItemClickListener {
+        override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            selectItem(position)
+        }
+    }
 
+    private fun selectItem(position: Int) {
+        Log.d(TAG, "onOptionsItemSelected: Item $position was clicked")
+
+        binding.leftDrawer.setItemChecked(position, true)
+        binding.leftDrawer.setSelection(position)
+        binding.drawerLayout.closeDrawer(binding.leftDrawer)
+        setTitle(drawerItemTitles[position])
+
+    }
     private fun setBinding() {
         binding = ActivityBookListBinding.inflate(layoutInflater)
         binding.viewModel = bookListViewModel
         binding.lifecycleOwner = this
         binding.clickHandlers = bookClickHandlers
+
+        binding.topAppBar.setOnMenuItemClickListener(OnMenuItemClickListener@{
+            Log.d(TAG, "onOptionsItemSelected: Item ${it?.itemId} was clicked")
+            bookClickHandlers.onMenuClicked(it)
+            return@OnMenuItemClickListener true
+        })
+
+
+
+        val drawerItem= mutableListOf<DataModel>()
+        drawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
+        drawerItem.add( DataModel(R.drawable.connect, drawerItemTitles[0]) )
+        drawerItem.add( DataModel(R.drawable.fixtures, drawerItemTitles[1]) )
+        drawerItem.add( DataModel(R.drawable.table, drawerItemTitles[2]) )
+
+        val adapter = DrawerItemCustomAdapter(this, R.layout.menu_view_item_row, drawerItem)
+        binding.leftDrawer.adapter =adapter
+        binding.leftDrawer.onItemClickListener = DrawerItemClickListener()
+//        setSupportActionBar(binding.topAppBar);
+        var toggle = ActionBarDrawerToggle(this,  binding.drawerLayout, binding.topAppBar, R.string.app_name, R.string.app_name )
+        toggle.syncState()
+        binding.drawerLayout.addDrawerListener(toggle)
+//        supportActionBar?.setDisplayShowTitleEnabled(true);
         setContentView(binding.root)
     }
     fun updateBookList(category: CategoryEntity) {
@@ -141,9 +191,15 @@ class BookListActivity : AppCompatActivity() {
         }
         override fun onChanged(list: List<BookEntity>?) {
             if (list != null && !isDestroyed) {
-                Log.d(TAG, "updateBookList::observer: observerCounter=${observerCounter} updating RecycleView via LiveData for books with categoryId:" + selectedCategory?.id)
+                Log.d(
+                    TAG,
+                    "updateBookList::observer: observerCounter=${observerCounter} updating RecycleView via LiveData for books with categoryId:" + selectedCategory?.id
+                )
                 list.forEach {
-                    Log.d(TAG, "Book Name: ${it.bookName} - Book Price: ${it.bookUnitPrice}- Category: ${it.bookCategoryID}\"")
+                    Log.d(
+                        TAG,
+                        "Book Name: ${it.bookName} - Book Price: ${it.bookUnitPrice}- Category: ${it.bookCategoryID}\""
+                    )
                 }
                 if (list.isNotEmpty()) {
                     if (list[0].bookCategoryID == selectedCategory?.id)
@@ -158,7 +214,11 @@ class BookListActivity : AppCompatActivity() {
     private fun showBookList(bookList: List<BookEntity>) {
         if (booksAdapter == null) {
             var recycler_view_books = findViewById<RecyclerView>(R.id.recycler_view_books)
-            recycler_view_books.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+            recycler_view_books.layoutManager = LinearLayoutManager(
+                this,
+                RecyclerView.VERTICAL,
+                false
+            )
             booksAdapter = BooksAdapter(bookList)
             recycler_view_books.adapter = booksAdapter
             val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
@@ -168,7 +228,11 @@ class BookListActivity : AppCompatActivity() {
     }
 
     private var simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-        override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
             return false
         }
 
@@ -191,6 +255,6 @@ class BookListActivity : AppCompatActivity() {
         super.onDestroy()
         if ( bookListViewModel.boCategory.booksInitalized())
             bookListViewModel.boCategory.books.removeObservers(this)
-        myMQTTHandler.disconnect()
+        myMQTTHandler.close()
     }
 }

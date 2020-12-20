@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pop_up_menu">
+
+<!--    <android:data>-->
+<!--       <android:variable-->
+<!--            android:name="clickHandlers"-->
+<!--            android:type="com.sample.libraryapplication.view.BookClickHandlers" />-->
+
+<!--        <import android:type="android.view.MenuItem" />-->
+<!--        <import android:type="android.view.View" />-->
+<!--    </android:data>-->
+
+    <item
+        android:id="@+id/Add_A_Book_id"
+        android:icon="@drawable/connect"
+        android:title="Add A Book" />
+    <item
+        android:id="@+id/Add_A_Category_id"
+        android:icon="@drawable/fixtures"
+        android:title="Add A Category" />
+    <item
+        android:id="@+id/change_mqtt_settings_id"
+        android:icon="@drawable/table"
+        android:title="Change MQTT Settings" />
+</menu>

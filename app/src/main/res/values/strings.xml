@@ -7,4 +7,10 @@
     <string name="submit">SUBMIT</string>
     <string name="add_new_book">Add New Book</string>
     <string name="update_book">Update Book</string>
+    <string name="toolbar_title">Library App</string>
+    <string-array name="navigation_drawer_items_array">
+        <item>Add a Book</item>
+        <item>Add a Category</item>
+        <item>MQTT Settings</item>
+    </string-array>
 </resources>

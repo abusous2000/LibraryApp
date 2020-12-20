@@ -1,6 +1,7 @@
 package com.sample.libraryapplication
 
 import android.app.Application
+import androidx.appcompat.app.AppCompatDelegate
 import com.sample.libraryapplication.dagger.DaggerLibraryComponent
 import com.sample.libraryapplication.dagger.LibraryComponent
 import com.sample.libraryapplication.dagger.module.RoomDatabaseModule
@@ -15,6 +16,7 @@ class LibraryApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         instance = this
         roomDatabaseModule = RoomDatabaseModule(this)
         libraryComponent = DaggerLibraryComponent
