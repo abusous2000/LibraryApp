@@ -131,21 +131,7 @@ class BookListActivity : AppCompatActivity() {
     }
     data class DataModel(var icon: Int, var name: String)
     lateinit var drawerItemTitles: Array<String>
-    inner class DrawerItemClickListener : AdapterView.OnItemClickListener {
-        override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            selectItem(position)
-        }
-    }
 
-    private fun selectItem(position: Int) {
-        Log.d(TAG, "onOptionsItemSelected: Item $position was clicked")
-
-        binding.leftDrawer.setItemChecked(position, true)
-        binding.leftDrawer.setSelection(position)
-        binding.drawerLayout.closeDrawer(binding.leftDrawer)
-        setTitle(drawerItemTitles[position])
-
-    }
     private fun setBinding() {
         binding = ActivityBookListBinding.inflate(layoutInflater)
         binding.viewModel = bookListViewModel
@@ -158,8 +144,6 @@ class BookListActivity : AppCompatActivity() {
             return@OnMenuItemClickListener true
         })
 
-
-
         val drawerItem= mutableListOf<DataModel>()
         drawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
         drawerItem.add( DataModel(R.drawable.connect, drawerItemTitles[0]) )
@@ -168,13 +152,24 @@ class BookListActivity : AppCompatActivity() {
 
         val adapter = DrawerItemCustomAdapter(this, R.layout.menu_view_item_row, drawerItem)
         binding.leftDrawer.adapter =adapter
-        binding.leftDrawer.onItemClickListener = DrawerItemClickListener()
-//        setSupportActionBar(binding.topAppBar);
+        binding.leftDrawer.onItemClickListener =  object: AdapterView.OnItemClickListener {
+            override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                selectItem(position)
+            }
+        }
         var toggle = ActionBarDrawerToggle(this,  binding.drawerLayout, binding.topAppBar, R.string.app_name, R.string.app_name )
         toggle.syncState()
         binding.drawerLayout.addDrawerListener(toggle)
-//        supportActionBar?.setDisplayShowTitleEnabled(true);
         setContentView(binding.root)
+    }
+    private fun selectItem(position: Int) {
+        Log.d(TAG, "onOptionsItemSelected: Item $position was clicked")
+
+        binding.leftDrawer.setItemChecked(position, true)
+        binding.leftDrawer.setSelection(position)
+        binding.drawerLayout.closeDrawer(binding.leftDrawer)
+        setTitle(drawerItemTitles[position])
+
     }
     fun updateBookList(category: CategoryEntity) {
         selectedCategory=category

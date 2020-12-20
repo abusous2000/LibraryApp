@@ -26,6 +26,9 @@ import javax.inject.Singleton
 
 @Singleton
 class DBPopulator @Inject constructor() {
+    companion object{
+        val bookResources = intArrayOf(R.drawable.connect, R.drawable.ic_drawer, R.drawable.table,R.drawable.ic_launcher_background,R.drawable.ic_baseline_dehaze_24)
+    }
     private val TAG = "DBPopulator"
     init {
         LibraryApplication.instance.libraryComponent.inject(this)
@@ -48,7 +51,6 @@ class DBPopulator @Inject constructor() {
     }
     fun populateDB() {
         dbPopulated.postValue(true)
-        val bookResources = intArrayOf(R.drawable.ic_baseline_adb_24, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_background)
   //        val gson = GsonBuilder().serializeNulls().create()
         LibraryApplication.instance.libraryComponent.inject(this)
 

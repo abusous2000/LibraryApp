@@ -48,15 +48,15 @@ abstract class MqttClientHelper() {
         try {
             client.connect(mqttConnectOptions,null,object: IMqttActionListener{
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
-                    Log.d(TAG, "onSuccess: ")
+                    Log.d(TAG, "onSuccess: MQTT Client connected to $broker")
                 }
                override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                    Log.d(TAG, "onFailure: ")
+                   Log.e(TAG, "Failed to connect to $broker",exception)
                 }
             })
         }
         catch(t: Throwable){
-            Log.e(TAG, "connect: ${t.message}")
+            Log.e(TAG, "MQTT connection failure: ${t.message}", t)
         }
     }
 

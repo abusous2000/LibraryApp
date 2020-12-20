@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.bo.BOBook
 import com.sample.libraryapplication.bo.BOCategory
+import com.sample.libraryapplication.database.DBPopulator
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.view.BookListActivity
@@ -36,13 +37,11 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
     fun connect(context: Context){
         this.context = context
          if ( myPrefs.contains(BROKER_PREFS) == false){
-             val prefMap = mapOf<String,String>(BROKER_PREFS to myPrefs.getString(BROKER_PREFS,default_broker),
-                                                                 TOPIC_PREFS to myPrefs.getString(TOPIC_PREFS,default_topic))
-             myPrefs.save(prefMap);
+             myPrefs.save(mapOf<String,String>(BROKER_PREFS to default_broker, TOPIC_PREFS to default_topic));
          }
 
-        topicHandlers.add( TopicHandler(myPrefs.getString(BROKER_PREFS)))
-        connect(context,myPrefs.getString(TOPIC_PREFS))
+        topicHandlers.add( TopicHandler(myPrefs.getString(TOPIC_PREFS)))
+        connect(context,myPrefs.getString(BROKER_PREFS))
     }
     override fun onConnectComplete(reconnect: Boolean, serverURI: String?){
         topicHandlers.forEach({
@@ -64,6 +63,7 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
         Log.d(BookListActivity.TAG, "Receive MQTTMessage: $json---> on Topic:$topic")
 
         var th = topicHandlers.find { it.topic.equals(topic) }
+        //route to topic's message handler if one was provided, else use the default implementation
         if ( th?.messageCallBack != null){
             th.messageCallBack!!(topic!!,message)
             return;
@@ -75,6 +75,10 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
                     val book = gson.fromJson(actionEvent.data, BookEntity::class.java)
 
                     Log.d(BookListActivity.TAG, "book: \"${book.bookName}\" has been received")
+                    book.resourceId = if (book.resourceId >=0 && book.resourceId <DBPopulator.bookResources.size)
+                                           DBPopulator.bookResources[book.resourceId]
+                                      else
+                                            book.resourceId
                     when (actionEvent.actionEvent) {
                         ActionEvent.INSERT_BOOK_AE->boBook.setEntity(book).insert()
                         ActionEvent.UPDATE_BOOK_AE->boBook.setEntity(book).update()
