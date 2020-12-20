@@ -19,7 +19,7 @@ following improvements:
     '{"actionEvent":"insertBook","data":"{ \"bookName\": \"Sam Fan#5\",
     \"bookUnitPrice\":44.30, \"bookCategoryID\":1,
     \"resourceId\":4}"}'
-  - **mosquitto_pub** -h **broker.hivemq.com** -t "**abusous2000/myTopic**" -m '{"actionEvent":"insertCategory","data":"{\"categoryName\":\"My Best Collection4\",\"categoryDesc\":\"The Best Collection\"}"}'
+  - **mosquitto_pub** -h **broker.hivemq.com** -t "**abusous2000/myTopic**" -m '{"actionEvent":"insertCategory","data":"{\\"categoryName\":\\"My Best Collection4\\",\\"categoryDesc\":\\"The Best Collection\\"}"}'
 
 
 ![Main Image](https://raw.githubusercontent.com/abusous2000/LibraryApp/master/MainImage.png)
