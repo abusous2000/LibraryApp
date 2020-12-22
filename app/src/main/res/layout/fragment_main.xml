@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable  name="viewModel"       type="com.sample.libraryapplication.viewmodel.MainFragmentViewModel" />
+        <variable  name="viewModel"       type="com.sample.libraryapplication.viewmodel.BookListFragmentViewModel" />
         <variable  name="clickHandlers"   type="com.sample.libraryapplication.view.BookClickHandlers" />
         <variable  name="spinnerAdapter"  type="android.widget.ArrayAdapter" />
         <import type="android.view.View" />

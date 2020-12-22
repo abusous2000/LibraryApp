@@ -18,7 +18,7 @@
         <activity android:name=".view.BookActivity">
 
         </activity>
-        <activity android:name=".view.BookListActivity">
+        <activity android:name=".view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

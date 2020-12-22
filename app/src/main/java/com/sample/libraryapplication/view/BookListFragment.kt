@@ -24,7 +24,7 @@ import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.FragmentMainBinding
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.utils.MyMQTTHandler
-import com.sample.libraryapplication.viewmodel.MainFragmentViewModel
+import com.sample.libraryapplication.viewmodel.BookListFragmentViewModel
 import javax.inject.Inject
 
 // TODO: Rename parameter arguments, choose names that match
@@ -32,12 +32,8 @@ import javax.inject.Inject
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MainFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class MainFragment : Fragment() {
+@Suppress("DEPRECATION")
+class BookListFragment : Fragment() {
     companion object {
         val TAG = "MainFragment"
         /**
@@ -51,7 +47,7 @@ class MainFragment : Fragment() {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            MainFragment().apply {
+            BookListFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
@@ -62,7 +58,7 @@ class MainFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private var roootView: View? = null
-    lateinit var bookListViewModel: MainFragmentViewModel
+    lateinit var bookListViewModel: BookListFragmentViewModel
     private lateinit var binding: FragmentMainBinding
     @Inject
     lateinit var boCategory: BOCategory
@@ -100,7 +96,7 @@ class MainFragment : Fragment() {
             return binding.root
         }
 
-        ActivityWeakMapRef.weakMap.put(MainFragment.TAG, this);
+        ActivityWeakMapRef.weakMap.put(BookListFragment.TAG, this);
         injectDagger()
         createViewModel()
         setBinding()
@@ -137,7 +133,7 @@ class MainFragment : Fragment() {
         observeViewModel()
     }
     private fun createViewModel() {
-        bookListViewModel = ViewModelProvider(this).get(MainFragmentViewModel::class.java)
+        bookListViewModel = ViewModelProvider(this).get(BookListFragmentViewModel::class.java)
     }
     private fun injectDagger() {
         LibraryApplication.instance.libraryComponent.inject(this)
@@ -161,7 +157,7 @@ class MainFragment : Fragment() {
             if (!isDetached) {
                 bookListViewModel.isLoading.value = false
                 list.forEach {
-                    Log.d(MainFragment.TAG + ": observeViewModel", "${it.id}-->Category Name: ${it.categoryName} - Category Desc: ${it.categoryDesc}"
+                    Log.d(BookListFragment.TAG + ": observeViewModel", "${it.id}-->Category Name: ${it.categoryName} - Category Desc: ${it.categoryDesc}"
                     )
                 }
                 setDataToSpinner(list)
@@ -202,11 +198,11 @@ class MainFragment : Fragment() {
         }
         override fun onChanged(list: List<BookEntity>?) {
             if (list != null && !isDetached) {
-                Log.d(MainFragment.TAG,
+                Log.d(BookListFragment.TAG,
                     "updateBookList::observer: observerCounter=${observerCounter} updating RecycleView via LiveData for books with categoryId:" + selectedCategory?.id)
                 list.forEach {
                     Log.d(
-                        MainFragment.TAG,
+                        BookListFragment.TAG,
                         "Book Name: ${it.bookName} - Book Price: ${it.bookUnitPrice}- Category: ${it.bookCategoryID}\""
                     )
                 }
@@ -214,7 +210,7 @@ class MainFragment : Fragment() {
                     if (list[0].bookCategoryID == selectedCategory?.id)
                         showBookList(list)
                     else
-                        Log.d(MainFragment.TAG, "no need to update list")
+                        Log.d(BookListFragment.TAG, "no need to update list")
                 } else
                     showBookList(listOf())
             }
@@ -255,11 +251,4 @@ class MainFragment : Fragment() {
             bookListViewModel.boCategory.books.removeObservers(this)
         myMQTTHandler.close()
     }
-
-    override fun onResume() {
-        super.onResume()
-//        if ( selectedCategory != null )
-//            updateBookList(selectedCategory!!)
-    }
-
 }

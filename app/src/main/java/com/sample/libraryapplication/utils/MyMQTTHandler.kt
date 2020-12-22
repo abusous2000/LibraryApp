@@ -9,7 +9,7 @@ import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.database.DBPopulator
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
-import com.sample.libraryapplication.view.BookListActivity
+import com.sample.libraryapplication.view.MainActivity
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -63,7 +63,7 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
     lateinit var boBook: BOBook
     override fun onDefaultMessageArrived(topic: String?, message: MqttMessage?) {
         val json = String(message?.payload!!)
-        Log.d(BookListActivity.TAG, "Receive MQTTMessage: $json---> on Topic:$topic")
+        Log.d(MainActivity.TAG, "Receive MQTTMessage: $json---> on Topic:$topic")
 
         var th = topicHandlers.find { it.topic.equals(topic) }
         //route to topic's message handler if one was provided, else use the default implementation
@@ -77,7 +77,7 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
                 in bookActionEvents -> {
                     val book = gson.fromJson(actionEvent.data, BookEntity::class.java)
 
-                    Log.d(BookListActivity.TAG, "book: \"${book.bookName}\" has been received")
+                    Log.d(MainActivity.TAG, "book: \"${book.bookName}\" has been received")
                     book.resourceId = if (book.resourceId >=0 && book.resourceId <DBPopulator.bookResources.size)
                                            DBPopulator.bookResources[book.resourceId]
                                       else
@@ -91,7 +91,7 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
                 in categoryActionEvents -> {
                     val category = gson.fromJson(actionEvent.data, CategoryEntity::class.java)
 
-                    Log.d(BookListActivity.TAG, "category:\"${category.categoryName}\" has been received")
+                    Log.d(MainActivity.TAG, "category:\"${category.categoryName}\" has been received")
                     when (actionEvent.actionEvent) {
                         ActionEvent.INSERT_CATEGORY_AE-> {
                             with(boCategory) {
@@ -105,11 +105,11 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
                         ActionEvent.DELETE_CATEGORY_AE->boCategory.setEntity(category).delete()
                     }
                 }
-                else -> Log.d(BookListActivity.TAG, "unknown action event")
+                else -> Log.d(MainActivity.TAG, "unknown action event")
             }
         }
         catch (e: Exception){
-            Log.e(BookListActivity.TAG, "onMessageArrived: "+e.message,e )
+            Log.e(MainActivity.TAG, "onMessageArrived: "+e.message,e )
         }
     }
 }

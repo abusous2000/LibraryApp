@@ -21,11 +21,10 @@ class MQTTFragment : Fragment() {
         binding = MqttFragmentBinding.inflate(layoutInflater,container,false)
 
         return binding.root
-//        return inflater.inflate(R.layout.mqtt_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MQTTViewModel::class.java)
         reenterTransition = true
     }

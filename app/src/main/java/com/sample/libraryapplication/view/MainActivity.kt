@@ -11,18 +11,16 @@ import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.databinding.ActivityBookListBinding
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
-import com.sample.libraryapplication.viewmodel.BookListViewModel
 import javax.inject.Inject
 
 
-class BookListActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
     companion object {
-        val TAG = BookListActivity::class.java.simpleName
+        val TAG = MainActivity::class.java.simpleName
     }
     @Inject
     lateinit var bookClickHandlers: BookClickHandlers
     private  lateinit var binding: ActivityBookListBinding
-    lateinit var bookListViewModel: BookListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,9 +30,9 @@ class BookListActivity : AppCompatActivity() {
         setBinding()
 
         if (savedInstanceState == null) {
-            var fragment = supportFragmentManager.findFragmentByTag(MainFragment.TAG)?: MainFragment()
+            var fragment = supportFragmentManager.findFragmentByTag(BookListFragment.TAG)?: BookListFragment()
             supportFragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment, MainFragment.TAG)
+                .replace(R.id.content_frame, fragment, BookListFragment.TAG)
                 .addToBackStack(null)
                 .commit()
         }
@@ -49,10 +47,10 @@ class BookListActivity : AppCompatActivity() {
 
     private fun setBinding() {
         binding = ActivityBookListBinding.inflate(layoutInflater)
-//        binding.lifecycleOwner = this
         val drawerItem= mutableListOf<MenuItemDataModel>()
 
-        drawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
+        drawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array)
+
         drawerItem.add(MenuItemDataModel(R.drawable.connect,    drawerItemTitles[0]))
         drawerItem.add(MenuItemDataModel(R.drawable.fixtures,   drawerItemTitles[1]))
         drawerItem.add(MenuItemDataModel(R.drawable.table,      drawerItemTitles[2]))
@@ -76,10 +74,10 @@ class BookListActivity : AppCompatActivity() {
         var tag: String? = null
         when (position) {
             0 -> {
-                if (supportFragmentManager.findFragmentByTag(MainFragment.TAG) != null)
+                if (supportFragmentManager.findFragmentByTag(BookListFragment.TAG) != null)
                     Log.d(TAG, "selectItem: no need to create fragment; reusing cached verion")
-                    fragment = supportFragmentManager.findFragmentByTag(MainFragment.TAG)?: MainFragment()
-                    tag = MainFragment.TAG
+                    fragment = supportFragmentManager.findFragmentByTag(BookListFragment.TAG)?: BookListFragment()
+                    tag = BookListFragment.TAG
                 }
             1 -> {
                 binding.leftDrawer.setItemChecked(position, true)

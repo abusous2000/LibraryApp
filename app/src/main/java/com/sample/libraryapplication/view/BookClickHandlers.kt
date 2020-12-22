@@ -49,17 +49,17 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
         view.startActivity(intent)
     }
     fun onFABClicked3(view: Activity) {
-        val intent = Intent(view, BookListActivity::class.java)
+        val intent = Intent(view, MainActivity::class.java)
 
         view.startActivity(intent)
     }
     fun onFABClicked4(view: View) {
-        val intent = Intent(view.context, BookListActivity::class.java)
+        val intent = Intent(view.context, MainActivity::class.java)
 
         view.context.startActivity(intent)
     }
     fun onMenuClicked(menuItem: MenuItem?): Boolean {
-        var bookListActivity = ActivityWeakMapRef.weakMap.get(BookListActivity.TAG) as BookListActivity
+        var bookListActivity = ActivityWeakMapRef.weakMap.get(MainActivity.TAG) as MainActivity
         when(menuItem?.itemId){
             R.id.Add_A_Book_id -> onFABClicked2(bookListActivity)
             else -> Toast.makeText(bookListActivity,"Item ${menuItem?.itemId} was clicked", Toast.LENGTH_SHORT ).show();
@@ -82,12 +82,12 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
                             @Suppress("UNUSED_PARAMETER") view: View?, position: Int,
                             @Suppress("UNUSED_PARAMETER") id: Long) {
         Log.d(BookClickHandlers.TAG, "onCategorySelected:$position")
-        var mainFragment = ActivityWeakMapRef.weakMap.get(MainFragment.TAG) as MainFragment
+        var bookListFragment = ActivityWeakMapRef.weakMap.get(BookListFragment.TAG) as BookListFragment
         //Check if the list was populated. It could be empty on startup since the DB takes longer to populate
-        if ( mainFragment.boCategory.categories.value?.size!! > 0 )
-            selectedCategory = mainFragment.boCategory.categories.value!!.get(position)
+        if ( bookListFragment.boCategory.categories.value?.size!! > 0 )
+            selectedCategory = bookListFragment.boCategory.categories.value!!.get(position)
         if ( selectedCategory != null )
-            mainFragment.updateBookList(selectedCategory!!)
+            bookListFragment.updateBookList(selectedCategory!!)
     }
 
 }

@@ -9,7 +9,7 @@ import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import javax.inject.Inject
 
-class BookListViewModel(): BaseViewModel() {
+class BookListFragmentViewModel(): BaseViewModel() {
     companion object{
         private const val TAG = "BookListViewModel"
     }

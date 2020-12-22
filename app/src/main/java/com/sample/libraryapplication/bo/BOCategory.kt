@@ -4,14 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.database.dao.BaseDAO
-import com.sample.libraryapplication.database.dao.BookDAO
 import com.sample.libraryapplication.database.dao.CategoryDAO
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
-import com.sample.libraryapplication.view.BookListActivity
+import com.sample.libraryapplication.view.MainActivity
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -65,7 +63,7 @@ class BOCategory @Inject constructor(): BOAbstract<CategoryEntity>(){
         if ( booksInitalized() && books.hasObservers())
             books.removeObservers(lifecycleOwner)
         else
-            Log.d(BookListActivity.TAG, "removeObserver: no observers for books")
+            Log.d(MainActivity.TAG, "removeObserver: no observers for books")
     }
     fun refreshBooks(){
         if ( category.value == null) {
