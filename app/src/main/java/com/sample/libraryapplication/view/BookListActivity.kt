@@ -32,7 +32,7 @@ class BookListActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             var fragment = supportFragmentManager.findFragmentByTag(MainFragment.TAG)?: MainFragment()
-            var transactionId = supportFragmentManager.beginTransaction()
+            supportFragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment, MainFragment.TAG)
                 .addToBackStack(null)
                 .commit()
@@ -72,35 +72,40 @@ class BookListActivity : AppCompatActivity() {
         Log.d(TAG, "onOptionsItemSelected: Item $position was clicked")
 
         var fragment: Fragment? = null
+        var tag: String? = null
         when (position) {
-            0, 1 -> {
-                if (position == 0) {
-                    bookClickHandlers.onFABClicked3(this)
+            0 -> {
+                if (supportFragmentManager.findFragmentByTag(MainFragment.TAG) != null)
+                    Log.d(TAG, "selectItem: no need to create fragment; resuing cached verion")
+                    fragment = supportFragmentManager.findFragmentByTag(MainFragment.TAG)?: MainFragment()
+                    tag = MainFragment.TAG
                 }
-                if (position == 1) {
-                    bookClickHandlers.onFABClicked2(this)
-                }
+            1 -> {
                 binding.leftDrawer.setItemChecked(position, true)
                 binding.leftDrawer.setSelection(position)
                 binding.drawerLayout.closeDrawer(binding.leftDrawer)
                 setTitle(drawerItemTitles[position])
-            }
+                    bookClickHandlers.onFABClicked2(this)
+                }
             2 -> {
-                fragment = supportFragmentManager.findFragmentByTag(drawerItemTitles[position])
-                    ?: MainFragment()//MQTTFragment.newInstance()
+                if (supportFragmentManager.findFragmentByTag(MQTTFragment.TAG) != null)
+                    Log.d(TAG, "selectItem: no need to create fragment; resuing cached verion")
+                fragment = supportFragmentManager.findFragmentByTag(MQTTFragment.TAG)
+                    ?: MQTTFragment.newInstance()
+                tag = MQTTFragment.TAG
             }
         }
         if (fragment != null) {
             var transactionId = supportFragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment, drawerItemTitles[position])
-                .addToBackStack(null).commit()
-//            var pendingTX = supportFragmentManager.executePendingTransactions()
+                                                        .replace(R.id.content_frame, fragment, tag)
+                                                        .addToBackStack(null).
+                                                        commit()
+                                        //            var pendingTX = supportFragmentManager.executePendingTransactions()
             Log.d(TAG, "selectItem: transactionId = $transactionId ")//pendingTX = $pendingTX")
             binding.leftDrawer.setItemChecked(position, true)
             binding.leftDrawer.setSelection(position)
             binding.drawerLayout.closeDrawer(binding.leftDrawer)
-//            setTitle(drawerItemTitles[position])
-        } else {
+         } else {
             Log.e("MainActivity", "No Fragment to serve: $position")
         }
     }

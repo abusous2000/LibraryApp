@@ -90,6 +90,16 @@ class MainFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         this.container = container
+        if (ActivityWeakRef.fragmentMap.get(TAG) !=null ) {
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                Log.d(TAG, "onCreate: repopulating DB from main thread")
+                bookClickHandlers.onCategorySelected2(null,null,0,0)
+            }, 200)
+
+            return binding.root
+        }
+
         ActivityWeakRef.updateFragment(MainFragment.TAG, this);
         injectDagger()
         createViewModel()
@@ -116,7 +126,7 @@ class MainFragment : Fragment() {
             bookListViewModel.isLoading.value = false
             binding.progressBar2.visibility = View.GONE
             Log.d(TAG, "onCreate: isLoading=true")
-        }, 4000)
+        }, 1500)
 
         return binding.root
     }
@@ -149,9 +159,7 @@ class MainFragment : Fragment() {
             if (!isDetached) {
                 bookListViewModel.isLoading.value = false
                 list.forEach {
-                    Log.d(
-                        BookListActivity.TAG + ": observeViewModel",
-                        "${it.id}-->Category Name: ${it.categoryName} - Category Desc: ${it.categoryDesc}"
+                    Log.d(MainFragment.TAG + ": observeViewModel", "${it.id}-->Category Name: ${it.categoryName} - Category Desc: ${it.categoryDesc}"
                     )
                 }
                 setDataToSpinner(list)
@@ -244,6 +252,12 @@ class MainFragment : Fragment() {
         if ( bookListViewModel.boCategory.booksInitalized())
             bookListViewModel.boCategory.books.removeObservers(this)
         myMQTTHandler.close()
+    }
+
+    override fun onResume() {
+        super.onResume()
+//        if ( selectedCategory != null )
+//            updateBookList(selectedCategory!!)
     }
 
 }

@@ -21,7 +21,7 @@ abstract class MqttClientHelper() {
     open fun onDefaultMessageArrived(topic: String?, message: MqttMessage?){}
     open fun onDeliveryComplete(token: IMqttDeliveryToken?){}
     fun isInitalizdedAndConnected(): Boolean{
-        return this::client.isInitialized && client != null && client.isConnected
+        return this::client.isInitialized && client.isConnected
     }
     fun connect(context: Context, broker: String) {
         this.context =  context

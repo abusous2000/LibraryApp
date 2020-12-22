@@ -12,6 +12,7 @@ import com.sample.libraryapplication.viewmodel.MQTTViewModel
 
 class MQTTFragment : Fragment() {
     companion object {
+        val TAG = "MQTTFragment"
         fun newInstance() = MQTTFragment()
     }
     private lateinit var viewModel: MQTTViewModel
