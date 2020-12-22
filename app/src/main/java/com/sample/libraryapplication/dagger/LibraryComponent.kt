@@ -8,8 +8,10 @@ import com.sample.libraryapplication.utils.MyMQTTHandler
 import com.sample.libraryapplication.view.BookActivity
 import com.sample.libraryapplication.view.BookListActivity
 import com.sample.libraryapplication.view.BooksAdapter
+import com.sample.libraryapplication.view.MainFragment
 import com.sample.libraryapplication.viewmodel.BookListViewModel
 import com.sample.libraryapplication.viewmodel.BookViewModel
+import com.sample.libraryapplication.viewmodel.MainFragmentViewModel
 import dagger.Component
 import javax.inject.Singleton
 
@@ -26,4 +28,6 @@ interface LibraryComponent {
     fun inject(boBook: BOBook)
     fun inject(dbPopulator: DBPopulator)
     fun inject(myMQTTHandler: MyMQTTHandler)
+    fun inject(mainFragmentViewModel: MainFragmentViewModel)
+    fun inject(mainFragment: MainFragment)
 }

@@ -47,6 +47,16 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
         intent.putExtra("selected_category_id", selectedCategory?.id)
         view.startActivity(intent)
     }
+    fun onFABClicked3(view: Activity) {
+        val intent = Intent(view, BookListActivity::class.java)
+
+        view.startActivity(intent)
+    }
+    fun onFABClicked4(view: View) {
+        val intent = Intent(view.context, BookListActivity::class.java)
+
+        view.context.startActivity(intent)
+    }
     fun onMenuClicked(menuItem: MenuItem?): Boolean {
         var bookListActivity = ActivityWeakRef.activityMap.get(BookListActivity.TAG)?.get() as BookListActivity
         when(menuItem?.itemId){
@@ -56,17 +66,27 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
         return true;
    }
 
-    fun onCategorySelected(
-        @Suppress("UNUSED_PARAMETER") parent: AdapterView<*>?,
-        @Suppress("UNUSED_PARAMETER") view: View?, position: Int,
-        @Suppress("UNUSED_PARAMETER") id: Long
-    ) {
+//    fun onCategorySelected( @Suppress("UNUSED_PARAMETER") parent: AdapterView<*>?,
+//                            @Suppress("UNUSED_PARAMETER") view: View?, position: Int,
+//                            @Suppress("UNUSED_PARAMETER") id: Long) {
+//        Log.d(BookClickHandlers.TAG, "onCategorySelected:$position")
+//        var bookListActivity = ActivityWeakRef.activityMap.get(BookListActivity.TAG)?.get() as BookListActivity
+//        //Check if the list was populated. It could be empty on startup since the DB takes longer to populate
+//        if ( bookListActivity.boCategory.categories.value?.size!! > 0 )
+//            selectedCategory = bookListActivity.boCategory.categories.value!!.get(position)
+//        if ( selectedCategory != null )
+//            bookListActivity.updateBookList(selectedCategory!!)
+//    }
+    fun onCategorySelected2( @Suppress("UNUSED_PARAMETER") parent: AdapterView<*>?,
+                            @Suppress("UNUSED_PARAMETER") view: View?, position: Int,
+                            @Suppress("UNUSED_PARAMETER") id: Long) {
         Log.d(BookClickHandlers.TAG, "onCategorySelected:$position")
-        var bookListActivity = ActivityWeakRef.activityMap.get(BookListActivity.TAG)?.get() as BookListActivity
+        var mainFragment = ActivityWeakRef.fragmentMap.get(MainFragment.TAG)?.get() as MainFragment
         //Check if the list was populated. It could be empty on startup since the DB takes longer to populate
-        if ( bookListActivity.boCategory.categories.value?.size!! > 0 )
-            selectedCategory = bookListActivity.boCategory.categories.value!!.get(position)
+        if ( mainFragment.boCategory.categories.value?.size!! > 0 )
+            selectedCategory = mainFragment.boCategory.categories.value!!.get(position)
         if ( selectedCategory != null )
-            bookListActivity.updateBookList(selectedCategory!!)
+            mainFragment.updateBookList(selectedCategory!!)
     }
+
 }

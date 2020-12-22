@@ -9,13 +9,13 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.sample.libraryapplication.R
-import com.sample.libraryapplication.view.BookListActivity.DataModel
+import com.sample.libraryapplication.view.BookListActivity.MenuItemDataModel
 
 
-class DrawerItemCustomAdapter(mContext: Context, var layoutResourceId: Int, data: List<DataModel>) :
-      ArrayAdapter<DataModel>(mContext, layoutResourceId, data) {
+class DrawerItemCustomAdapter(mContext: Context, var layoutResourceId: Int, data: List<MenuItemDataModel>) :
+      ArrayAdapter<MenuItemDataModel>(mContext, layoutResourceId, data) {
     var mContext: Context
-    var data: List<DataModel>
+    var data: List<MenuItemDataModel>
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 //        var listItem: View = convertView!!

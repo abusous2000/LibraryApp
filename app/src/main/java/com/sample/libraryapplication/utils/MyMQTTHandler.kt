@@ -12,9 +12,11 @@ import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.view.BookListActivity
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import javax.inject.Inject
+import javax.inject.Singleton
 
 data class TopicHandler(val topic: String, val messageCallBack: ((topic: String, message: MqttMessage) -> Unit)? = null){
 }
+@Singleton
 class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
     companion object {
         const val TOPIC_PREFS = "TOPIC_PREFS"
@@ -41,7 +43,8 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
          }
 
         topicHandlers.add( TopicHandler(myPrefs.getString(TOPIC_PREFS)))
-        connect(context,myPrefs.getString(BROKER_PREFS))
+
+            connect(context,myPrefs.getString(BROKER_PREFS))
     }
     override fun onConnectComplete(reconnect: Boolean, serverURI: String?){
         topicHandlers.forEach({

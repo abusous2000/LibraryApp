@@ -20,6 +20,9 @@ abstract class MqttClientHelper() {
     open fun onConnectionLost(cause: Throwable?){}
     open fun onDefaultMessageArrived(topic: String?, message: MqttMessage?){}
     open fun onDeliveryComplete(token: IMqttDeliveryToken?){}
+    fun isInitalizdedAndConnected(): Boolean{
+        return this::client.isInitialized && client != null && client.isConnected
+    }
     fun connect(context: Context, broker: String) {
         this.context =  context
         var cb = object: MqttCallbackExtended{
@@ -39,6 +42,10 @@ abstract class MqttClientHelper() {
                 Log.d(TAG, "deliveryComplete: ")
                 onDeliveryComplete(token)
             }
+        }
+        if ( isInitalizdedAndConnected() ){
+            Log.d(TAG, "connect: no need to continue, Singelton MQTT already initalized and connected")
+            return;
         }
         client =  MqttAndroidClient(context, broker, MqttClientHelper.generateClientId())
         client.setCallback(cb)

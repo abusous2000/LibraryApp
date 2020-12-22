@@ -26,10 +26,13 @@ android {
 
     buildFeatures {
         dataBinding true
-         viewBinding true
+        viewBinding true
      }
 }
 dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     def room_version = "2.3.0-alpha01"
     def dagger_version = "2.25.2"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -74,4 +77,8 @@ dependencies {
     implementation "org.eclipse.paho:org.eclipse.paho.android.service:$paho_service_version"
     def drawer_version = "1.1.1"
     implementation "androidx.drawerlayout:drawerlayout:$drawer_version"
+
+    def fragment_version = "1.2.5"
+    // Kotlin
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
 }
