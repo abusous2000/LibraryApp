@@ -13,6 +13,7 @@ import android.widget.Toolbar
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
+import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -58,7 +59,7 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
         view.context.startActivity(intent)
     }
     fun onMenuClicked(menuItem: MenuItem?): Boolean {
-        var bookListActivity = ActivityWeakRef.activityMap.get(BookListActivity.TAG)?.get() as BookListActivity
+        var bookListActivity = ActivityWeakMapRef.weakMap.get(BookListActivity.TAG) as BookListActivity
         when(menuItem?.itemId){
             R.id.Add_A_Book_id -> onFABClicked2(bookListActivity)
             else -> Toast.makeText(bookListActivity,"Item ${menuItem?.itemId} was clicked", Toast.LENGTH_SHORT ).show();
@@ -81,7 +82,7 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
                             @Suppress("UNUSED_PARAMETER") view: View?, position: Int,
                             @Suppress("UNUSED_PARAMETER") id: Long) {
         Log.d(BookClickHandlers.TAG, "onCategorySelected:$position")
-        var mainFragment = ActivityWeakRef.fragmentMap.get(MainFragment.TAG)?.get() as MainFragment
+        var mainFragment = ActivityWeakMapRef.weakMap.get(MainFragment.TAG) as MainFragment
         //Check if the list was populated. It could be empty on startup since the DB takes longer to populate
         if ( mainFragment.boCategory.categories.value?.size!! > 0 )
             selectedCategory = mainFragment.boCategory.categories.value!!.get(position)

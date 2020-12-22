@@ -27,8 +27,6 @@ class MQTTFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MQTTViewModel::class.java)
-//        binding.viewModel = viewModel
-//        MQTTFragmentBinding
-        // TODO: Use the ViewModel
+        reenterTransition = true
     }
 }

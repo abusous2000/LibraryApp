@@ -21,10 +21,9 @@ import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.database.DBPopulator
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
-import com.sample.libraryapplication.databinding.ActivityBookListBinding
 import com.sample.libraryapplication.databinding.FragmentMainBinding
+import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.utils.MyMQTTHandler
-import com.sample.libraryapplication.viewmodel.BookListViewModel
 import com.sample.libraryapplication.viewmodel.MainFragmentViewModel
 import javax.inject.Inject
 
@@ -62,7 +61,7 @@ class MainFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-
+    private var roootView: View? = null
     lateinit var bookListViewModel: MainFragmentViewModel
     private lateinit var binding: FragmentMainBinding
     @Inject
@@ -86,11 +85,12 @@ class MainFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        retainInstance = true
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         this.container = container
-        if (ActivityWeakRef.fragmentMap.get(TAG) !=null ) {
+        if (roootView !=null ) {
 
             Handler(Looper.getMainLooper()).postDelayed({
                 Log.d(TAG, "onCreate: repopulating DB from main thread")
@@ -100,7 +100,7 @@ class MainFragment : Fragment() {
             return binding.root
         }
 
-        ActivityWeakRef.updateFragment(MainFragment.TAG, this);
+        ActivityWeakMapRef.weakMap.put(MainFragment.TAG, this);
         injectDagger()
         createViewModel()
         setBinding()
@@ -128,7 +128,9 @@ class MainFragment : Fragment() {
             Log.d(TAG, "onCreate: isLoading=true")
         }, 1500)
 
-        return binding.root
+        roootView = binding.root
+
+        return roootView
     }
     private fun postDBStart() {
         boCategory.categories = boCategory.findAll() as MutableLiveData<MutableList<CategoryEntity>>

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.databinding.ActivityBookListBinding
+import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.viewmodel.BookListViewModel
 import javax.inject.Inject
 
@@ -26,7 +27,7 @@ class BookListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ActivityWeakRef.updateActivity(TAG, this);
+        ActivityWeakMapRef.weakMap.put(TAG, this);
         injectDagger()
         setBinding()
 
@@ -76,7 +77,7 @@ class BookListActivity : AppCompatActivity() {
         when (position) {
             0 -> {
                 if (supportFragmentManager.findFragmentByTag(MainFragment.TAG) != null)
-                    Log.d(TAG, "selectItem: no need to create fragment; resuing cached verion")
+                    Log.d(TAG, "selectItem: no need to create fragment; reusing cached verion")
                     fragment = supportFragmentManager.findFragmentByTag(MainFragment.TAG)?: MainFragment()
                     tag = MainFragment.TAG
                 }
@@ -89,7 +90,7 @@ class BookListActivity : AppCompatActivity() {
                 }
             2 -> {
                 if (supportFragmentManager.findFragmentByTag(MQTTFragment.TAG) != null)
-                    Log.d(TAG, "selectItem: no need to create fragment; resuing cached verion")
+                    Log.d(TAG, "selectItem: no need to create fragment; reusing cached verion")
                 fragment = supportFragmentManager.findFragmentByTag(MQTTFragment.TAG)
                     ?: MQTTFragment.newInstance()
                 tag = MQTTFragment.TAG
