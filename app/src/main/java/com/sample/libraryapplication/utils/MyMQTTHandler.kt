@@ -43,19 +43,22 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
 
         return mqttSettings
     }
-    fun connect(context: Context){
-        this.context = context
+    fun connect(){
         if ( myPrefs.contains(BROKER_PREFS) == false){
             myPrefs.save(mapOf<String,String>(BROKER_PREFS to default_broker, TOPIC_PREFS to default_topic));
         }
 
         topicHandlers.add( TopicHandler(myPrefs.getString(TOPIC_PREFS)))
-        connect(context,myPrefs.getString(BROKER_PREFS))
+        connect(myPrefs.getString(BROKER_PREFS))
     }
     override fun onConnectComplete(reconnect: Boolean, serverURI: String?){
         topicHandlers.forEach({
             subscribeTopic(it.topic)
         })
+    }
+    fun reConnect(){
+        close()
+        connect()
     }
     override fun onConnectionLost(cause: Throwable?){
     }

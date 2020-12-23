@@ -12,6 +12,7 @@ import com.sample.libraryapplication.dagger.module.RoomDatabaseModule
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.utils.BooksRestfulService
+import com.sample.libraryapplication.utils.MyPrefsRespository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -27,9 +28,11 @@ import javax.inject.Singleton
 @Singleton
 class DBPopulator @Inject constructor() {
     companion object{
+        val defaultGithubJsonDbAccount = "abusous2000"
+        val GITHUB_JSON_DB_ACCOUNT = "GithubJsonDbAccount"
         val bookResources = intArrayOf(R.drawable.connect, R.drawable.ic_drawer, R.drawable.table,R.drawable.ic_launcher_background,R.drawable.ic_baseline_dehaze_24)
     }
-    private val TAG = "DBPopulator"
+    val TAG = "DBPopulator"
     init {
         LibraryApplication.instance.libraryComponent.inject(this)
     }
@@ -38,6 +41,9 @@ class DBPopulator @Inject constructor() {
     lateinit var boCategory: BOCategory
     @Inject
     lateinit var boBook: BOBook
+    val myPrefs: MyPrefsRespository by lazy {
+        MyPrefsRespository(LibraryApplication.instance.applicationContext)
+    }
     var bookList = arrayListOf<BookEntity>()
     var categoryList = arrayListOf<CategoryEntity>()
     val dbPopulated =  MutableLiveData<Boolean>()
@@ -53,14 +59,14 @@ class DBPopulator @Inject constructor() {
         dbPopulated.postValue(true)
   //        val gson = GsonBuilder().serializeNulls().create()
         LibraryApplication.instance.libraryComponent.inject(this)
-
+        val githubJsonDbAccount = myPrefs.getString(GITHUB_JSON_DB_ACCOUNT, defaultGithubJsonDbAccount)
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
                 .build()
         val retrofit = Retrofit.Builder()
-                .baseUrl("https://my-json-server.typicode.com/abusous2000/demo/")
+                .baseUrl("https://my-json-server.typicode.com/$githubJsonDbAccount/demo/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .callbackExecutor(Executors.newSingleThreadExecutor())
                 .client(okHttpClient)

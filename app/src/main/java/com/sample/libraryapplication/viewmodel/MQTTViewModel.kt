@@ -47,8 +47,7 @@ class MQTTViewModel: BaseViewModel() {
         var toast = Toast.makeText(mqttFragment.activity?.baseContext,
                      Html.fromHtml("<font color='red' ><b>" + info + "</b></font>", Html.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
         toast.show()
-        myMQTTHandler.close()
-        myMQTTHandler.connect(mqttFragment.requireContext())
+        myMQTTHandler.reConnect()
 
         Handler(Looper.getMainLooper()).postDelayed({
             var mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity

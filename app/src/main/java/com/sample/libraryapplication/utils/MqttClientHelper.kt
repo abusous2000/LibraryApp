@@ -2,12 +2,13 @@ package com.sample.libraryapplication.utils
 
 import android.content.Context
 import android.util.Log
+import com.sample.libraryapplication.LibraryApplication
 import org.eclipse.paho.android.service.MqttAndroidClient
 import org.eclipse.paho.client.mqttv3.*
 
 abstract class MqttClientHelper() {
     var client: MqttAndroidClient? = null
-    lateinit var context: Context
+    val context = LibraryApplication.instance.applicationContext
 
      companion object {
         const val TAG = "MqttClient"
@@ -23,8 +24,7 @@ abstract class MqttClientHelper() {
     fun isInitalizdedAndConnected(): Boolean{
         return client != null && client?.isConnected!!
     }
-    fun connect(context: Context, broker: String) {
-        this.context =  context
+    fun connect(broker: String) {
         var cb = object: MqttCallbackExtended{
             override fun connectComplete(reconnect: Boolean, serverURI: String?) {
                 Log.d(TAG, "connectComplete: ")

@@ -116,7 +116,7 @@ class BookListFragment : Fragment() {
         } else{
             postDBStart()
         }
-        myMQTTHandler.connect(requireContext())
+        myMQTTHandler.connect()
         binding.progressBar.visibility = View.VISIBLE
 
         //sumulate heavy DB work on the background
