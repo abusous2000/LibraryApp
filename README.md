@@ -16,10 +16,10 @@ following improvements:
   categories. here's a sample payloads that you can send from the
   command line using mosquitto publish tool:
   - **mosquitto_pub** -h **broker.hivemq.com** -t "**abusous2000/myTopic**" -m
-    '{"actionEvent":"insertBook","data":"{ \"bookName\": \"Sam Fan#5\",
-    \"bookUnitPrice\":44.30, \"bookCategoryID\":1,
-    \"resourceId\":2131165295}"}'
-  - **mosquitto_pub** -h **broker.hivemq.com** -t "**abusous2000/myTopic**" -m '{"actionEvent":"insertCategory","data":"{\"categoryName\":\"My Best Collection4\",\"categoryDesc\":\"The Best Collection\"}"}'
+    '{"actionEvent":"insertBook","data":"{ \\"bookName\\": \\"Sam Fan#5\\",
+    \\"bookUnitPrice\\":44.30, \\"bookCategoryID\\":1,
+    \\"resourceId\\":4}"}'
+  - **mosquitto_pub** -h **broker.hivemq.com** -t "**abusous2000/myTopic**" -m '{"actionEvent":"insertCategory","data":"{\\"categoryName\\":\\"My Best Collection4\\",\\"categoryDesc\\":\\"The Best Collection\\"}"}'
 
 
 ![Main Image](https://raw.githubusercontent.com/abusous2000/LibraryApp/master/MainImage.png)
