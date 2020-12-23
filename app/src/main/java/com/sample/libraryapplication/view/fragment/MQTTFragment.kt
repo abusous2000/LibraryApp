@@ -1,4 +1,4 @@
-package com.sample.libraryapplication.view
+package com.sample.libraryapplication.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,7 +23,7 @@ class MQTTFragment : Fragment() {
             binding = MqttFragmentBinding.inflate(layoutInflater, container, false)
         }
         binding.viewModel = viewModel
-        ActivityWeakMapRef.put(MQTTFragment.TAG, this);
+        ActivityWeakMapRef.put(TAG, this);
         return binding.root
     }
 

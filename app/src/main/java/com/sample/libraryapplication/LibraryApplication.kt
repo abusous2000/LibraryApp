@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.sample.libraryapplication.dagger.DaggerLibraryComponent
 import com.sample.libraryapplication.dagger.LibraryComponent
 import com.sample.libraryapplication.dagger.module.RoomDatabaseModule
+import com.sample.libraryapplication.service.MyMQTTHandler
+import javax.inject.Inject
 
 class LibraryApplication : Application() {
 
@@ -13,6 +15,8 @@ class LibraryApplication : Application() {
         lateinit var roomDatabaseModule : RoomDatabaseModule
     }
     lateinit var libraryComponent: LibraryComponent
+    @Inject
+    lateinit var myMQTTHandler: MyMQTTHandler
 
     override fun onCreate() {
         super.onCreate()
@@ -23,5 +27,12 @@ class LibraryApplication : Application() {
             .builder()
             .roomDatabaseModule(roomDatabaseModule)
             .build()
+        LibraryApplication.instance.libraryComponent.inject(this)
+        myMQTTHandler.connect()
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        myMQTTHandler.close()
     }
 }

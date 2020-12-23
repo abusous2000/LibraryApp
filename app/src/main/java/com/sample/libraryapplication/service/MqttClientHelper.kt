@@ -1,6 +1,5 @@
-package com.sample.libraryapplication.utils
+package com.sample.libraryapplication.service
 
-import android.content.Context
 import android.util.Log
 import com.sample.libraryapplication.LibraryApplication
 import org.eclipse.paho.android.service.MqttAndroidClient
@@ -13,7 +12,7 @@ abstract class MqttClientHelper() {
      companion object {
         const val TAG = "MqttClient"
         fun generateClientId(): String? {
-            return TAG+"S4E"+ System.currentTimeMillis();
+            return TAG +"S4E"+ System.currentTimeMillis();
         }
     }
     //override if you which to handle these call backs upon connecting
@@ -47,7 +46,7 @@ abstract class MqttClientHelper() {
             Log.d(TAG, "connect: no need to continue, Singelton MQTT already initalized and connected")
             return;
         }
-        client =  MqttAndroidClient(context, broker, MqttClientHelper.generateClientId())
+        client =  MqttAndroidClient(context, broker, generateClientId())
         client?.setCallback(cb)
         var mqttConnectOptions = MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);

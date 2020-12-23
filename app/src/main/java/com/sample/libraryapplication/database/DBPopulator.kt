@@ -11,8 +11,8 @@ import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.dagger.module.RoomDatabaseModule
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
-import com.sample.libraryapplication.utils.BooksRestfulService
-import com.sample.libraryapplication.utils.MyPrefsRespository
+import com.sample.libraryapplication.service.BooksRestfulService
+import com.sample.libraryapplication.service.MyPrefsRespository
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call

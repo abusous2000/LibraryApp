@@ -11,6 +11,9 @@ import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.databinding.MainActivityBinding
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
+import com.sample.libraryapplication.view.fragment.BookListFragment
+import com.sample.libraryapplication.view.fragment.CategoryListFragment
+import com.sample.libraryapplication.view.fragment.MQTTFragment
 import javax.inject.Inject
 
 
@@ -70,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         binding.drawerLayout.addDrawerListener(toggle)
         setContentView(binding.root)
     }
-    fun selectItem(position: Int, removeFragmentTag: String? = null) {
+    fun selectItem(position: Int) {
         Log.d(TAG, "onOptionsItemSelected: Item $position was clicked")
 
         var fragment: Fragment? = null
@@ -78,34 +81,36 @@ class MainActivity : AppCompatActivity() {
         when (position) {
             BOOK_LIST_MENU_NDX -> {
                                     if (supportFragmentManager.findFragmentByTag(BookListFragment.TAG) != null) {
-                                        Log.d(TAG, "selectItem: no need to create fragment; reusing cached verion")
+                                        Log.d(TAG, "selectItem: no need to create BookListFragment; re-using cached verion")
                                     }
                                     fragment = supportFragmentManager.findFragmentByTag(BookListFragment.TAG) ?: BookListFragment()
                                     tag = BookListFragment.TAG
                                   }
             CATEGORY_LIST_MENU_NDX -> {
-                                        binding.leftDrawer.setItemChecked(position, true)
-                                        binding.leftDrawer.setSelection(position)
-                                        binding.drawerLayout.closeDrawer(binding.leftDrawer)
-                                        setTitle(drawerItemTitles[position])
-                                        bookClickHandlers.onFABClicked2(this)
+                                    if (supportFragmentManager.findFragmentByTag(CategoryListFragment.TAG) != null) {
+                                        Log.d(TAG, "selectItem: no need to create CategoryListFragment; re-using cached verion")
                                     }
+                                    fragment = supportFragmentManager.findFragmentByTag(CategoryListFragment.TAG) ?: CategoryListFragment()
+                                    tag = CategoryListFragment.TAG
+                                }
             MQTT_SETTINGS_MENU_NDX -> {
-                                        if (supportFragmentManager.findFragmentByTag(MQTTFragment.TAG) != null) Log.d(TAG,
-                                                "selectItem: no need to create fragment; reusing cached verion")
+                                        if (supportFragmentManager.findFragmentByTag(MQTTFragment.TAG) != null)
+                                            Log.d(TAG,"selectItem: no need to create MQTTFragment; re-using cached verion")
                                         fragment = supportFragmentManager.findFragmentByTag(MQTTFragment.TAG) ?: MQTTFragment.newInstance()
                                         tag = MQTTFragment.TAG
                                     }
         }
         if (fragment != null) {
             val tx = supportFragmentManager.beginTransaction()
+
             tx.replace(R.id.content_frame, fragment, tag)
             tx.addToBackStack(null)
             tx.commit()
-            Log.d(TAG, "selectItem: transactionId")//pendingTX = $pendingTX")
+            Log.d(TAG, "selectItem: Serving $tag Fragment")//pendingTX = $pendingTX")
             binding.leftDrawer.setItemChecked(position, true)
             binding.leftDrawer.setSelection(position)
             binding.drawerLayout.closeDrawer(binding.leftDrawer)
+            binding.topAppBar.title = getResources().getString(R.string.app_name) + ": " + drawerItemTitles.get(position)
          } else {
             Log.e("MainActivity", "No Fragment to serve: $position")
         }

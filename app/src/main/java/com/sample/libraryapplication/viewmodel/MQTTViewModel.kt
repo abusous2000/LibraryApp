@@ -7,9 +7,9 @@ import android.util.Log
 import android.widget.Toast
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
-import com.sample.libraryapplication.utils.MyMQTTHandler
-import com.sample.libraryapplication.view.BookListFragment
-import com.sample.libraryapplication.view.MQTTFragment
+import com.sample.libraryapplication.service.MyMQTTHandler
+import com.sample.libraryapplication.view.fragment.BookListFragment
+import com.sample.libraryapplication.view.fragment.MQTTFragment
 import com.sample.libraryapplication.view.MainActivity
 import javax.inject.Inject
 

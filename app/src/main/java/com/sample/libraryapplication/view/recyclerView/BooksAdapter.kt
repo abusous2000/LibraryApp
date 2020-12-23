@@ -1,8 +1,6 @@
-package com.sample.libraryapplication.view
+package com.sample.libraryapplication.view.recyclerView
 
-import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.library.baseAdapters.BR
@@ -12,7 +10,7 @@ import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.databinding.ListItemBookBinding
-import com.sample.libraryapplication.utils.BooksDiffCallback
+import com.sample.libraryapplication.view.BookClickHandlers
 import javax.inject.Inject
 
 

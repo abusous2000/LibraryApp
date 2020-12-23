@@ -9,31 +9,19 @@ import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import javax.inject.Inject
 
-class BookListFragmentViewModel(): BaseViewModel() {
+class CategoryListFragmentViewModel(): BaseViewModel() {
     companion object{
-        private const val TAG = "BookListFragmentViewModel"
+        private const val TAG = "CategoryListFragmentViewModel"
     }
 
     @Inject
     lateinit var boCategory: BOCategory
-    public var isLoading = MutableLiveData<Boolean>()
-
+    var isLoading = MutableLiveData<Boolean>()
     override fun registerWithComponent() {
         LibraryApplication.instance.libraryComponent.inject( this)
     }
 
-    fun getBooksListSelectedCategory(categoryID: Long) : LiveData<List<BookEntity>> {
-        var selectedCategory = boCategory.categories.value?.filter { it.id == categoryID }?.first() as CategoryEntity
-
-        with(boCategory){
-            setEntity(selectedCategory)
-            find(selectedCategory.id!!)
-            refreshBooks()
-        }
-        return boCategory.books
-      }
-
-    fun deleteBook(book: BookEntity) {
-        boCategory.deleteBook(book)
+    fun deleteCategory(category: CategoryEntity) {
+        boCategory.setEntity(category).delete()
     }
  }

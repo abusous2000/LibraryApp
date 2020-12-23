@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable  name="viewModel"       type="com.sample.libraryapplication.viewmodel.CategoryListFragmentViewModel" />
+        <variable  name="clickHandlers"   type="com.sample.libraryapplication.view.BookClickHandlers" />
+        <variable  name="spinnerAdapter"  type="android.widget.ArrayAdapter" />
+        <import type="android.view.View" />
+    </data>
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_categories"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:listitem="@layout/list_item_rv_category" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floatingActionButtonCat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                android:onClick="@{(view) -> clickHandlers.onFABClicked(view)}"
+                app:srcCompat="@drawable/ic_add_white_24dp" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

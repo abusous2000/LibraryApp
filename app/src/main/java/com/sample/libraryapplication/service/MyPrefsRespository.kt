@@ -1,4 +1,4 @@
-package com.sample.libraryapplication.utils
+package com.sample.libraryapplication.service
 
 import android.content.Context
 import android.content.SharedPreferences

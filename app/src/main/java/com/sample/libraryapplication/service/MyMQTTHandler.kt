@@ -1,6 +1,5 @@
-package com.sample.libraryapplication.utils
+package com.sample.libraryapplication.service
 
-import android.content.Context
 import android.util.Log
 import com.google.gson.GsonBuilder
 import com.sample.libraryapplication.LibraryApplication
@@ -9,6 +8,7 @@ import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.database.DBPopulator
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
+import com.sample.libraryapplication.utils.ActionEvent
 import com.sample.libraryapplication.view.MainActivity
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import javax.inject.Inject
@@ -64,8 +64,12 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
     }
 
     val gson = GsonBuilder().serializeNulls().create()
-    val bookActionEvents = arrayOf<String>(ActionEvent.INSERT_BOOK_AE,ActionEvent.UPDATE_BOOK_AE,ActionEvent.DELETE_BOOK_AE)
-    val categoryActionEvents = arrayOf<String>(ActionEvent.INSERT_CATEGORY_AE,ActionEvent.UPDATE_CATEGORY_AE,ActionEvent.DELETE_CATEGORY_AE)
+    val bookActionEvents = arrayOf<String>(ActionEvent.INSERT_BOOK_AE,
+            ActionEvent.UPDATE_BOOK_AE,
+            ActionEvent.DELETE_BOOK_AE)
+    val categoryActionEvents = arrayOf<String>(ActionEvent.INSERT_CATEGORY_AE,
+            ActionEvent.UPDATE_CATEGORY_AE,
+            ActionEvent.DELETE_CATEGORY_AE)
     @Inject
     lateinit var boCategory: BOCategory
     @Inject
@@ -92,9 +96,9 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
                                       else
                                             book.resourceId
                     when (actionEvent.actionEvent) {
-                        ActionEvent.INSERT_BOOK_AE->boBook.setEntity(book).insert()
-                        ActionEvent.UPDATE_BOOK_AE->boBook.setEntity(book).update()
-                        ActionEvent.DELETE_BOOK_AE->boBook.setEntity(book).delete()
+                        ActionEvent.INSERT_BOOK_AE ->boBook.setEntity(book).insert()
+                        ActionEvent.UPDATE_BOOK_AE ->boBook.setEntity(book).update()
+                        ActionEvent.DELETE_BOOK_AE ->boBook.setEntity(book).delete()
                     }
                 }
                 in categoryActionEvents -> {
@@ -102,7 +106,7 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
 
                     Log.d(MainActivity.TAG, "category:\"${category.categoryName}\" has been received")
                     when (actionEvent.actionEvent) {
-                        ActionEvent.INSERT_CATEGORY_AE-> {
+                        ActionEvent.INSERT_CATEGORY_AE -> {
                             with(boCategory) {
                                 setEntity(category).insert()
                                 //This is a hack, for some reason observer of categories are not notified only once
@@ -110,8 +114,8 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
                                 categoryListUpdated.postValue(true)
                             }
                         }
-                        ActionEvent.UPDATE_CATEGORY_AE->boCategory.setEntity(category).update()
-                        ActionEvent.DELETE_CATEGORY_AE->boCategory.setEntity(category).delete()
+                        ActionEvent.UPDATE_CATEGORY_AE ->boCategory.setEntity(category).update()
+                        ActionEvent.DELETE_CATEGORY_AE ->boCategory.setEntity(category).delete()
                     }
                 }
                 else -> Log.d(MainActivity.TAG, "unknown action event")

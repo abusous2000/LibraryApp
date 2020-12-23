@@ -1,4 +1,4 @@
-package com.sample.libraryapplication.utils
+package com.sample.libraryapplication.service
 
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity

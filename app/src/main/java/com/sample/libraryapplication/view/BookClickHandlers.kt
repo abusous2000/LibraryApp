@@ -14,6 +14,7 @@ import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
+import com.sample.libraryapplication.view.fragment.BookListFragment
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -27,6 +28,13 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
     private var selectedCategory: CategoryEntity? = null
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         return this.onMenuClicked(item)
+    }
+    fun onCategoryItemClicked(view: View, category: CategoryEntity) {
+//        val intent = Intent(view.context, BookActivity::class.java)
+//        intent.putExtra("selected_category_id", category.id)
+////        intent.putExtra("selected_category", category)
+//        intent.putExtra("is_update_category", true)
+//        view.context.startActivity(intent)
     }
     fun onBookItemClicked(view: View, book: BookEntity) {
         val intent = Intent(view.context, BookActivity::class.java)

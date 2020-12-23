@@ -1,4 +1,4 @@
-package com.sample.libraryapplication.utils
+package com.sample.libraryapplication.view.recyclerView
 
 import androidx.recyclerview.widget.DiffUtil
 import com.sample.libraryapplication.database.entity.BookEntity
