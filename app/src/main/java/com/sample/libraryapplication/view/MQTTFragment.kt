@@ -22,10 +22,6 @@ class MQTTFragment : Fragment() {
         if ( this::binding.isInitialized == false ) {
             binding = MqttFragmentBinding.inflate(layoutInflater, container, false)
         }
-        var cs: CharSequence = viewModel.getBroker()!!
-        binding.broker.setText(cs)
-        cs = viewModel.getTopic()!!
-        binding.topic.setText(cs)
         binding.viewModel = viewModel
         ActivityWeakMapRef.put(MQTTFragment.TAG, this);
         return binding.root
@@ -34,6 +30,6 @@ class MQTTFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MQTTViewModel::class.java)
-        reenterTransition = true
+//        reenterTransition = true
     }
 }

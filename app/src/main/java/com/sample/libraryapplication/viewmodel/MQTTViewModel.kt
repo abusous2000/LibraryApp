@@ -29,21 +29,21 @@ class MQTTViewModel: BaseViewModel() {
         return mqttSettings.get(MyMQTTHandler.BROKER_PREFS)
     }
     fun setBroker(charSequence: CharSequence){
-        Log.d(TAG, "setBroker: ")
+        Log.d(TAG, "setBroker: "+ charSequence.toString())
         mqttSettings.put(MyMQTTHandler.BROKER_PREFS, charSequence.toString())
     }
     fun getTopic(): String?{
         return mqttSettings.get(MyMQTTHandler.TOPIC_PREFS)
     }
     fun setTopic(charSequence: CharSequence){
-        Log.d(TAG, "setTopic: ")
+        Log.d(TAG, "setTopic: "+ charSequence.toString())
         mqttSettings.put(MyMQTTHandler.TOPIC_PREFS, charSequence.toString())
     }
     fun save(){
         myMQTTHandler.myPrefs.save(mqttSettings)
         Log.d(TAG, "save: " + mqttSettings.toString())
         var info = "MQTT Setting Has Been Saved"
-        var mqttFragment = ActivityWeakMapRef.get(MQTTFragment.TAG) as MQTTFragment
+        val mqttFragment = ActivityWeakMapRef.get(MQTTFragment.TAG) as MQTTFragment
         var toast = Toast.makeText(mqttFragment.activity?.baseContext,
                      Html.fromHtml("<font color='red' ><b>" + info + "</b></font>", Html.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
         toast.show()
@@ -51,9 +51,10 @@ class MQTTViewModel: BaseViewModel() {
         myMQTTHandler.connect(mqttFragment.requireContext())
 
         Handler(Looper.getMainLooper()).postDelayed({
-            (ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity).selectItem(MainActivity.BOOK_LIST_MENU_NDX)
-            Log.d(BookListFragment.TAG, "Re-Routing to MainActivity")
-        }, 2000)
+            var mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
 
+            mainActivity.selectItem(MainActivity.BOOK_LIST_MENU_NDX)
+            Log.d(BookListFragment.TAG, "Re-Routing to MainActivity")
+        }, 600)
     }
 }
