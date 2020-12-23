@@ -17,6 +17,9 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
     companion object {
         val TAG = MainActivity::class.java.simpleName
+        val BOOK_LIST_MENU_NDX = 0
+        val CATEGORY_LIST_MENU_NDX = 1
+        val MQTT_SETTINGS_MENU_NDX = 2
     }
     @Inject
     lateinit var bookClickHandlers: BookClickHandlers
@@ -25,16 +28,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ActivityWeakMapRef.weakMap.put(TAG, this);
+        ActivityWeakMapRef.put(TAG, this);
         injectDagger()
         setBinding()
 
         if (savedInstanceState == null) {
             var fragment = supportFragmentManager.findFragmentByTag(BookListFragment.TAG)?: BookListFragment()
             supportFragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment, BookListFragment.TAG)
-                .addToBackStack(null)
-                .commit()
+                                .replace(R.id.content_frame, fragment, BookListFragment.TAG)
+                                .addToBackStack(null)
+                                .commit()
         }
     }
 
@@ -67,26 +70,26 @@ class MainActivity : AppCompatActivity() {
         binding.drawerLayout.addDrawerListener(toggle)
         setContentView(binding.root)
     }
-    private fun selectItem(position: Int) {
+    fun selectItem(position: Int) {
         Log.d(TAG, "onOptionsItemSelected: Item $position was clicked")
 
         var fragment: Fragment? = null
         var tag: String? = null
         when (position) {
-            0 -> {
+            BOOK_LIST_MENU_NDX -> {
                 if (supportFragmentManager.findFragmentByTag(BookListFragment.TAG) != null)
                     Log.d(TAG, "selectItem: no need to create fragment; reusing cached verion")
                     fragment = supportFragmentManager.findFragmentByTag(BookListFragment.TAG)?: BookListFragment()
                     tag = BookListFragment.TAG
                 }
-            1 -> {
+            CATEGORY_LIST_MENU_NDX -> {
                 binding.leftDrawer.setItemChecked(position, true)
                 binding.leftDrawer.setSelection(position)
                 binding.drawerLayout.closeDrawer(binding.leftDrawer)
                 setTitle(drawerItemTitles[position])
                     bookClickHandlers.onFABClicked2(this)
                 }
-            2 -> {
+            MQTT_SETTINGS_MENU_NDX -> {
                 if (supportFragmentManager.findFragmentByTag(MQTTFragment.TAG) != null)
                     Log.d(TAG, "selectItem: no need to create fragment; reusing cached verion")
                 fragment = supportFragmentManager.findFragmentByTag(MQTTFragment.TAG)
@@ -107,12 +110,5 @@ class MainActivity : AppCompatActivity() {
          } else {
             Log.e("MainActivity", "No Fragment to serve: $position")
         }
-    }
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }

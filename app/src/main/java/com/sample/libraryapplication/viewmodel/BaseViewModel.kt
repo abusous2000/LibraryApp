@@ -11,5 +11,7 @@ abstract class BaseViewModel : ViewModel() {
     init {
         registerWithComponent()
     }
-    abstract fun registerWithComponent()
+    open fun registerWithComponent(){
+
+    }
 }

@@ -1,13 +1,13 @@
 package com.sample.libraryapplication.view
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.sample.libraryapplication.R
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.sample.libraryapplication.databinding.MqttFragmentBinding
+import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.viewmodel.MQTTViewModel
 
 class MQTTFragment : Fragment() {
@@ -17,9 +17,17 @@ class MQTTFragment : Fragment() {
     }
     private lateinit var viewModel: MQTTViewModel
     private lateinit var binding: MqttFragmentBinding
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View? {
-        binding = MqttFragmentBinding.inflate(layoutInflater,container,false)
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if ( this::binding.isInitialized == false ) {
+            binding = MqttFragmentBinding.inflate(layoutInflater, container, false)
+        }
+        var cs: CharSequence = viewModel.getBroker()!!
+        binding.broker.setText(cs)
+        cs = viewModel.getTopic()!!
+        binding.topic.setText(cs)
+        binding.viewModel = viewModel
+        ActivityWeakMapRef.put(MQTTFragment.TAG, this);
         return binding.root
     }
 

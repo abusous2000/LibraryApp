@@ -7,6 +7,13 @@ import java.util.*
 
 class ActivityWeakMapRef{
     companion object {
-        val weakMap = WeakHashMap<String, Any>()
+        private val weakMap = WeakHashMap<String, Any>()
+
+        fun put(key: String, value: Any){
+            weakMap.put(key,value)
+        }
+        fun get(key: String): Any?{
+            return weakMap.get(key)
+        }
     }
 }

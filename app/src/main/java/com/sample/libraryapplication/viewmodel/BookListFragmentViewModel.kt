@@ -40,5 +40,4 @@ class BookListFragmentViewModel(): BaseViewModel() {
     fun deleteBook(book: BookEntity) {
         boCategory.deleteBook(book)
     }
-
  }

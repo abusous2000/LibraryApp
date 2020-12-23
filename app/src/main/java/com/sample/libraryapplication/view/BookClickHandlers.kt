@@ -59,7 +59,7 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
         view.context.startActivity(intent)
     }
     fun onMenuClicked(menuItem: MenuItem?): Boolean {
-        var bookListActivity = ActivityWeakMapRef.weakMap.get(MainActivity.TAG) as MainActivity
+        var bookListActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
         when(menuItem?.itemId){
             R.id.Add_A_Book_id -> onFABClicked2(bookListActivity)
             else -> Toast.makeText(bookListActivity,"Item ${menuItem?.itemId} was clicked", Toast.LENGTH_SHORT ).show();
@@ -82,7 +82,7 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
                             @Suppress("UNUSED_PARAMETER") view: View?, position: Int,
                             @Suppress("UNUSED_PARAMETER") id: Long) {
         Log.d(BookClickHandlers.TAG, "onCategorySelected:$position")
-        var bookListFragment = ActivityWeakMapRef.weakMap.get(BookListFragment.TAG) as BookListFragment
+        var bookListFragment = ActivityWeakMapRef.get(BookListFragment.TAG) as BookListFragment
         //Check if the list was populated. It could be empty on startup since the DB takes longer to populate
         if ( bookListFragment.boCategory.categories.value?.size!! > 0 )
             selectedCategory = bookListFragment.boCategory.categories.value!!.get(position)

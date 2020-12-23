@@ -35,16 +35,22 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
     init{
         LibraryApplication.instance.libraryComponent.inject(this)
     }
+    fun mqttSettings(): MutableMap<String, String> {
+        var mqttSettings = mutableMapOf<String,String>()
 
+        mqttSettings.put(BROKER_PREFS,myPrefs.getString(BROKER_PREFS,"N/A"))
+        mqttSettings.put(TOPIC_PREFS,myPrefs.getString(TOPIC_PREFS,"N/A"))
+
+        return mqttSettings
+    }
     fun connect(context: Context){
         this.context = context
-         if ( myPrefs.contains(BROKER_PREFS) == false){
-             myPrefs.save(mapOf<String,String>(BROKER_PREFS to default_broker, TOPIC_PREFS to default_topic));
-         }
+        if ( myPrefs.contains(BROKER_PREFS) == false){
+            myPrefs.save(mapOf<String,String>(BROKER_PREFS to default_broker, TOPIC_PREFS to default_topic));
+        }
 
         topicHandlers.add( TopicHandler(myPrefs.getString(TOPIC_PREFS)))
-
-            connect(context,myPrefs.getString(BROKER_PREFS))
+        connect(context,myPrefs.getString(BROKER_PREFS))
     }
     override fun onConnectComplete(reconnect: Boolean, serverURI: String?){
         topicHandlers.forEach({

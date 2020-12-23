@@ -6,7 +6,7 @@ import org.eclipse.paho.android.service.MqttAndroidClient
 import org.eclipse.paho.client.mqttv3.*
 
 abstract class MqttClientHelper() {
-    lateinit var client: MqttAndroidClient
+    var client: MqttAndroidClient? = null
     lateinit var context: Context
 
      companion object {
@@ -21,7 +21,7 @@ abstract class MqttClientHelper() {
     open fun onDefaultMessageArrived(topic: String?, message: MqttMessage?){}
     open fun onDeliveryComplete(token: IMqttDeliveryToken?){}
     fun isInitalizdedAndConnected(): Boolean{
-        return this::client.isInitialized && client.isConnected
+        return client != null && client?.isConnected!!
     }
     fun connect(context: Context, broker: String) {
         this.context =  context
@@ -48,12 +48,12 @@ abstract class MqttClientHelper() {
             return;
         }
         client =  MqttAndroidClient(context, broker, MqttClientHelper.generateClientId())
-        client.setCallback(cb)
+        client?.setCallback(cb)
         var mqttConnectOptions = MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
         mqttConnectOptions.setCleanSession(false);
         try {
-            client.connect(mqttConnectOptions,null,object: IMqttActionListener{
+            client?.connect(mqttConnectOptions,null,object: IMqttActionListener{
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
                     Log.d(TAG, "onSuccess: MQTT Client connected to $broker")
                 }
@@ -71,7 +71,7 @@ abstract class MqttClientHelper() {
         try {
             val message = MqttMessage()
             message.payload = msg.toByteArray()
-            client.publish(topic, message.payload, 0, true)
+            client?.publish(topic, message.payload, 0, true)
             Log.d(TAG, "$msg published to $topic")
         } catch (e: MqttException) {
             Log.d(TAG, "Error Publishing to $topic: " + e.message)
@@ -81,7 +81,7 @@ abstract class MqttClientHelper() {
     }
 
     open fun subscribeTopic(topic: String, qos: Int = 0) {
-        client.subscribe(topic, qos).actionCallback = object : IMqttActionListener {
+        client?.subscribe(topic, qos)?.actionCallback = object : IMqttActionListener {
             override fun onSuccess(asyncActionToken: IMqttToken) {
                 Log.d(TAG, "Subscribed to $topic")
             }
@@ -93,14 +93,15 @@ abstract class MqttClientHelper() {
     }
 
     fun close() {
-        client.apply {
+        client?.apply {
             unregisterResources()
             close()
         }
+        client = null
     }
 
     fun disconnect() {
-        if (client.isConnected)
-            client.disconnect()
+        if (client?.isConnected!!)
+            client?.disconnect()
     }
 }

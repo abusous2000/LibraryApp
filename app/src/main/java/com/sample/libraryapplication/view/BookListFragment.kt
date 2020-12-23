@@ -21,7 +21,8 @@ import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.database.DBPopulator
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
-import com.sample.libraryapplication.databinding.FragmentMainBinding
+import com.sample.libraryapplication.databinding.BookListFragmentBinding
+
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.utils.MyMQTTHandler
 import com.sample.libraryapplication.viewmodel.BookListFragmentViewModel
@@ -59,7 +60,7 @@ class BookListFragment : Fragment() {
     private var param2: String? = null
     private var roootView: View? = null
     lateinit var bookListViewModel: BookListFragmentViewModel
-    private lateinit var binding: FragmentMainBinding
+    private lateinit var binding: BookListFragmentBinding
     @Inject
     lateinit var boCategory: BOCategory
     @Inject
@@ -96,11 +97,10 @@ class BookListFragment : Fragment() {
             return binding.root
         }
 
-        ActivityWeakMapRef.weakMap.put(BookListFragment.TAG, this);
+        ActivityWeakMapRef.put(BookListFragment.TAG, this);
         injectDagger()
         createViewModel()
         setBinding()
-        observeViewModel()
 
         if (dbPopulator.doesDbExist(requireContext()) == false) {
             dbPopulator.dbPopulated.observe(viewLifecycleOwner, Observer {
@@ -117,12 +117,14 @@ class BookListFragment : Fragment() {
             postDBStart()
         }
         myMQTTHandler.connect(requireContext())
-        binding.progressBar2.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.VISIBLE
+
+        //sumulate heavy DB work on the background
         Handler(Looper.getMainLooper()).postDelayed({
             bookListViewModel.isLoading.value = false
-            binding.progressBar2.visibility = View.GONE
+            binding.progressBar.visibility = View.GONE
             Log.d(TAG, "onCreate: isLoading=true")
-        }, 1500)
+        }, 1000)
 
         roootView = binding.root
 
@@ -139,7 +141,7 @@ class BookListFragment : Fragment() {
         LibraryApplication.instance.libraryComponent.inject(this)
     }
     private fun setBinding() {
-        binding = FragmentMainBinding.inflate(layoutInflater,container,false)
+        binding = BookListFragmentBinding.inflate(layoutInflater,container,false)
         binding.viewModel = bookListViewModel
         binding.lifecycleOwner = this
         binding.clickHandlers = bookClickHandlers
@@ -218,7 +220,7 @@ class BookListFragment : Fragment() {
     }
     private fun showBookList(bookList: List<BookEntity>) {
         if (booksAdapter == null) {
-            var recycler_view_books = binding.recyclerViewBooks2
+            var recycler_view_books = binding.recyclerViewBooks
             recycler_view_books.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
             booksAdapter = BooksAdapter(bookList)
             recycler_view_books.adapter = booksAdapter
