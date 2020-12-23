@@ -91,7 +91,7 @@ class BookListFragment : Fragment() {
 
             Handler(Looper.getMainLooper()).postDelayed({
                 Log.d(TAG, "onCreate: repopulating DB from main thread")
-                bookClickHandlers.onCategorySelected2(null,null,0,0)
+                bookClickHandlers.onCategorySelected(null,null,0,0)
             }, 200)
 
             return binding.root

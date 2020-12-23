@@ -30,7 +30,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:layout_margin="8dp"
-                    android:onItemSelected="@{clickHandlers::onCategorySelected2}"
+                    android:onItemSelected="@{clickHandlers::onCategorySelected}"
                     android:spinnerMode="dropdown"
                     app:adapter="@{spinnerAdapter}" />
 
@@ -54,5 +54,4 @@
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-<!--    </FrameLayout>-->
 </layout>

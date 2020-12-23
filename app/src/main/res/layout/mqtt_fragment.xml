@@ -27,7 +27,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:padding="8dp"
-                android:text="MQTT Settings"
+                android:text="@string/mqtt_settings"
                 android:textColor="@android:color/black"
                 android:textSize="20sp"/>
 
@@ -70,7 +70,7 @@
                 android:layout_margin="8dp"
                 android:background="@android:color/transparent"
                 android:onClick="@{(view) -> viewModel.save()}"
-                android:text="@string/submit"
+                android:text="Update"
                 android:clickable="true"
                 android:textColor="@android:color/black" />
 

@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
-import com.sample.libraryapplication.databinding.ActivityBookListBinding
+import com.sample.libraryapplication.databinding.MainActivityBinding
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import javax.inject.Inject
 
@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     }
     @Inject
     lateinit var bookClickHandlers: BookClickHandlers
-    private  lateinit var binding: ActivityBookListBinding
+    private  lateinit var binding: MainActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var drawerItemTitles: Array<String>
 
     private fun setBinding() {
-        binding = ActivityBookListBinding.inflate(layoutInflater)
+        binding = MainActivityBinding.inflate(layoutInflater)
         val drawerItem= mutableListOf<MenuItemDataModel>()
 
         drawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array)

@@ -9,12 +9,13 @@
     <string name="update_book">Update Book</string>
     <string name="toolbar_title">Library App</string>
     <string-array name="navigation_drawer_items_array">
-        <item>Add a Book</item>
-        <item>Add a Category</item>
+        <item>Books</item>
+        <item>Categories</item>
         <item>MQTT Settings</item>
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="broker_url">Broker URL</string>
     <string name="topic">Topic</string>
+    <string name="mqtt_settings">MQTT Settings</string>
 </resources>
