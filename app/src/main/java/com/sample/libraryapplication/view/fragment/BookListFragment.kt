@@ -89,10 +89,11 @@ class BookListFragment : Fragment() {
         this.container = container
         if (roootView !=null ) {
 
+            observeViewModel()
             Handler(Looper.getMainLooper()).postDelayed({
                 Log.d(TAG, "onCreate: repopulating DB from main thread")
                 bookClickHandlers.onCategorySelected(null,null,0,0)
-            }, 200)
+            }, 100)
 
             return binding.root
         }
@@ -143,7 +144,7 @@ class BookListFragment : Fragment() {
     private fun setBinding() {
         binding = BookListFragmentBinding.inflate(layoutInflater,container,false)
         binding.viewModel = bookListViewModel
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.clickHandlers = bookClickHandlers
     }
     fun observeViewModel() {
@@ -226,14 +227,9 @@ class BookListFragment : Fragment() {
             booksAdapter?.updateBookList(bookList)
     }
     private var simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object : ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
-        override fun onMove(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
-        ): Boolean {
+        override fun onMove(recyclerView: RecyclerView,  viewHolder: RecyclerView.ViewHolder,target: RecyclerView.ViewHolder ): Boolean {
             return false
         }
-
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
             if (swipeDir == ItemTouchHelper.LEFT) {
                 if (viewHolder is BooksAdapter.BookViewHolder) {

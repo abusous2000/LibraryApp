@@ -84,6 +84,7 @@ class CategoryListFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         this.container = container
         if (roootView !=null ) {
+            updateCategoryList()
             return binding.root
         }
 
@@ -100,7 +101,7 @@ class CategoryListFragment : Fragment() {
             categoryListFragmentViewModel.isLoading.value = false
             binding.progressBar.visibility = View.GONE
             Log.d(TAG, "onCreate: isLoading=true")
-        }, 1000)
+        }, 200)
 
         roootView = binding.root
 
@@ -115,7 +116,7 @@ class CategoryListFragment : Fragment() {
     private fun setBinding() {
         binding = CategoryListFragmentBinding.inflate(layoutInflater,container,false)
         binding.viewModel = categoryListFragmentViewModel
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.clickHandlers = bookClickHandlers
     }
     private var observerCounter = 0
@@ -125,10 +126,6 @@ class CategoryListFragment : Fragment() {
         }
         override fun onChanged(list: List<CategoryEntity>?) {
             if (list != null && !isDetached) {
-                Log.d(TAG,"updateCategoryList::observer: observerCounter=${observerCounter} updating RecycleView via LiveData")
-                list.forEach {
-                    Log.d(TAG,"Category Name: ${it.categoryName} - Category Desc: ${it.categoryDesc}\"")
-                }
                 var listToUse = if (list.isNotEmpty()) list else listOf()
                 showCategoryList(listToUse)
             }
@@ -141,21 +138,13 @@ class CategoryListFragment : Fragment() {
         override fun onChanged(listUpdated: Boolean?) {
             val categoryList = categoryListFragmentViewModel.boCategory.categories.value
             if (categoryList != null && !isDetached) {
-                Log.d(TAG,"updateCategoryList2::observer: observerCounter=${observerCounter} updating RecycleView via LiveData")
-                categoryList.forEach {
-                    Log.d(TAG,"Category Name: ${it.categoryName} - Category Desc: ${it.categoryDesc}\"")
-                }
                 var listToUse = if (categoryList.isNotEmpty()) categoryList else listOf()
                 showCategoryList(listToUse)
             }
         }
     }
     private var simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object : ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
-        override fun onMove(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
-                           ): Boolean {
+        override fun onMove(recyclerView: RecyclerView,  viewHolder: RecyclerView.ViewHolder,target: RecyclerView.ViewHolder ): Boolean {
             return false
         }
 
@@ -169,6 +158,10 @@ class CategoryListFragment : Fragment() {
     }
 
     private fun showCategoryList(categoryList: List<CategoryEntity>) {
+        Log.d(TAG,"showCategoryList::observer: observerCounter=${observerCounter} updating RecycleView via LiveData")
+        categoryList.forEach {
+            Log.d(TAG,"Category Name: ${it.categoryName} - Category Desc: ${it.categoryDesc}\"")
+        }
         if (categoriesAdapter == null) {
             var recycler_view_categories = binding.recyclerViewCategories
             recycler_view_categories.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
@@ -179,9 +172,12 @@ class CategoryListFragment : Fragment() {
         } else
             categoriesAdapter?.updateCategoryList(categoryList)
     }
+    //For some reason I have to to observe on two variables; I know this is a hack
     fun updateCategoryList() {
         categoryListFragmentViewModel.boCategory.categories.removeObservers(this.viewLifecycleOwner)
         categoryListFragmentViewModel.boCategory.categories.observe(this.viewLifecycleOwner, CategoriesObserver())
+        categoryListFragmentViewModel.boCategory.categoryListUpdated.removeObservers(this.viewLifecycleOwner)
+        categoryListFragmentViewModel.boCategory.categoryListUpdated.observe(this.viewLifecycleOwner, CategoriesObserver2())
     }
     override fun onDestroy() {
         super.onDestroy()
