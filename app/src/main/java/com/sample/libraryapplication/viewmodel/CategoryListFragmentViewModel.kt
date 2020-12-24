@@ -1,5 +1,6 @@
 package com.sample.libraryapplication.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.sample.libraryapplication.LibraryApplication
@@ -22,6 +23,12 @@ class CategoryListFragmentViewModel(): BaseViewModel() {
     }
 
     fun deleteCategory(category: CategoryEntity) {
-        boCategory.setEntity(category).delete()
+        with(boCategory){
+            Log.d(TAG, "deleteCategory with Id: ${category.id}")
+            setEntity(category)
+            delete()
+            categories.value?.remove(category)
+            categoryListUpdated.postValue(true)
+        }
     }
  }

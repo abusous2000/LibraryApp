@@ -1,5 +1,6 @@
 package com.sample.libraryapplication.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.databinding.MainActivityBinding
+import com.sample.libraryapplication.service.MyMQTTHandler
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.view.fragment.BookListFragment
 import com.sample.libraryapplication.view.fragment.CategoryListFragment
@@ -23,9 +25,12 @@ class MainActivity : AppCompatActivity() {
         val BOOK_LIST_MENU_NDX = 0
         val CATEGORY_LIST_MENU_NDX = 1
         val MQTT_SETTINGS_MENU_NDX = 2
+        val QUITE_APP_MENU_NDX = 3
     }
     @Inject
     lateinit var bookClickHandlers: BookClickHandlers
+    @Inject
+    lateinit var myMQTTHandler: MyMQTTHandler
     private  lateinit var binding: MainActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +47,7 @@ class MainActivity : AppCompatActivity() {
                                 .addToBackStack(null)
                                 .commit()
         }
+        myMQTTHandler.connect()
     }
 
     private fun injectDagger() {
@@ -60,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         drawerItem.add(MenuItemDataModel(R.drawable.connect, drawerItemTitles[0]))
         drawerItem.add(MenuItemDataModel(R.drawable.fixtures, drawerItemTitles[1]))
         drawerItem.add(MenuItemDataModel(R.drawable.table, drawerItemTitles[2]))
+        drawerItem.add(MenuItemDataModel(R.drawable.ic_baseline_exit_to_app_24, drawerItemTitles[3]))
 
         val adapter = DrawerItemCustomAdapter(this, R.layout.menu_view_item_row, drawerItem)
         binding.leftDrawer.adapter =adapter
@@ -68,7 +75,11 @@ class MainActivity : AppCompatActivity() {
                 selectItem(position)
             }
         }
-        var toggle = ActionBarDrawerToggle(this,binding.drawerLayout, binding.topAppBar, R.string.app_name, R.string.app_name)
+        var toggle = ActionBarDrawerToggle(this,
+                binding.drawerLayout,
+                binding.topAppBar,
+                R.string.app_name,
+                R.string.app_name)
         toggle.syncState()
         binding.drawerLayout.addDrawerListener(toggle)
         setContentView(binding.root)
@@ -80,25 +91,26 @@ class MainActivity : AppCompatActivity() {
         var tag: String? = null
         when (position) {
             BOOK_LIST_MENU_NDX -> {
-                                    if (supportFragmentManager.findFragmentByTag(BookListFragment.TAG) != null) {
-                                        Log.d(TAG, "selectItem: no need to create BookListFragment; re-using cached verion")
-                                    }
-                                    fragment = supportFragmentManager.findFragmentByTag(BookListFragment.TAG) ?: BookListFragment()
-                                    tag = BookListFragment.TAG
-                                  }
+                if (supportFragmentManager.findFragmentByTag(BookListFragment.TAG) != null) {
+                    Log.d(TAG, "selectItem: no need to create BookListFragment; re-using cached verion")
+                }
+                fragment = supportFragmentManager.findFragmentByTag(BookListFragment.TAG) ?: BookListFragment()
+                tag = BookListFragment.TAG
+            }
             CATEGORY_LIST_MENU_NDX -> {
-                                    if (supportFragmentManager.findFragmentByTag(CategoryListFragment.TAG) != null) {
-                                        Log.d(TAG, "selectItem: no need to create CategoryListFragment; re-using cached verion")
-                                    }
-                                    fragment = supportFragmentManager.findFragmentByTag(CategoryListFragment.TAG) ?: CategoryListFragment()
-                                    tag = CategoryListFragment.TAG
-                                }
+                if (supportFragmentManager.findFragmentByTag(CategoryListFragment.TAG) != null) {
+                    Log.d(TAG, "selectItem: no need to create CategoryListFragment; re-using cached verion")
+                }
+                fragment = supportFragmentManager.findFragmentByTag(CategoryListFragment.TAG) ?: CategoryListFragment()
+                tag = CategoryListFragment.TAG
+            }
             MQTT_SETTINGS_MENU_NDX -> {
-                                        if (supportFragmentManager.findFragmentByTag(MQTTFragment.TAG) != null)
-                                            Log.d(TAG,"selectItem: no need to create MQTTFragment; re-using cached verion")
-                                        fragment = supportFragmentManager.findFragmentByTag(MQTTFragment.TAG) ?: MQTTFragment.newInstance()
-                                        tag = MQTTFragment.TAG
-                                    }
+                if (supportFragmentManager.findFragmentByTag(MQTTFragment.TAG) != null) Log.d(TAG,
+                        "selectItem: no need to create MQTTFragment; re-using cached verion")
+                fragment = supportFragmentManager.findFragmentByTag(MQTTFragment.TAG) ?: MQTTFragment.newInstance()
+                tag = MQTTFragment.TAG
+            }
+            QUITE_APP_MENU_NDX -> QuitApp()
         }
         if (fragment != null) {
             val tx = supportFragmentManager.beginTransaction()
@@ -115,16 +127,15 @@ class MainActivity : AppCompatActivity() {
             Log.e("MainActivity", "No Fragment to serve: $position")
         }
     }
+    fun onExit(){
+        myMQTTHandler.close()
+    }
+    fun QuitApp(view: View? = null) {
+        onExit()
+        android.os.Process.killProcess(android.os.Process.myPid());    }
+
     override fun onDestroy() {
-//        val mqttFragment = supportFragmentManager.findFragmentByTag(MQTTFragment.TAG)
-//        val bookListFragment = supportFragmentManager.findFragmentByTag(BookListFragment.TAG)
-//
-//        var tx = supportFragmentManager.beginTransaction()
-//        if ( mqttFragment != null )
-//            tx.remove(mqttFragment)
-//        if ( bookListFragment != null )
-//            tx.remove(bookListFragment).commitNowAllowingStateLoss()
-//        tx.commit()
         super.onDestroy()
+        onExit()
     }
 }

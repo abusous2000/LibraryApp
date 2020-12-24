@@ -91,7 +91,6 @@ class CategoryListFragment : Fragment() {
         injectDagger()
         createViewModel()
         setBinding()
-        updateCategoryList2()
         updateCategoryList()
 
         binding.progressBar.visibility = View.VISIBLE
@@ -151,28 +150,47 @@ class CategoryListFragment : Fragment() {
             }
         }
     }
+    private var simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object : ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+                           ): Boolean {
+            return false
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+            if (swipeDir == ItemTouchHelper.LEFT) {
+                if (viewHolder is CategoriesAdapter.CategoryViewHolder) {
+                    categoryListFragmentViewModel.deleteCategory(viewHolder.dataBinding.category as CategoryEntity)
+                }
+            }
+        }
+    }
+
     private fun showCategoryList(categoryList: List<CategoryEntity>) {
         if (categoriesAdapter == null) {
             var recycler_view_categories = binding.recyclerViewCategories
             recycler_view_categories.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
             categoriesAdapter = CategoriesAdapter(categoryList)
             recycler_view_categories.adapter = categoriesAdapter
-//            val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
-//            itemTouchHelper.attachToRecyclerView(recycler_view_books)
+            val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
+            itemTouchHelper.attachToRecyclerView(recycler_view_categories)
         } else
             categoriesAdapter?.updateCategoryList(categoryList)
     }
-    fun updateCategoryList2() {
+    fun updateCategoryList() {
         categoryListFragmentViewModel.boCategory.categories.removeObservers(this.viewLifecycleOwner)
         categoryListFragmentViewModel.boCategory.categories.observe(this.viewLifecycleOwner, CategoriesObserver())
     }
-    fun updateCategoryList() {
-        categoryListFragmentViewModel.boCategory.categoryListUpdated.removeObservers(this.viewLifecycleOwner)
-        categoryListFragmentViewModel.boCategory.categoryListUpdated.observe(this.viewLifecycleOwner, CategoriesObserver2())
-    }
     override fun onDestroy() {
         super.onDestroy()
-        if ( categoryListFragmentViewModel.boCategory.booksInitalized())
-            categoryListFragmentViewModel.boCategory.books.removeObservers(this.viewLifecycleOwner)
-    }
+        try{
+            if ( categoryListFragmentViewModel.boCategory.booksInitalized() && view != null )
+                categoryListFragmentViewModel.boCategory.books.removeObservers(this.viewLifecycleOwner)
+        }
+        catch( t: Throwable){
+            Log.e(TAG, "onDestroy: ", t)
+        }
+     }
 }

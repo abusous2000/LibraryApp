@@ -15,8 +15,6 @@ class LibraryApplication : Application() {
         lateinit var roomDatabaseModule : RoomDatabaseModule
     }
     lateinit var libraryComponent: LibraryComponent
-    @Inject
-    lateinit var myMQTTHandler: MyMQTTHandler
 
     override fun onCreate() {
         super.onCreate()
@@ -28,11 +26,5 @@ class LibraryApplication : Application() {
             .roomDatabaseModule(roomDatabaseModule)
             .build()
         LibraryApplication.instance.libraryComponent.inject(this)
-        myMQTTHandler.connect()
-    }
-
-    override fun onTerminate() {
-        super.onTerminate()
-        myMQTTHandler.close()
     }
 }

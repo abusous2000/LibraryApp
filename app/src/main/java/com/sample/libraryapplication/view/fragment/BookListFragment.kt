@@ -208,7 +208,7 @@ class BookListFragment : Fragment() {
     }
     fun updateBookList(category: CategoryEntity) {
         selectedCategory=category
-        bookListViewModel.boCategory.removeObserver(this)
+        bookListViewModel.boCategory.removeObservers(this)
         selectedCategory?.id?.let {
             bookListViewModel.getBooksListSelectedCategory(it)
             bookListViewModel.boCategory.books.observe(this, CategoryBooksObserver())

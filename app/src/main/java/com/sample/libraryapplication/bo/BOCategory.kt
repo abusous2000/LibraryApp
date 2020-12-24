@@ -54,12 +54,9 @@ class BOCategory @Inject constructor(): BOAbstract<CategoryEntity>(){
         return categoryDAO.findAll()
     }
     override fun delete() {
-       books.value?.forEach({
-           boBook.setEntity(it).delete()
-        })
        super.delete()
     }
-    fun removeObserver(lifecycleOwner: LifecycleOwner){
+    fun removeObservers(lifecycleOwner: LifecycleOwner){
         if ( booksInitalized() && books.hasObservers())
             books.removeObservers(lifecycleOwner)
         else

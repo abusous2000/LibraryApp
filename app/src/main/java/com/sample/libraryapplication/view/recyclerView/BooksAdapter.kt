@@ -25,6 +25,7 @@ class BooksAdapter(private var bookList: List<BookEntity>?) : RecyclerView.Adapt
         val diffResult = DiffUtil.calculateDiff(BooksDiffCallback(bookList, newBooksList), false)
         bookList = newBooksList
         diffResult.dispatchUpdatesTo(this)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
