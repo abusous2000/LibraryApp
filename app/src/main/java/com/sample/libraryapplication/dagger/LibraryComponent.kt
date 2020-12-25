@@ -9,13 +9,11 @@ import com.sample.libraryapplication.service.MyMQTTHandler
 import com.sample.libraryapplication.view.MainActivity
 import com.sample.libraryapplication.view.fragment.BookFragment
 import com.sample.libraryapplication.view.fragment.BookListFragment
+import com.sample.libraryapplication.view.fragment.CategoryFragment
 import com.sample.libraryapplication.view.fragment.CategoryListFragment
 import com.sample.libraryapplication.view.recyclerView.BooksAdapter
 import com.sample.libraryapplication.view.recyclerView.CategoriesAdapter
-import com.sample.libraryapplication.viewmodel.BookListFragmentViewModel
-import com.sample.libraryapplication.viewmodel.BookViewModel
-import com.sample.libraryapplication.viewmodel.CategoryListFragmentViewModel
-import com.sample.libraryapplication.viewmodel.MQTTViewModel
+import com.sample.libraryapplication.viewmodel.*
 import dagger.Component
 import javax.inject.Singleton
 
@@ -38,4 +36,6 @@ interface LibraryComponent {
     fun inject(categoryListFragment: CategoryListFragment)
     fun inject(libraryApplication: LibraryApplication)
     fun inject(bookFragment: BookFragment)
+    fun inject(categoryViewModel: CategoryViewModel)
+    fun inject(categoryFragment: CategoryFragment)
 }

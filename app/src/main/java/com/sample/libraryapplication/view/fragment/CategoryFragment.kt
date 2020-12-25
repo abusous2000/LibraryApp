@@ -15,31 +15,29 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
-import com.sample.libraryapplication.database.entity.BookEntity
-import com.sample.libraryapplication.databinding.BookFragmentBinding
+import com.sample.libraryapplication.database.entity.CategoryEntity
+import com.sample.libraryapplication.databinding.CategoryFragmentBinding
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.view.MainActivity
-import com.sample.libraryapplication.viewmodel.BookViewModel
+import com.sample.libraryapplication.viewmodel.CategoryViewModel
 
-class BookFragment  : Fragment() {
+class CategoryFragment  : Fragment() {
     companion object {
-        val TAG = "BookFragment"
-        val is_update_book = "is_update_book"
-        val selected_book = "selected_book"
-        val selected_category_id = "selected_category_id"
+        val TAG = "CategoryFragment"
+        val is_update_category = "is_update_category"
+        val selected_category = "selected_category"
     }
-    private lateinit var viewModel: BookViewModel
-    private lateinit var binding: BookFragmentBinding
-    private var isUpdateBook: Boolean = false
-    private var selectedBook: BookEntity? = null
-    private var selectedCategoryId: Long? = null
+    private lateinit var viewModel: CategoryViewModel
+    private lateinit var binding: CategoryFragmentBinding
+    private var isUpdateCategory: Boolean = false
+    private var selectedCategory: CategoryEntity? = null
     private var container: ViewGroup? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         this.container = container
         ActivityWeakMapRef.put(TAG, this);
         injectDagger()
         if ( this::binding.isInitialized == false ) {
-            binding = BookFragmentBinding.inflate(layoutInflater, container, false)
+            binding = CategoryFragmentBinding.inflate(layoutInflater, container, false)
          }
         parseArguments()
         createViewModel()
@@ -58,45 +56,43 @@ class BookFragment  : Fragment() {
     }
 
     private fun parseArguments() {
-        if( requireArguments().get("is_update_book") !=null)
-            isUpdateBook = requireArguments().getBoolean("is_update_book", false)
-        selectedBook = requireArguments().getParcelable("selected_book") as? BookEntity
-        selectedCategoryId = requireArguments().getLong("selected_category_id", -1)
+        if( requireArguments().get("is_update_category") !=null)
+            isUpdateCategory = requireArguments().getBoolean("is_update_category", false)
+        selectedCategory = requireArguments().getParcelable("selected_category") as? CategoryEntity
     }
 
     private fun createViewModel() {
         if ( !this::viewModel.isInitialized)
-            viewModel = ViewModelProvider(this).get(BookViewModel::class.java)
+            viewModel = ViewModelProvider(this).get(CategoryViewModel::class.java)
         viewModel.clear()
         binding.viewModel = viewModel
-        viewModel.selectedCategoryId = selectedCategoryId
-        viewModel.selectedBook = selectedBook
-        viewModel.isUpdateBook = isUpdateBook
-        viewModel.bookName = selectedBook?.bookName
-        selectedBook?.bookUnitPrice?.let {
-            viewModel.bookPrice = it.toString()
+        viewModel.selectedCategory = selectedCategory
+        viewModel.isUpdateCategory = isUpdateCategory
+        viewModel.categoryName = selectedCategory?.categoryName
+        selectedCategory?.categoryDesc?.let {
+            viewModel.categoryDesc = it
         }
     }
 
     private fun setBinding() {
         if ( this::binding.isInitialized == false )
-            binding = BookFragmentBinding.inflate(layoutInflater, container, false)
+            binding = CategoryFragmentBinding.inflate(layoutInflater, container, false)
         binding.viewModel = viewModel
-        binding.book = selectedBook
+        binding.category = selectedCategory
         binding.lifecycleOwner = this
     }
 
     @SuppressLint("FragmentLiveDataObserve")
     private fun observeViewModel() {
-        viewModel.isBookNameEmpty.observe(this, Observer {
+        viewModel.isCategoryNameEmpty.observe(this, Observer {
             if (!isDetached) {
-                if (it) binding.etName.error = getString(R.string.warning_book_name)
+                if (it) binding.etCategoryName.error = getString(R.string.Please_enter_the_category_name)
             }
         })
 
-        viewModel.isBookPriceEmpty.observe(this, Observer {
+        viewModel.isCategoryPriceEmpty.observe(this, Observer {
             if (!isDetached) {
-                if (it) binding.etPrice.error = getString(R.string.warning_book_price)
+                if (it) binding.etCategoryDesc.error = getString(R.string.Please_enter_the_category_desc)
             }
         })
 
@@ -104,15 +100,14 @@ class BookFragment  : Fragment() {
             if (it && !isDetached) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     var mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
-                    val info = "Book has been " + (if ( isUpdateBook ) "Updated" else "Inserted")
+                    val info = "Category has been " + (if ( isUpdateCategory ) "Updated" else "Inserted")
                     var toast = Toast.makeText(activity?.baseContext,
                             Html.fromHtml("<font color='red' ><b>" + info + "</b></font>", Html.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
                     toast.show()
 
-                    mainActivity.selectItem(MainActivity.BOOK_LIST_MENU_NDX)
-                    Log.d(BookListFragment.TAG, "Re-Routing to MainActivity")
+                    mainActivity.selectItem(MainActivity.CATEGORY_LIST_MENU_NDX)
+                    Log.d(CategoryListFragment.TAG, "Re-Routing to MainActivity")
                 }, 200)
-
             }
         })
     }

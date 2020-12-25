@@ -2,7 +2,6 @@ package com.sample.libraryapplication.view
 
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -11,14 +10,13 @@ import android.widget.AdapterView
 import android.widget.PopupMenu
 import android.widget.Toast
 import android.widget.Toolbar
-import androidx.fragment.app.Fragment
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.view.fragment.BookFragment
 import com.sample.libraryapplication.view.fragment.BookListFragment
-import com.sample.libraryapplication.view.fragment.MQTTFragment
+import com.sample.libraryapplication.view.fragment.CategoryFragment
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -31,16 +29,26 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
     }
     private var selectedCategory: CategoryEntity? = null
     override fun onMenuItemClick(item: MenuItem?): Boolean {
-        return this.onMenuClicked(item)
+        return this.onPopMenuClicked(item)
     }
-    //TODO
-    fun onCategoryItemClicked(view: View, category: CategoryEntity) {
-        Log.d(TAG, "onCategoryItemClicked: ${category.id} was clicked")
-//        val intent = Intent(view.context, BookActivity::class.java)
-//        intent.putExtra("selected_category_id", category.id)
-////        intent.putExtra("selected_category", category)
-//        intent.putExtra("is_update_category", true)
-//        view.context.startActivity(intent)
+    fun onCategoryItemClicked(view: View?, category: CategoryEntity) {
+        val mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
+        val categoryFragment= mainActivity.supportFragmentManager.findFragmentByTag(CategoryFragment.TAG)?:CategoryFragment()
+
+        with(categoryFragment){
+            if ( arguments == null )
+                arguments = Bundle()
+            requireArguments().clear()
+            requireArguments().putBoolean(CategoryFragment.is_update_category, category.id != null)
+            requireArguments().putParcelable(CategoryFragment.selected_category, category)
+        }
+
+        val tx = mainActivity.supportFragmentManager.beginTransaction()
+
+        tx.replace(R.id.content_frame, categoryFragment, BookFragment.TAG)
+        tx.addToBackStack(null)
+        tx.commit()
+        Log.d(TAG, "selectItem: Serving BookFragment for update")
     }
     fun onBookItemClicked(view: View?, book: BookEntity) {
         val mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
@@ -75,20 +83,12 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
         newBook.bookCategoryID =selectedCategory?.id
         onBookItemClicked(null, newBook)
     }
-    fun onFABClicked3(view: Activity) {
-        val intent = Intent(view, MainActivity::class.java)
 
-        view.startActivity(intent)
-    }
-    fun onFABClicked4(view: View) {
-        val intent = Intent(view.context, MainActivity::class.java)
-
-        view.context.startActivity(intent)
-    }
-    fun onMenuClicked(menuItem: MenuItem?): Boolean {
+    fun onPopMenuClicked(menuItem: MenuItem?): Boolean {
         var mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
         when(menuItem?.itemId){
             R.id.Add_A_Book_id -> onFABClicked2(mainActivity)
+            R.id.Add_A_Category_id -> onCategoryItemClicked(null, CategoryEntity() )
             else -> Toast.makeText(mainActivity,"Item ${menuItem?.itemId} was clicked", Toast.LENGTH_SHORT ).show();
         }
         return true;

@@ -4,9 +4,11 @@
     <string name="book_name">Book Name</string>
     <string name="warning_book_price">Please enter the book price</string>
     <string name="warning_book_name">Please enter the book name</string>
-    <string name="submit">SUBMIT</string>
+    <string name="submit">Submit</string>
     <string name="add_new_book">Add New Book</string>
     <string name="update_book">Update Book</string>
+    <string name="add_new_category">Add New Category</string>
+    <string name="update_category">Update Category</string>
     <string name="toolbar_title">Library App</string>
     <string-array name="navigation_drawer_items_array">
         <item>Books</item>
@@ -19,4 +21,6 @@
     <string name="broker_url">Broker URL</string>
     <string name="topic">Topic</string>
     <string name="mqtt_settings">Settings</string>
+    <string name="Please_enter_the_category_desc">Please enter the category desc</string>
+    <string name="Please_enter_the_category_name">Please enter the category name</string>
 </resources>
