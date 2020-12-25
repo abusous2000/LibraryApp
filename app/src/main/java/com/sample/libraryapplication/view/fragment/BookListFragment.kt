@@ -91,7 +91,7 @@ class BookListFragment : Fragment() {
 
             observeViewModel()
             Handler(Looper.getMainLooper()).postDelayed({
-                Log.d(TAG, "onCreate: repopulating DB from main thread")
+                Log.d(TAG, "onCreateView: selecting 1st category on start")
                 bookClickHandlers.onCategorySelected(null,null,0,0)
             }, 100)
 

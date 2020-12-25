@@ -29,14 +29,14 @@ class MQTTViewModel: BaseViewModel() {
         return mqttSettings.get(MyMQTTHandler.BROKER_PREFS)
     }
     fun setBroker(charSequence: CharSequence){
-        Log.d(TAG, "setBroker: "+ charSequence.toString())
+//        Log.d(TAG, "setBroker: "+ charSequence.toString())
         mqttSettings.put(MyMQTTHandler.BROKER_PREFS, charSequence.toString())
     }
     fun getTopic(): String?{
         return mqttSettings.get(MyMQTTHandler.TOPIC_PREFS)
     }
     fun setTopic(charSequence: CharSequence){
-        Log.d(TAG, "setTopic: "+ charSequence.toString())
+//        Log.d(TAG, "setTopic: "+ charSequence.toString())
         mqttSettings.put(MyMQTTHandler.TOPIC_PREFS, charSequence.toString())
     }
     fun save(){

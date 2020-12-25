@@ -1,5 +1,6 @@
 package com.sample.libraryapplication.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.bo.BOCategory
@@ -7,9 +8,9 @@ import com.sample.libraryapplication.database.entity.BookEntity
 import javax.inject.Inject
 
 class BookViewModel: BaseViewModel()  {
+    private val TAG = "BookViewModel"
     @Inject
     lateinit var boCategory: BOCategory
-
 
     val isBookNameEmpty = MutableLiveData<Boolean>()
     val isBookPriceEmpty = MutableLiveData<Boolean>()
@@ -32,13 +33,19 @@ class BookViewModel: BaseViewModel()  {
     private fun updateBook(book: BookEntity) {
         boCategory.updateBook(book)
     }
-
+    fun clear(){
+        isBookNameEmpty.value = false
+        isBookPriceEmpty.value = false
+        shouldFinishActivity.value = false
+    }
     fun setBookName(charSequence: CharSequence) {
         bookName = charSequence.toString()
+//        Log.d(TAG, "setBookName: $bookName")
     }
 
     fun setBookPrice(charSequence: CharSequence) {
         bookPrice = charSequence.toString()
+//        Log.d(TAG, "setBookPrice: $bookPrice")
     }
 
     fun saveBook() {

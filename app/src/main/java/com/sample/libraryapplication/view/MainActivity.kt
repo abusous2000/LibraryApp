@@ -27,11 +27,13 @@ class MainActivity : AppCompatActivity() {
         val MQTT_SETTINGS_MENU_NDX = 2
         val QUITE_APP_MENU_NDX = 3
     }
+
     @Inject
     lateinit var bookClickHandlers: BookClickHandlers
+
     @Inject
     lateinit var myMQTTHandler: MyMQTTHandler
-    private  lateinit var binding: MainActivityBinding
+    private lateinit var binding: MainActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,11 +43,8 @@ class MainActivity : AppCompatActivity() {
         setBinding()
 
         if (savedInstanceState == null) {
-            var fragment = supportFragmentManager.findFragmentByTag(BookListFragment.TAG)?: BookListFragment()
-            supportFragmentManager.beginTransaction()
-                                .replace(R.id.content_frame, fragment, BookListFragment.TAG)
-                                .addToBackStack(null)
-                                .commit()
+            var fragment = supportFragmentManager.findFragmentByTag(BookListFragment.TAG) ?: BookListFragment()
+            supportFragmentManager.beginTransaction().replace(R.id.content_frame, fragment, BookListFragment.TAG).addToBackStack(null).commit()
         }
         myMQTTHandler.connect()
     }
@@ -55,13 +54,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     data class MenuItemDataModel(var icon: Int, var name: String)
+
     lateinit var drawerItemTitles: Array<String>
 
     private fun setBinding() {
         binding = MainActivityBinding.inflate(layoutInflater)
-        val drawerItem= mutableListOf<MenuItemDataModel>()
+        val drawerItem = mutableListOf<MenuItemDataModel>()
 
-        drawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array)
+        drawerItemTitles = getResources().getStringArray(R.array.navigation_drawer_items_array)
 
         drawerItem.add(MenuItemDataModel(R.drawable.connect, drawerItemTitles[0]))
         drawerItem.add(MenuItemDataModel(R.drawable.fixtures, drawerItemTitles[1]))
@@ -69,21 +69,18 @@ class MainActivity : AppCompatActivity() {
         drawerItem.add(MenuItemDataModel(R.drawable.ic_baseline_exit_to_app_24, drawerItemTitles[3]))
 
         val adapter = DrawerItemCustomAdapter(this, R.layout.menu_view_item_row, drawerItem)
-        binding.leftDrawer.adapter =adapter
-        binding.leftDrawer.onItemClickListener =  object: AdapterView.OnItemClickListener {
+        binding.leftDrawer.adapter = adapter
+        binding.leftDrawer.onItemClickListener = object : AdapterView.OnItemClickListener {
             override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectItem(position)
             }
         }
-        var toggle = ActionBarDrawerToggle(this,
-                binding.drawerLayout,
-                binding.topAppBar,
-                R.string.app_name,
-                R.string.app_name)
+        var toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.topAppBar, R.string.app_name, R.string.app_name)
         toggle.syncState()
         binding.drawerLayout.addDrawerListener(toggle)
         setContentView(binding.root)
     }
+
     fun selectItem(position: Int) {
         Log.d(TAG, "onOptionsItemSelected: Item $position was clicked")
 
@@ -105,8 +102,9 @@ class MainActivity : AppCompatActivity() {
                 tag = CategoryListFragment.TAG
             }
             MQTT_SETTINGS_MENU_NDX -> {
-                if (supportFragmentManager.findFragmentByTag(MQTTFragment.TAG) != null) Log.d(TAG,
-                        "selectItem: no need to create MQTTFragment; re-using cached verion")
+                if (supportFragmentManager.findFragmentByTag(MQTTFragment.TAG) != null) {
+                    Log.d(TAG, "selectItem: no need to create MQTTFragment; re-using cached verion")
+                }
                 fragment = supportFragmentManager.findFragmentByTag(MQTTFragment.TAG) ?: MQTTFragment.newInstance()
                 tag = MQTTFragment.TAG
             }
@@ -118,21 +116,24 @@ class MainActivity : AppCompatActivity() {
             tx.replace(R.id.content_frame, fragment, tag)
             tx.addToBackStack(null)
             tx.commit()
-            Log.d(TAG, "selectItem: Serving $tag Fragment")//pendingTX = $pendingTX")
+            Log.d(TAG, "selectItem: Serving $tag Fragment") //pendingTX = $pendingTX")
             binding.leftDrawer.setItemChecked(position, true)
             binding.leftDrawer.setSelection(position)
             binding.drawerLayout.closeDrawer(binding.leftDrawer)
             binding.topAppBar.title = getResources().getString(R.string.app_name) + ": " + drawerItemTitles.get(position)
-         } else {
+        }
+        else {
             Log.e("MainActivity", "No Fragment to serve: $position")
         }
     }
-    fun onExit(){
+
+    fun onExit() {
         myMQTTHandler.close()
     }
+
     fun QuitApp(view: View? = null) {
         onExit()
-        android.os.Process.killProcess(android.os.Process.myPid());    }
+        android.os.Process.killProcess(android.os.Process.myPid()); }
 
     override fun onDestroy() {
         super.onDestroy()

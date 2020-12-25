@@ -7,6 +7,7 @@ import com.sample.libraryapplication.dagger.module.RoomDatabaseModule
 import com.sample.libraryapplication.database.DBPopulator
 import com.sample.libraryapplication.service.MyMQTTHandler
 import com.sample.libraryapplication.view.*
+import com.sample.libraryapplication.view.fragment.BookFragment
 import com.sample.libraryapplication.view.fragment.BookListFragment
 import com.sample.libraryapplication.view.fragment.CategoryListFragment
 import com.sample.libraryapplication.view.recyclerView.BooksAdapter
@@ -37,4 +38,5 @@ interface LibraryComponent {
     fun inject(categoryListFragmentViewModel: CategoryListFragmentViewModel)
     fun inject(categoryListFragment: CategoryListFragment)
     fun inject(libraryApplication: LibraryApplication)
+    fun inject(bookFragment: BookFragment)
 }
