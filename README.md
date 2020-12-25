@@ -20,10 +20,12 @@ following improvements:
     \\"bookUnitPrice\\":44.30, \\"bookCategoryID\\":1,
     \\"resourceId\\":4}"}'
   - **mosquitto_pub** -h **broker.hivemq.com** -t "**abusous2000/myTopic**" -m '{"actionEvent":"insertCategory","data":"{\\"categoryName\\":\\"My Best Collection4\\",\\"categoryDesc\\":\\"The Best Collection\\"}"}'
-
+-Integrated a drawer and popup menues
+-Now Catgeories coud be created, inserted and deleted from the UI
 
 ![Main Image](https://raw.githubusercontent.com/abusous2000/LibraryApp/master/MainImage.png)
-
+![Menu Image](https://raw.githubusercontent.com/abusous2000/LibraryApp/master/Menu.png)
+![Main Image](https://raw.githubusercontent.com/abusous2000/LibraryApp/master/MQTT-Settings.png)
 
 Let me know what you think guys
 Peace,
