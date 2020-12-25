@@ -114,8 +114,43 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
                                 categoryListUpdated.postValue(true)
                             }
                         }
-                        ActionEvent.UPDATE_CATEGORY_AE ->boCategory.setEntity(category).update()
-                        ActionEvent.DELETE_CATEGORY_AE ->boCategory.setEntity(category).delete()
+                        ActionEvent.UPDATE_CATEGORY_AE -> {
+                            with(boCategory) {
+                                setEntity(category).delete()
+                                var ndx = -1
+                                var i = 0
+                                categories.value?.forEach {
+                                    if ( it.id == category.id){
+                                        ndx = i
+                                    }
+                                    i++
+                                }
+                                //This is a hack, for some reason observer of categories are not notified only once
+                                if ( ndx >=0) {
+                                    categories.value?.removeAt(ndx)
+                                    categories.value?.add(category)
+                                    categoryListUpdated.postValue(true)
+                                }
+                            }
+                        }
+                        ActionEvent.DELETE_CATEGORY_AE -> {
+                                with(boCategory) {
+                                    setEntity(category).delete()
+                                     var ndx = -1
+                                    var i = 0
+                                    categories.value?.forEach {
+                                        if ( it.id == category.id){
+                                            ndx = i
+                                        }
+                                        i++
+                                    }
+                                    //This is a hack, for some reason observer of categories are not notified only once
+                                    if ( ndx >=0) {
+                                        categories.value?.removeAt(ndx)
+                                        categoryListUpdated.postValue(true)
+                                    }
+                                }
+                        }
                     }
                 }
                 else -> Log.d(MainActivity.TAG, "unknown action event")
