@@ -6,14 +6,14 @@ import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.dagger.module.RoomDatabaseModule
 import com.sample.libraryapplication.database.DBPopulator
 import com.sample.libraryapplication.service.MyMQTTHandler
-import com.sample.libraryapplication.view.*
+import com.sample.libraryapplication.view.MainActivity
 import com.sample.libraryapplication.view.fragment.BookFragment
 import com.sample.libraryapplication.view.fragment.BookListFragment
 import com.sample.libraryapplication.view.fragment.CategoryListFragment
 import com.sample.libraryapplication.view.recyclerView.BooksAdapter
 import com.sample.libraryapplication.view.recyclerView.CategoriesAdapter
-import com.sample.libraryapplication.viewmodel.BookViewModel
 import com.sample.libraryapplication.viewmodel.BookListFragmentViewModel
+import com.sample.libraryapplication.viewmodel.BookViewModel
 import com.sample.libraryapplication.viewmodel.CategoryListFragmentViewModel
 import com.sample.libraryapplication.viewmodel.MQTTViewModel
 import dagger.Component
@@ -26,7 +26,6 @@ interface LibraryComponent {
     fun inject(boCategory: BOCategory)
     fun inject(booksAdapter: BooksAdapter)
     fun inject(bookViewModel: BookViewModel)
-    fun inject(bookActivity: BookActivity)
     fun inject(mainActivity: MainActivity)
     fun inject(boBook: BOBook)
     fun inject(dbPopulator: DBPopulator)

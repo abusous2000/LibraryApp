@@ -1,6 +1,5 @@
 package com.sample.libraryapplication.view
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -131,7 +130,7 @@ class MainActivity : AppCompatActivity() {
         myMQTTHandler.close()
     }
 
-    fun QuitApp(view: View? = null) {
+    fun QuitApp() {
         onExit()
         android.os.Process.killProcess(android.os.Process.myPid()); }
 

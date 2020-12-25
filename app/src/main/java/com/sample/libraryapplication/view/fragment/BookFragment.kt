@@ -8,14 +8,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.BookEntity
-import com.sample.libraryapplication.databinding.ActivityBookBinding
+import com.sample.libraryapplication.databinding.BookFragmentBinding
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.view.MainActivity
 import com.sample.libraryapplication.viewmodel.BookViewModel
@@ -37,7 +36,7 @@ class BookFragment  : Fragment() {
             }
     }
     private lateinit var viewModel: BookViewModel
-    private lateinit var binding: ActivityBookBinding
+    private lateinit var binding: BookFragmentBinding
     private var isUpdateBook: Boolean = false
     private var selectedBook: BookEntity? = null
     private var selectedCategoryId: Long? = null
@@ -47,7 +46,7 @@ class BookFragment  : Fragment() {
         ActivityWeakMapRef.put(TAG, this);
         injectDagger()
         if ( this::binding.isInitialized == false ) {
-            binding = ActivityBookBinding.inflate(layoutInflater, container, false)
+            binding = BookFragmentBinding.inflate(layoutInflater, container, false)
          }
         parseArguments()
         createViewModel()
@@ -76,7 +75,7 @@ class BookFragment  : Fragment() {
         if ( !this::viewModel.isInitialized)
             viewModel = ViewModelProvider(this).get(BookViewModel::class.java)
         if ( this::binding.isInitialized == false )
-            binding = ActivityBookBinding.inflate(layoutInflater, container, false)
+            binding = BookFragmentBinding.inflate(layoutInflater, container, false)
         viewModel.clear()
         binding.viewModel = viewModel
         viewModel.selectedCategoryId = selectedCategoryId
@@ -90,7 +89,7 @@ class BookFragment  : Fragment() {
 
     private fun setBinding() {
         if ( this::binding.isInitialized == false )
-            binding = ActivityBookBinding.inflate(layoutInflater, container, false)
+            binding = BookFragmentBinding.inflate(layoutInflater, container, false)
         binding.viewModel = viewModel
         binding.book = selectedBook
         binding.lifecycleOwner = this
