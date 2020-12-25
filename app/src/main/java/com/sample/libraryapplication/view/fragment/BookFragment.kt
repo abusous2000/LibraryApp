@@ -25,15 +25,6 @@ class BookFragment  : Fragment() {
         val is_update_book = "is_update_book"
         val selected_book = "selected_book"
         val selected_category_id = "selected_category_id"
-        @JvmStatic
-        fun newInstance(updateBook: Boolean, book: BookEntity, categoryId: Long) =
-            BookFragment().apply {
-                arguments = Bundle().apply {
-                    putBoolean(is_update_book, updateBook)
-                    putParcelable(selected_book, book)
-                    putLong(selected_category_id,categoryId)
-                }
-            }
     }
     private lateinit var viewModel: BookViewModel
     private lateinit var binding: BookFragmentBinding
