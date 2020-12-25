@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -104,10 +106,14 @@ class BookFragment  : Fragment() {
             if (it && !isDetached) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     var mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
+                    val info = "Book has been " + (if ( isUpdateBook ) "Updated" else "Inserted")
+                    var toast = Toast.makeText(activity?.baseContext,
+                            Html.fromHtml("<font color='red' ><b>" + info + "</b></font>", Html.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
+                    toast.show()
 
                     mainActivity.selectItem(MainActivity.BOOK_LIST_MENU_NDX)
                     Log.d(BookListFragment.TAG, "Re-Routing to MainActivity")
-                }, 600)
+                }, 200)
 
             }
         })

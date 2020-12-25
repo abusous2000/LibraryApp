@@ -42,7 +42,7 @@ class MQTTViewModel: BaseViewModel() {
     fun save(){
         myMQTTHandler.myPrefs.save(mqttSettings)
         Log.d(TAG, "save: " + mqttSettings.toString())
-        var info = "MQTT Setting Has Been Saved"
+        val info = "MQTT Setting Has Been Saved"
         val mqttFragment = ActivityWeakMapRef.get(MQTTFragment.TAG) as MQTTFragment
         var toast = Toast.makeText(mqttFragment.activity?.baseContext,
                      Html.fromHtml("<font color='red' ><b>" + info + "</b></font>", Html.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
