@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -24,7 +25,6 @@ import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.BookListFragmentBinding
 
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
-import com.sample.libraryapplication.service.MyMQTTHandler
 import com.sample.libraryapplication.view.BookClickHandlers
 import com.sample.libraryapplication.view.recyclerView.BooksAdapter
 import com.sample.libraryapplication.viewmodel.BookListFragmentViewModel
@@ -36,15 +36,18 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 @Suppress("DEPRECATION")
-class BookListFragment : Fragment() {
+class BookListFragment : BaseFragment() {
     companion object {
         val TAG = "BookListFragment"
+//        var rootView: View? = null
+//        var binding: BookListFragmentBinding? = null
     }
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private var roootView: View? = null
+
     lateinit var bookListViewModel: BookListFragmentViewModel
+//    private var rootView: View? = null
     private lateinit var binding: BookListFragmentBinding
     @Inject
     lateinit var boCategory: BOCategory
@@ -67,24 +70,20 @@ class BookListFragment : Fragment() {
         }
         retainInstance = true
     }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        this.container = container
-        if (roootView !=null ) {
+        return getPersistentView(inflater, container, savedInstanceState)
+    }
 
-            observeViewModel()
-            Handler(Looper.getMainLooper()).postDelayed({
-                Log.d(TAG, "onCreateView: selecting 1st category on start")
-                bookClickHandlers.onCategorySelected(null,null,0,0)
-            }, 100)
-
-            return binding.root
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         ActivityWeakMapRef.put(TAG, this);
-        injectDagger()
-        createViewModel()
-        setBinding()
+        if (!hasInitializedRootView) {
+            hasInitializedRootView = true
+            injectDagger()
+            createViewModel()
+            setBinding()
+        }
 
         if (dbPopulator.doesDbExist(requireContext()) == false) {
             dbPopulator.dbPopulated.observe(viewLifecycleOwner, Observer {
@@ -100,20 +99,17 @@ class BookListFragment : Fragment() {
         } else{
             postDBStart()
         }
-
-        binding.progressBar.visibility = View.VISIBLE
-
-        //sumulate heavy DB work on the background
+        binding!!.progressBar.visibility = View.VISIBLE
+        //simulate heavy DB work on the background
         Handler(Looper.getMainLooper()).postDelayed({
             bookListViewModel.isLoading.value = false
-            binding.progressBar.visibility = View.GONE
+            binding!!.progressBar.visibility = View.GONE
             Log.d(TAG, "onCreate: isLoading=true")
         }, 1000)
 
-        roootView = binding.root
 
-        return roootView
     }
+
     private fun postDBStart() {
         boCategory.categories = boCategory.findAll() as MutableLiveData<MutableList<CategoryEntity>>
         observeViewModel()
@@ -124,11 +120,23 @@ class BookListFragment : Fragment() {
     private fun injectDagger() {
         LibraryApplication.instance.libraryComponent.inject(this)
     }
+
+    override fun inflate(): View {
+        Log.d(TAG, "inflate: ")
+        binding = BookListFragmentBinding.inflate(layoutInflater, container, false)
+
+//        binding = DataBindingUtil.inflate(layoutInflater, R.layout.book_list_fragment, container, false)
+
+        return binding.root
+    }
     private fun setBinding() {
-        binding = BookListFragmentBinding.inflate(layoutInflater,container,false)
-        binding.viewModel = bookListViewModel
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.clickHandlers = bookClickHandlers
+//        if ( rootView == null)
+//        {
+            //binding = BookListFragmentBinding.inflate(layoutInflater, container, false)
+            binding!!.viewModel = bookListViewModel
+            binding!!.lifecycleOwner = viewLifecycleOwner
+            binding!!.clickHandlers = bookClickHandlers
+//        }
     }
     fun observeViewModel() {
         //This is a hack, for some reason observer of categories are not notified only once
@@ -158,8 +166,8 @@ class BookListFragment : Fragment() {
                 if (categoryArrayAdapter == null) {
                     categoryArrayAdapter = ArrayAdapter(this.requireContext(),R.layout.list_item_category,catNames)
                     categoryArrayAdapter?.setDropDownViewResource(R.layout.list_item_category)
-                    binding.spinnerAdapter = categoryArrayAdapter
-                    binding.lifecycleOwner = this
+                    binding!!.spinnerAdapter = categoryArrayAdapter
+                    binding!!.lifecycleOwner = this
                 } else {
                     categoryArrayAdapter?.clear()
                     categoryArrayAdapter?.addAll(catNames)
@@ -176,7 +184,7 @@ class BookListFragment : Fragment() {
         }
         override fun onChanged(list: List<BookEntity>?) {
             if (list != null && !isDetached) {
-                Log.d(TAG,"updateBookList::observer: observerCounter=${observerCounter} updating RecycleView via LiveData w/ categoryId:" + selectedCategory?.id)
+                Log.d(TAG,"onChanged::observer: observerCounter=${observerCounter} updating RecycleView via LiveData w/ categoryId:" + selectedCategory?.id)
                 list.forEach {
                     Log.d(TAG,"id: ${it.id}- Book: ${it.bookName}- Price: ${it.bookUnitPrice}- Category: ${it.bookCategoryID}\"")
                 }
@@ -190,7 +198,7 @@ class BookListFragment : Fragment() {
             }
         }
     }
-    fun updateBookList(category: CategoryEntity) {
+    fun updateRVBookList(category: CategoryEntity) {
         selectedCategory=category
         bookListViewModel.boCategory.removeObservers(this)
         selectedCategory?.id?.let {
@@ -200,7 +208,7 @@ class BookListFragment : Fragment() {
     }
     private fun showBookList(bookList: List<BookEntity>) {
         if (booksAdapter == null) {
-            var recycler_view_books = binding.recyclerViewBooks
+            val recycler_view_books = binding!!.recyclerViewBooks
             recycler_view_books.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
             booksAdapter = BooksAdapter(bookList)
             recycler_view_books.adapter = booksAdapter

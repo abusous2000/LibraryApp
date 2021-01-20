@@ -43,32 +43,38 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
             requireArguments().putParcelable(CategoryFragment.selected_category, category)
         }
 
-        val tx = mainActivity.supportFragmentManager.beginTransaction()
-
-        tx.replace(R.id.content_frame, categoryFragment, BookFragment.TAG)
-        tx.addToBackStack(null)
-        tx.commit()
+//        val tx = mainActivity.supportFragmentManager.beginTransaction()
+//
+//        tx.replace(R.id.content_frame, categoryFragment, BookFragment.TAG)
+//        tx.addToBackStack(null)
+//        tx.commit()
         Log.d(TAG, "selectItem: Serving BookFragment for update")
     }
     fun onBookItemClicked(view: View?, book: BookEntity) {
         val mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
-        val bookFragment= mainActivity.supportFragmentManager.findFragmentByTag(BookFragment.TAG)?:BookFragment()
+        val arguments = Bundle()
+        arguments.putBoolean(BookFragment.is_update_book, book.id != null)
+        arguments.putParcelable(BookFragment.selected_book, book)
+        arguments.putLong(BookFragment.selected_category_id, book.bookCategoryID!!)
 
-        with(bookFragment){
-            if ( arguments == null )
-                arguments = Bundle()
-            requireArguments().clear()
-            requireArguments().putBoolean(BookFragment.is_update_book, book.id != null)
-            requireArguments().putParcelable(BookFragment.selected_book, book)
-            requireArguments().putLong(BookFragment.selected_category_id, book.bookCategoryID!!)
-        }
+        mainActivity.navController.navigate(R.id.action_bookListFragment_to_bookFragment,arguments)
+//        val bookFragment= mainActivity.supportFragmentManager.findFragmentByTag(BookFragment.TAG)?:BookFragment()
+//
+//        with(bookFragment){
+//            if ( arguments == null )
+//                arguments = Bundle()
+//            requireArguments().clear()
+//            requireArguments().putBoolean(BookFragment.is_update_book, book.id != null)
+//            requireArguments().putParcelable(BookFragment.selected_book, book)
+//            requireArguments().putLong(BookFragment.selected_category_id, book.bookCategoryID!!)
+//        }
 
-        val tx = mainActivity.supportFragmentManager.beginTransaction()
-
-        tx.replace(R.id.content_frame, bookFragment, BookFragment.TAG)
-        tx.addToBackStack(null)
-        tx.commit()
-        Log.d(TAG, "selectItem: Serving BookFragment for update")
+//        val tx = mainActivity.supportFragmentManager.beginTransaction()
+//
+//        tx.replace(R.id.content_frame, bookFragment, BookFragment.TAG)
+//        tx.addToBackStack(null)
+//        tx.commit()
+//        Log.d(TAG, "selectItem: Serving BookFragment for update")
     }
     fun onFABClicked(view: View) {
         val popup = PopupMenu(view.context, view)
@@ -99,10 +105,16 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
                             @Suppress("UNUSED_PARAMETER") id: Long) {
         Log.d(BookClickHandlers.TAG, "onCategorySelected:$position")
         var bookListFragment = ActivityWeakMapRef.get(BookListFragment.TAG) as BookListFragment
-        //Check if the list was populated. It could be empty on startup since the DB takes longer to populate
-        if ( bookListFragment.boCategory.categories.value?.size!! > 0 )
-            selectedCategory = bookListFragment.boCategory.categories.value!!.get(position)
-        if ( selectedCategory != null )
-            bookListFragment.updateBookList(selectedCategory!!)
-    }
+        if ( bookListFragment != null ){
+            //Check if the list was populated. It could be empty on startup since the DB takes longer to populate
+            if ( bookListFragment.boCategory.categories.value?.size!! > 0 ) {
+                if ( bookListFragment.bookListViewModel.selectedCategory != null && position == 0 )
+                    selectedCategory = bookListFragment.bookListViewModel.selectedCategory
+                else
+                    selectedCategory = bookListFragment.boCategory.categories.value!!.get(position)
+            }
+            if ( selectedCategory != null )
+                bookListFragment.updateRVBookList(selectedCategory!!)
+        }
+     }
 }

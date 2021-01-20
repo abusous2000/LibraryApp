@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.sample.libraryapplication.R
-import com.sample.libraryapplication.view.MainActivity.MenuItemDataModel
 
 
 class DrawerItemCustomAdapter(mContext: Context, var layoutResourceId: Int, data: List<MenuItemDataModel>) :

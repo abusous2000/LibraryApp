@@ -16,6 +16,7 @@ class BookListFragmentViewModel(): BaseViewModel() {
 
     @Inject
     lateinit var boCategory: BOCategory
+    var selectedCategory: CategoryEntity? = null
     public var isLoading = MutableLiveData<Boolean>()
 
     override fun registerWithComponent() {
@@ -23,11 +24,11 @@ class BookListFragmentViewModel(): BaseViewModel() {
     }
 
     fun getBooksListSelectedCategory(categoryID: Long) : LiveData<List<BookEntity>> {
-        var selectedCategory = boCategory.categories.value?.filter { it.id == categoryID }?.first() as CategoryEntity
+        selectedCategory = boCategory.categories.value?.filter { it.id == categoryID }?.first() as CategoryEntity
 
         with(boCategory){
-            setEntity(selectedCategory)
-            find(selectedCategory.id!!)
+            setEntity(selectedCategory!!)
+            find(selectedCategory!!.id!!)
             refreshBooks()
         }
         return boCategory.books

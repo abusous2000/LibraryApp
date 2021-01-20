@@ -3,8 +3,11 @@ package com.sample.libraryapplication.viewmodel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.sample.libraryapplication.LibraryApplication
+import com.sample.libraryapplication.R
 import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.database.entity.BookEntity
+import com.sample.libraryapplication.utils.ActivityWeakMapRef
+import com.sample.libraryapplication.view.MainActivity
 import javax.inject.Inject
 
 class BookViewModel: BaseViewModel()  {
@@ -67,6 +70,8 @@ class BookViewModel: BaseViewModel()  {
                 newBook.bookCategoryID = selectedCategoryId
                 addNewBook(newBook)
             }
+            val mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
+            mainActivity.navController.navigate(R.id.action_bookFragment_to_bookListFragment)
             shouldFinishActivity.value = true
         } else
             shouldFinishActivity.value = false
