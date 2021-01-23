@@ -1,19 +1,21 @@
 package com.sample.libraryapplication.view
 
 
+import android.R.string
 import android.app.Activity
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
-import android.widget.PopupMenu
-import android.widget.Toast
-import android.widget.Toolbar
+import android.widget.*
+import androidx.databinding.BindingAdapter
+import com.bumptech.glide.request.target.Target
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
+import com.sample.libraryapplication.utils.GlideApp
 import com.sample.libraryapplication.view.fragment.BookFragment
 import com.sample.libraryapplication.view.fragment.BookListFragment
 import com.sample.libraryapplication.view.fragment.CategoryFragment
@@ -57,7 +59,7 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
         arguments.putParcelable(BookFragment.selected_book, book)
         arguments.putLong(BookFragment.selected_category_id, book.bookCategoryID!!)
 
-        mainActivity.navController.navigate(R.id.action_bookListFragment_to_bookFragment,arguments)
+        mainActivity.navController.navigate(R.id.action_bookListFragment_to_bookFragment, arguments)
 //        val bookFragment= mainActivity.supportFragmentManager.findFragmentByTag(BookFragment.TAG)?:BookFragment()
 //
 //        with(bookFragment){
@@ -94,27 +96,29 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
         var mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
         when(menuItem?.itemId){
             R.id.Add_A_Book_id -> onFABClicked2(mainActivity)
-            R.id.Add_A_Category_id -> onCategoryItemClicked(null, CategoryEntity() )
-            else -> Toast.makeText(mainActivity,"Item ${menuItem?.itemId} was clicked", Toast.LENGTH_SHORT ).show();
+            R.id.Add_A_Category_id -> onCategoryItemClicked(null, CategoryEntity())
+            else -> Toast.makeText(mainActivity, "Item ${menuItem?.itemId} was clicked", Toast.LENGTH_SHORT).show();
         }
         return true;
    }
 
-    fun onCategorySelected( @Suppress("UNUSED_PARAMETER") parent: AdapterView<*>?,
-                            @Suppress("UNUSED_PARAMETER") view: View?, position: Int,
-                            @Suppress("UNUSED_PARAMETER") id: Long) {
+    fun onCategorySelected(
+        @Suppress("UNUSED_PARAMETER") parent: AdapterView<*>?, @Suppress("UNUSED_PARAMETER") view: View?, position: Int, @Suppress("UNUSED_PARAMETER") id: Long
+                          ) {
         Log.d(BookClickHandlers.TAG, "onCategorySelected:$position")
         var bookListFragment = ActivityWeakMapRef.get(BookListFragment.TAG) as BookListFragment
         if ( bookListFragment != null ){
             //Check if the list was populated. It could be empty on startup since the DB takes longer to populate
             if ( bookListFragment.boCategory.categories.value?.size!! > 0 ) {
-                if ( bookListFragment.bookListViewModel.selectedCategory != null && position == 0 )
-                    selectedCategory = bookListFragment.bookListViewModel.selectedCategory
-                else
-                    selectedCategory = bookListFragment.boCategory.categories.value!!.get(position)
+                     selectedCategory = bookListFragment.boCategory.categories.value!!.get(position)
             }
             if ( selectedCategory != null )
                 bookListFragment.updateRVBookList(selectedCategory!!)
         }
      }
+}
+
+@BindingAdapter("glideCropCenter")
+fun setProgress(view: ImageView, url: String?) {
+    GlideApp.with(view.getContext()).load(url).centerCrop().into(view)
 }

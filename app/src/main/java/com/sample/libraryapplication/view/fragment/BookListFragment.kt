@@ -26,6 +26,7 @@ import com.sample.libraryapplication.databinding.BookListFragmentBinding
 
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.view.BookClickHandlers
+import com.sample.libraryapplication.view.MainActivity
 import com.sample.libraryapplication.view.recyclerView.BooksAdapter
 import com.sample.libraryapplication.viewmodel.BookListFragmentViewModel
 import javax.inject.Inject
@@ -48,7 +49,7 @@ class BookListFragment : BaseFragment() {
 
     lateinit var bookListViewModel: BookListFragmentViewModel
 //    private var rootView: View? = null
-    private lateinit var binding: BookListFragmentBinding
+    lateinit var binding: BookListFragmentBinding
     @Inject
     lateinit var boCategory: BOCategory
     @Inject
@@ -70,20 +71,30 @@ class BookListFragment : BaseFragment() {
         }
         retainInstance = true
     }
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return getPersistentView(inflater, container, savedInstanceState)
+    override fun onCreatePersistentView(inflater: LayoutInflater,container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        // I used data-binding
+        Log.d(TAG, "onCreatePersistentView--->inflate: ")
+        injectDagger()
+        binding = BookListFragmentBinding.inflate(layoutInflater, container, false)
+        createViewModel()
+        setBinding()
+
+        return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        ActivityWeakMapRef.put(TAG, this);
-        if (!hasInitializedRootView) {
-            hasInitializedRootView = true
-            injectDagger()
-            createViewModel()
-            setBinding()
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser){
+            val mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
+            mainActivity.supportActionBar?.title = TAG
         }
+    }
+    override fun onPersistentViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onPersistentViewCreated(view, savedInstanceState)
+        ActivityWeakMapRef.put(TAG, this);
+        injectDagger()
+        createViewModel()
+        setBinding()
 
         if (dbPopulator.doesDbExist(requireContext()) == false) {
             dbPopulator.dbPopulated.observe(viewLifecycleOwner, Observer {
@@ -106,8 +117,6 @@ class BookListFragment : BaseFragment() {
             binding!!.progressBar.visibility = View.GONE
             Log.d(TAG, "onCreate: isLoading=true")
         }, 1000)
-
-
     }
 
     private fun postDBStart() {
@@ -119,15 +128,6 @@ class BookListFragment : BaseFragment() {
     }
     private fun injectDagger() {
         LibraryApplication.instance.libraryComponent.inject(this)
-    }
-
-    override fun inflate(): View {
-        Log.d(TAG, "inflate: ")
-        binding = BookListFragmentBinding.inflate(layoutInflater, container, false)
-
-//        binding = DataBindingUtil.inflate(layoutInflater, R.layout.book_list_fragment, container, false)
-
-        return binding.root
     }
     private fun setBinding() {
 //        if ( rootView == null)

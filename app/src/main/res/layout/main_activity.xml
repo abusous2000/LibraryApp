@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/app_navigation"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

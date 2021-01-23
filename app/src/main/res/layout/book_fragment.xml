@@ -49,11 +49,18 @@
             app:layout_constraintTop_toBottomOf="@+id/app_bar_layout">
 
             <ImageView
+                android:id="@+id/imageTest"
+                android:layout_width="270dp"
+                android:layout_height="158dp"
+                app:glideCropCenter="@{book.url}"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="125dp"
+                android:layout_height="107dp"
                 app:imageResource="@{book.resourceId}"
-               tools:srcCompat="@tools:sample/avatars" />
+                tools:srcCompat="@tools:sample/avatars" />
 
             <EditText
                 android:id="@+id/et_name"

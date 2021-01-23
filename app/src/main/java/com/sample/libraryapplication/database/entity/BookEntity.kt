@@ -6,6 +6,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
+import androidx.room.Ignore
 import com.google.gson.Gson
 import com.sample.libraryapplication.R
 import java.util.*
@@ -20,6 +21,10 @@ class BookEntity(): Parcelable, BaseEntity() {
     @ColumnInfo(name = "book_category_id",index = true)
     var bookCategoryID: Long? = null
     var resourceId: Int = R.drawable.ic_launcher_background
+
+    @Ignore
+    var url: String? = null
+
     constructor(id: Long?, bookName: String?, bookUnitPrice: Double?, bookCategoryID: Long?, resourceId: Int = R.drawable.ic_launcher_background):this() {
         this.id = id
         this.bookName = bookName

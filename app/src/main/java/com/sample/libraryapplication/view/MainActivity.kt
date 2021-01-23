@@ -1,16 +1,20 @@
 package com.sample.libraryapplication.view
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.plusAssign
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
@@ -24,6 +28,7 @@ import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.view.fragment.BookListFragment
 import com.sample.libraryapplication.view.fragment.CategoryListFragment
 import com.sample.libraryapplication.view.fragment.MQTTFragment
+import com.sample.libraryapplication.view.navigation.KeepStateNavigator
 import kotlinx.android.synthetic.main.main_activity.*
 import javax.inject.Inject
 
@@ -47,35 +52,95 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var navController: NavController
     lateinit var drawerLayout: DrawerLayout
     private lateinit var appBarConfiguration: AppBarConfiguration
+    var cnt = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.main_activity)
+        //        setContentView(R.layout.main_activity)
         ActivityWeakMapRef.put(TAG, this);
         injectDagger()
-//        setBinding()
+        //        setBinding()
         binding = MainActivityBinding.inflate(layoutInflater)
         bottomNav = binding.bottomNavigation
         drawerLayout = binding.drawerLayout
         setContentView(binding.root)
+
         navController = findNavController(R.id.hostFragment)
+
+        // get fragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.hostFragment)!!
+
+        // setup custom navigator
+        val navigator = KeepStateNavigator(this, navHostFragment.childFragmentManager, R.id.hostFragment)
+        navController.navigatorProvider += navigator
+
+        // set navigation graph
+        navController.setGraph(R.navigation.app_navigation)
+
         navController.addOnDestinationChangedListener({ _, destination, _ ->
             Log.d(TAG, "onCreate: :"+destination.id)
-        }
-
-                                                     )
+//            supportActionBar?.title = destination.id.toString() + ":" + (++cnt)
+//            navController.currentDestination?.label = destination.id.toString() + ":" + (++cnt)
+//            destination.label = destination.id.toString()
+  //            binding.topAppBar.title = getResources().getString(R.string.app_name) + ": " + drawerItemTitles.get(position)
+        })
         binding.navigationView.setNavigationItemSelectedListener(this)
         setupBottomNavigation()
         appBarConfiguration = AppBarConfiguration(navController.graph,drawerLayout)
         NavigationUI.setupActionBarWithNavController(this,navController,drawerLayout)
 
         NavigationUI.setupWithNavController(navigation_view,navController)
-//        if (savedInstanceState == null) {
-//            var fragment = supportFragmentManager.findFragmentByTag(BookListFragment.TAG) ?: BookListFragment()
-//            supportFragmentManager.beginTransaction().replace(R.id.content_frame, fragment, BookListFragment.TAG).addToBackStack(null).commit()
-//        }
+        //        if (savedInstanceState == null) {
+        //            var fragment = supportFragmentManager.findFragmentByTag(BookListFragment.TAG) ?: BookListFragment()
+        //            supportFragmentManager.beginTransaction().replace(R.id.content_frame, fragment, BookListFragment.TAG).addToBackStack(null).commit()
+        //        }
         myMQTTHandler.connect()
 
+//        while(navHostFragment.childFragmentManager.getBackStackEntryCount() > 0) { navHostFragment.childFragmentManager.popBackStackImmediate(); }
+
+
     }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+////        setContentView(R.layout.main_activity)
+//        ActivityWeakMapRef.put(TAG, this);
+//        injectDagger()
+////        setBinding()
+//        binding = MainActivityBinding.inflate(layoutInflater)
+//        bottomNav = binding.bottomNavigation
+//        drawerLayout = binding.drawerLayout
+//        setContentView(binding.root)
+//        navController = findNavController(R.id.hostFragment)
+//        navController.addOnDestinationChangedListener({ _, destination, _ ->
+//            Log.d(TAG, "onCreate: :"+destination.id)
+//        }
+//
+//                                                     )
+//        binding.navigationView.setNavigationItemSelectedListener(this)
+//        setupBottomNavigation()
+//        appBarConfiguration = AppBarConfiguration(navController.graph,drawerLayout)
+//        NavigationUI.setupActionBarWithNavController(this,navController,drawerLayout)
+//
+//        NavigationUI.setupWithNavController(navigation_view,navController)
+////        if (savedInstanceState == null) {
+////            var fragment = supportFragmentManager.findFragmentByTag(BookListFragment.TAG) ?: BookListFragment()
+////            supportFragmentManager.beginTransaction().replace(R.id.content_frame, fragment, BookListFragment.TAG).addToBackStack(null).commit()
+////        }
+//        myMQTTHandler.connect()
+//
+//    }
+//    private var doubleBackToExitPressedOnce = false
+//    override fun onBackPressed() {
+//        if (doubleBackToExitPressedOnce) {
+//            super.onBackPressed()
+//            return
+//        }
+//
+//        this.doubleBackToExitPressedOnce = true
+////        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show()
+//
+//        Handler(Looper.getMainLooper()).postDelayed(Runnable { doubleBackToExitPressedOnce = false }, 1000)
+//    }
+
     override fun onSupportNavigateUp(): Boolean {
         //return navController.navigateUp()
         return NavigationUI.navigateUp(navController,appBarConfiguration)
@@ -189,4 +254,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         return true
     }
+
 }

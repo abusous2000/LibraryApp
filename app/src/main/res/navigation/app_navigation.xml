@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/app_navigation"
     app:startDestination="@id/bookListFragment">
 
-    <fragment
+    <keep_state_fragment
         android:id="@+id/bookListFragment"
         android:name="com.sample.libraryapplication.view.fragment.BookListFragment"
         android:label="Books" >
@@ -13,37 +13,49 @@
         <action
             android:id="@+id/action_bookListFragment_to_MQTTFragment2"
             app:destination="@id/MQTTFragment" />
-    </fragment>
-    <fragment
+        <action
+            android:id="@+id/action_bookFragment_to_bookListFragment"
+            app:popUpTo="@+id/bookListFragment"
+            app:popUpToInclusive="false"
+            app:destination="@id/bookListFragment" />
+        <action
+            android:id="@+id/action_MQTTFragment_to_bookListFragment"
+            app:destination="@id/bookListFragment" />
+    </keep_state_fragment>
+    <keep_state_fragment
         android:id="@+id/categoryFragment"
         android:name="com.sample.libraryapplication.view.fragment.CategoryFragment"
         android:label="Category" >
         <action
             android:id="@+id/action_categoryFragment_to_categoryListFragment"
             app:destination="@id/categoryListFragment" />
-    </fragment>
-    <fragment
+    </keep_state_fragment>
+    <keep_state_fragment
         android:id="@+id/MQTTFragment"
         android:name="com.sample.libraryapplication.view.fragment.MQTTFragment"
         android:label="MQTT" >
         <action
             android:id="@+id/action_MQTTFragment_to_bookListFragment"
             app:destination="@id/bookListFragment" />
-    </fragment>
-    <fragment
+    </keep_state_fragment>
+    <keep_state_fragment
         android:id="@+id/bookFragment"
         android:name="com.sample.libraryapplication.view.fragment.BookFragment"
         android:label="Book" >
         <action
             android:id="@+id/action_bookFragment_to_bookListFragment"
-            app:destination="@id/bookListFragment" />
-      </fragment>
-    <fragment
+
+            app:destination="@id/bookListFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/bookListFragment"
+            app:popUpToInclusive="true" />
+      </keep_state_fragment>
+    <keep_state_fragment
         android:id="@+id/categoryListFragment"
         android:name="com.sample.libraryapplication.view.fragment.CategoryListFragment"
         android:label="Categories" >
         <action
             android:id="@+id/action_categoryListFragment_to_categoryFragment"
             app:destination="@id/categoryFragment" />
-    </fragment>
+    </keep_state_fragment>
 </navigation>

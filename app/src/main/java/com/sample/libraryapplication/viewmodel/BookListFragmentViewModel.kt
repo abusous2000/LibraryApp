@@ -12,11 +12,12 @@ import javax.inject.Inject
 class BookListFragmentViewModel(): BaseViewModel() {
     companion object{
         private const val TAG = "BookListFragmentViewModel"
+        public var selectedCategory: CategoryEntity? = null
     }
 
     @Inject
     lateinit var boCategory: BOCategory
-    var selectedCategory: CategoryEntity? = null
+
     public var isLoading = MutableLiveData<Boolean>()
 
     override fun registerWithComponent() {

@@ -13,6 +13,7 @@ import com.sample.libraryapplication.service.MyMQTTHandler
 import com.sample.libraryapplication.view.fragment.BookListFragment
 import com.sample.libraryapplication.view.fragment.MQTTFragment
 import com.sample.libraryapplication.view.MainActivity
+import com.sample.libraryapplication.view.fragment.MQTTFragmentDirections
 import javax.inject.Inject
 
 class MQTTViewModel: BaseViewModel() {
@@ -51,7 +52,10 @@ class MQTTViewModel: BaseViewModel() {
 //        toast.show()
         myMQTTHandler.reConnect()
         val mqttFragment = ActivityWeakMapRef.get(MQTTFragment.TAG) as MQTTFragment
-        mqttFragment.findNavController().navigate(R.id.action_MQTTFragment_to_bookListFragment)
+        var navOptions = androidx.navigation.NavOptions.Builder().setLaunchSingleTop(true)
+                                                                  .setPopUpTo(R.id.bookListFragment,true)
+                                                                  .build()
+        mqttFragment.findNavController().navigate(MQTTFragmentDirections.actionMQTTFragmentToBookListFragment(),navOptions)
 //        mainActivity.navController.navigate(R.id.action_bookFragment_to_bookListFragment)
 //
 //        Handler(Looper.getMainLooper()).postDelayed({

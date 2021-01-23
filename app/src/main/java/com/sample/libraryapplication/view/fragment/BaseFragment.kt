@@ -1,30 +1,52 @@
 package com.sample.libraryapplication.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
 abstract class BaseFragment : Fragment(){
+    private val TAG = "BaseFragment"
+    private var persistingView: View? = null
 
-    var hasInitializedRootView = false
-    private var rootView: View? = null
-
-    fun getPersistentView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (rootView == null) {
-            // Inflate the layout for this fragment
-            rootView = inflate()
+    private fun persistingView(view: View): View {
+        val root = persistingView
+        if (root == null) {
+            persistingView = view
+            return view
         } else {
-            // Do not inflate the layout again.
-            // The returned View of onCreateView will be added into the fragment.
-            // However it is not allowed to be added twice even if the parent is same.
-            // So we must remove rootView from the existing parent view group
-            // (it will be added back).
-            (rootView?.getParent() as? ViewGroup)?.removeView(rootView)
+            (root.parent as? ViewGroup)?.removeView(root)
+            return root
         }
-
-        return rootView
     }
-    abstract fun inflate(): View
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+                             ): View? {
+        val p = if (persistingView == null) onCreatePersistentView(inflater, container, savedInstanceState) else persistingView // prevent inflating
+        if (p != null) {
+            return persistingView(p)
+        }
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+    protected open fun onCreatePersistentView(inflater: LayoutInflater,
+                                              container: ViewGroup?,
+                                              savedInstanceState: Bundle?): View? {
+        return null
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (persistingView != null) {
+            onPersistentViewCreated(view, savedInstanceState)
+        }
+    }
+
+    protected open fun onPersistentViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d(TAG, "onPersistentViewCreated: ")
+    }
 }
