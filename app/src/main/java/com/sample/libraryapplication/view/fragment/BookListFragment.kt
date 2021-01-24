@@ -133,9 +133,11 @@ class BookListFragment : BaseFragment() {
 //        if ( rootView == null)
 //        {
             //binding = BookListFragmentBinding.inflate(layoutInflater, container, false)
-            binding!!.viewModel = bookListViewModel
-            binding!!.lifecycleOwner = viewLifecycleOwner
-            binding!!.clickHandlers = bookClickHandlers
+        if ( !this::binding.isInitialized)
+            binding = BookListFragmentBinding.inflate(layoutInflater, container, false)
+        binding!!.viewModel = bookListViewModel
+        binding!!.lifecycleOwner = viewLifecycleOwner
+        binding!!.clickHandlers = bookClickHandlers
 //        }
     }
     fun observeViewModel() {
