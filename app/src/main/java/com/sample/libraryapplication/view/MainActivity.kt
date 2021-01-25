@@ -28,7 +28,6 @@ import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.view.fragment.BookListFragment
 import com.sample.libraryapplication.view.fragment.CategoryListFragment
 import com.sample.libraryapplication.view.fragment.MQTTFragment
-import com.sample.libraryapplication.view.navigation.KeepStateNavigator
 import kotlinx.android.synthetic.main.main_activity.*
 import javax.inject.Inject
 
@@ -69,10 +68,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // get fragment
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.hostFragment)!!
 
-        // setup custom navigator
-        val navigator = KeepStateNavigator(this, navHostFragment.childFragmentManager, R.id.hostFragment)
-        navController.navigatorProvider += navigator
-
         // set navigation graph
         navController.setGraph(R.navigation.app_navigation)
 
@@ -83,7 +78,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //            destination.label = destination.id.toString()
   //            binding.topAppBar.title = getResources().getString(R.string.app_name) + ": " + drawerItemTitles.get(position)
         })
-        binding.navigationView.setNavigationItemSelectedListener(this)
+//        binding.navigationView.setNavigationItemSelectedListener(this)
         setupBottomNavigation()
         appBarConfiguration = AppBarConfiguration(navController.graph,drawerLayout)
         NavigationUI.setupActionBarWithNavController(this,navController,drawerLayout)
