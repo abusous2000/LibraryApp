@@ -10,17 +10,6 @@
         <action
             android:id="@+id/action_bookListFragment_to_bookFragment"
             app:destination="@id/bookFragment" />
-        <action
-            android:id="@+id/action_bookListFragment_to_MQTTFragment2"
-            app:destination="@id/MQTTFragment" />
-        <action
-            android:id="@+id/action_bookFragment_to_bookListFragment"
-            app:popUpTo="@+id/bookListFragment"
-            app:popUpToInclusive="false"
-            app:destination="@id/bookListFragment" />
-        <action
-            android:id="@+id/action_MQTTFragment_to_bookListFragment"
-            app:destination="@id/bookListFragment" />
     </fragment>
     <fragment
         android:id="@+id/categoryFragment"

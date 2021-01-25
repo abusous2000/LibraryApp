@@ -14,6 +14,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.plusAssign
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -62,14 +63,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         bottomNav = binding.bottomNavigation
         drawerLayout = binding.drawerLayout
         setContentView(binding.root)
-
-        navController = findNavController(R.id.hostFragment)
-
+        val navHostFragment =  supportFragmentManager.findFragmentById(R.id.hostFragment) as NavHostFragment
+//        navController = findNavController(R.id.hostFragment)
+        navController = navHostFragment.navController
         // get fragment
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.hostFragment)!!
+//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.hostFragment)!!
 
         // set navigation graph
-        navController.setGraph(R.navigation.app_navigation)
+//        navController.setGraph(R.navigation.app_navigation)
 
         navController.addOnDestinationChangedListener({ _, destination, _ ->
             Log.d(TAG, "onCreate: :"+destination.id)
