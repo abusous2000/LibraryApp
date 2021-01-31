@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/category_list_nav"
+    app:startDestination="@id/categoryListFragment">
+    <fragment
+        android:id="@+id/categoryListFragment"
+        android:name="com.sample.libraryapplication.view.fragment.CategoryListFragment"
+        android:label="Categories" >
+        <action
+            android:id="@+id/action_categoryListFragment_to_categoryFragment"
+            app:destination="@id/categoryFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.sample.libraryapplication.view.fragment.CategoryFragment"
+        android:label="Category" >
+        <action
+            android:id="@+id/action_categoryFragment_to_categoryListFragment"
+            app:destination="@id/categoryListFragment" />
+    </fragment>
+</navigation>

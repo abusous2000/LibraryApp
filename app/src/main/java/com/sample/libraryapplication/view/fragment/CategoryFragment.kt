@@ -105,7 +105,7 @@ class CategoryFragment  : Fragment() {
                             Html.fromHtml("<font color='red' ><b>" + info + "</b></font>", Html.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
                     toast.show()
 
-                    mainActivity.selectItem(MainActivity.CATEGORY_LIST_MENU_NDX)
+//                    mainActivity.selectItem(MainActivity.CATEGORY_LIST_MENU_NDX)
                     Log.d(CategoryListFragment.TAG, "Re-Routing to MainActivity")
                 }, 200)
             }

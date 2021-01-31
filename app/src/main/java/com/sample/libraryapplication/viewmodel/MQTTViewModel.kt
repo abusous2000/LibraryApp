@@ -1,5 +1,8 @@
 package com.sample.libraryapplication.viewmodel
 
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.text.Html
@@ -55,7 +58,12 @@ class MQTTViewModel: BaseViewModel() {
         var navOptions = androidx.navigation.NavOptions.Builder().setLaunchSingleTop(true)
                                                                   .setPopUpTo(R.id.bookListFragment,true)
                                                                   .build()
-        mqttFragment.findNavController().navigate(MQTTFragmentDirections.actionMQTTFragmentToBookListFragment(),navOptions)
+//        mqttFragment.findNavController().navigate(MQTTFragmentDirections.actionMQTTFragmentToBookListFragment(),navOptions)
+//        val uri = Uri.parse("myapp://booklibrary/bookListFragment")
+//        mqttFragment.findNavController().navigate(R.id.book_list_nav)
+
+        mqttFragment.activity?.startActivity(Intent(mqttFragment.activity,MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK))
+        mqttFragment.activity?.finish();
 //        mainActivity.navController.navigate(R.id.action_bookFragment_to_bookListFragment)
 //
 //        Handler(Looper.getMainLooper()).postDelayed({

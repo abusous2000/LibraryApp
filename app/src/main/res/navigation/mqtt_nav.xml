@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/mqtt_nav"
+    app:startDestination="@id/MQTTFragment">
+    <fragment
+        android:id="@+id/MQTTFragment"
+        android:name="com.sample.libraryapplication.view.fragment.MQTTFragment"
+        android:label="MQTT" >
+        <action
+            android:id="@+id/action_MQTTFragment_to_bookListFragment"
+            app:destination="@id/bookListFragment" />
+    </fragment>
+    <include app:graph="@navigation/book_list_nav" />
+ </navigation>

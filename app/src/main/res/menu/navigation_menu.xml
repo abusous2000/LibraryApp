@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/bookListFragment"
+        android:id="@+id/book_list_nav"
         android:title="Books"
         android:icon="@drawable/ic_home"/>
     <item
-        android:id="@+id/categoryListFragment"
+        android:id="@+id/category_list_nav"
         android:title="categories"
         android:icon="@drawable/ic_news"/>
     <item
-        android:id="@+id/MQTTFragment"
+        android:id="@+id/mqtt_nav"
         android:title="MQTT"
         android:icon="@drawable/ic_profile"/>
 </menu>

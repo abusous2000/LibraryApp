@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/book_list_nav"
+    app:startDestination="@id/bookListFragment">
+
+    <fragment
+        android:id="@+id/bookListFragment"
+        android:name="com.sample.libraryapplication.view.fragment.BookListFragment"
+        android:label="Books" >
+        <deepLink app:uri="myapp://booklibrary/bookListFragment"/>
+        <action
+            android:id="@+id/action_bookListFragment_to_bookFragment"
+            app:destination="@id/bookFragment" />
+        <action
+            android:id="@+id/action_MQTTFragment_to_bookListFragment"
+            app:destination="@id/bookListFragment" />
+
+    </fragment>
+     <fragment
+        android:id="@+id/bookFragment"
+        android:name="com.sample.libraryapplication.view.fragment.BookFragment"
+        android:label="Book" >
+        <action
+            android:id="@+id/action_bookFragment_to_bookListFragment"
+
+            app:destination="@id/bookListFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/bookListFragment"
+            app:popUpToInclusive="true" />
+      </fragment>
+
+ </navigation>

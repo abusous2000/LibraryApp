@@ -3,6 +3,7 @@ package com.sample.libraryapplication.view
 
 import android.R.string
 import android.app.Activity
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -10,7 +11,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.databinding.BindingAdapter
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
@@ -59,7 +63,7 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
         arguments.putParcelable(BookFragment.selected_book, book)
         arguments.putLong(BookFragment.selected_category_id, book.bookCategoryID!!)
 
-        mainActivity.navController.navigate(R.id.action_bookListFragment_to_bookFragment, arguments)
+//        mainActivity.navController.navigate(R.id.action_bookListFragment_to_bookFragment, arguments)
 //        val bookFragment= mainActivity.supportFragmentManager.findFragmentByTag(BookFragment.TAG)?:BookFragment()
 //
 //        with(bookFragment){
@@ -121,4 +125,21 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
 @BindingAdapter("glideCropCenter")
 fun setProgress(view: ImageView, url: String?) {
     GlideApp.with(view.getContext()).load(url).centerCrop().into(view)
+}
+
+@BindingAdapter("glideExactDiminisions")
+fun setWithExactDiminsions(view: ImageView, url: String?) {
+    val target = object : CustomTarget<Bitmap>() {
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                view.setImageBitmap(resource)
+            }
+
+            override fun onLoadCleared(placeholder: Drawable?) {
+                // this is called when imageView is cleared on lifecycle call or for
+                // some other reason.
+                // if you are referencing the bitmap somewhere else too other than this imageView
+                // clear it here as you can no longer have the bitmap
+            }
+        }
+    GlideApp.with(view.getContext()).asBitmap().load(url).centerCrop().override(Target.SIZE_ORIGINAL).into(target)
 }

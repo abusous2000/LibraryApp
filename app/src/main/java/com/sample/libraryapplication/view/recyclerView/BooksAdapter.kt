@@ -15,6 +15,24 @@ import javax.inject.Inject
 
 
 class BooksAdapter(private var bookList: List<BookEntity>?) : RecyclerView.Adapter<BooksAdapter.BookViewHolder>() {
+    companion object{
+        var cnt = 0;
+        val images = arrayListOf<String>("https://www.palestineremembered.com/Acre/al-Bassa/Picture907.jpg",
+                                        "https://www.palestineremembered.com/Acre/al-Bassa/Picture909.jpg",
+                                        "https://www.palestineremembered.com/Acre/al-Bassa/Picture913.jpg",
+                                        "https://www.palestineremembered.com/Acre/al-Bassa/Picture917.jpg",
+                                        "https://www.palestineremembered.com/Acre/al-Bassa/Picture176.jpg",
+                                        "https://www.palestineremembered.com/Acre/al-Bassa/Picture2983.jpg",
+                                        "https://www.palestineremembered.com/Acre/al-Bassa/Picture2985.jpg",
+                                        "https://www.palestineremembered.com/Acre/al-Bassa/Picture2987.jpg",
+                                        "https://www.palestineremembered.com/Acre/al-Bassa/Picture7177.jpg",
+                                        "https://www.palestineremembered.com/Acre/al-Bassa/Picture7179.jpg")
+
+        fun getRandomImageURL(): String? {
+            return images.get((cnt++) % images.size)
+        }
+    }
+
     @Inject
     lateinit var bookClickHandler: BookClickHandlers
 
@@ -37,10 +55,14 @@ class BooksAdapter(private var bookList: List<BookEntity>?) : RecyclerView.Adapt
     }
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
-        holder.dataBinding.setVariable(BR.book, bookList?.get(position))
+        val book = bookList?.get(position)
+        book?.url = getRandomImageURL()
+        holder.dataBinding.setVariable(BR.book, book)
         holder.dataBinding.setVariable(BR.clickHandlers, bookClickHandler)
 //        holder.dataBinding.imageView.setImageResource(bookList!!.get(position).resourceId)
     }
+
+
 
     class BookViewHolder(binding: ListItemBookBinding) : RecyclerView.ViewHolder(binding.root) {
         var dataBinding = binding

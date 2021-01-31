@@ -83,7 +83,7 @@ class BookViewModel: BaseViewModel()  {
                                                                     .setPopUpTo(R.id.bookListFragment,true)
                                                                     .build()
 
-            mainActivity.navController.navigate(BookFragmentDirections.actionBookFragmentToBookListFragment(),navOptions)
+//            mainActivity.navController.navigate(BookFragmentDirections.actionBookFragmentToBookListFragment(),navOptions)
 //
 //            mainActivity.finishAffinity()
             shouldFinishActivity.value = true

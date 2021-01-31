@@ -20,12 +20,12 @@ class DrawerItemCustomAdapter(mContext: Context, var layoutResourceId: Int, data
 //        var listItem: View = convertView!!
         val inflater = (mContext as Activity).layoutInflater
         var listItem = inflater.inflate(layoutResourceId, parent, false)
-        val imageViewIcon: ImageView = listItem.findViewById(R.id.imageViewIcon) as ImageView
-        val textViewName = listItem.findViewById(R.id.textViewName) as TextView
+//        val imageViewIcon: ImageView = listItem.findViewById(R.id.imageViewIcon) as ImageView
+//        val textViewName = listItem.findViewById(R.id.textViewName) as TextView
         val (icon, name) = data[position]
 
-        imageViewIcon.setImageResource(icon)
-        textViewName.text = name
+//        imageViewIcon.setImageResource(icon)
+//        textViewName.text = name
 
         return listItem
     }

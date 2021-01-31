@@ -21,6 +21,7 @@ import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.databinding.BookFragmentBinding
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.view.MainActivity
+import com.sample.libraryapplication.view.recyclerView.BooksAdapter
 import com.sample.libraryapplication.viewmodel.BookViewModel
 
 
@@ -99,6 +100,7 @@ class BookFragment  : Fragment() {
         if ( this::binding.isInitialized == false )
             binding = BookFragmentBinding.inflate(layoutInflater, container, false)
         binding.viewModel = viewModel
+        selectedBook?.url = BooksAdapter.getRandomImageURL()
         binding.book = selectedBook
         binding.lifecycleOwner = this
     }
