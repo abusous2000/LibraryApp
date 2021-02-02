@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-android'
     id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
     id 'kotlin-android-extensions'
 }
 
@@ -36,6 +37,7 @@ android {
         dataBinding true
         viewBinding true
     }
+
     sourceSets {
         main {
             java {
@@ -86,8 +88,12 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime:2.2.0"
     kapt "androidx.lifecycle:lifecycle-compiler:2.2.0"
     // dagger 2
-    api "com.google.dagger:dagger:$dagger_version"
-    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+//    api "com.google.dagger:dagger:$dagger_version"
+//    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:hilt-android-compiler:$rootProject.hiltVersion"
+    implementation "com.google.dagger:hilt-android:$rootProject.hiltVersion"
+    kapt "androidx.hilt:hilt-compiler:$rootProject.hiltAndroidXVersion"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$rootProject.hiltAndroidXVersion"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'

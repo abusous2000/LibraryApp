@@ -32,14 +32,11 @@ class MyMQTTHandler @Inject constructor() : MqttClientHelper() {
     val myPrefs: MyPrefsRespository by lazy {
         MyPrefsRespository(context)
     }
-    init{
-        LibraryApplication.instance.libraryComponent.inject(this)
-    }
     fun mqttSettings(): MutableMap<String, String> {
         var mqttSettings = mutableMapOf<String,String>()
 
-        mqttSettings.put(BROKER_PREFS,myPrefs.getString(BROKER_PREFS,"N/A"))
-        mqttSettings.put(TOPIC_PREFS,myPrefs.getString(TOPIC_PREFS,"N/A"))
+        mqttSettings.put(BROKER_PREFS,myPrefs.getString(BROKER_PREFS,default_broker))
+        mqttSettings.put(TOPIC_PREFS,myPrefs.getString(TOPIC_PREFS,default_topic))
 
         return mqttSettings
     }

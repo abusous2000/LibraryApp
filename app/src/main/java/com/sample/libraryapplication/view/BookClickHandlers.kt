@@ -63,7 +63,7 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
         arguments.putParcelable(BookFragment.selected_book, book)
         arguments.putLong(BookFragment.selected_category_id, book.bookCategoryID!!)
 
-//        mainActivity.navController.navigate(R.id.action_bookListFragment_to_bookFragment, arguments)
+        mainActivity.currentNavController?.value?.navigate(R.id.action_bookListFragment_to_bookFragment, arguments)
 //        val bookFragment= mainActivity.supportFragmentManager.findFragmentByTag(BookFragment.TAG)?:BookFragment()
 //
 //        with(bookFragment){

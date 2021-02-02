@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter
 import androidx.core.graphics.drawable.DrawableCompat.setLayoutDirection
 import androidx.core.view.ViewCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -31,6 +32,7 @@ import com.sample.libraryapplication.view.BookClickHandlers
 import com.sample.libraryapplication.view.MainActivity
 import com.sample.libraryapplication.view.recyclerView.BooksAdapter
 import com.sample.libraryapplication.viewmodel.BookListFragmentViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 // TODO: Rename parameter arguments, choose names that match
@@ -39,6 +41,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 @Suppress("DEPRECATION")
+@AndroidEntryPoint
 class BookListFragment : BaseFragment() {
     companion object {
         val TAG = "BookListFragment"
@@ -49,7 +52,7 @@ class BookListFragment : BaseFragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    lateinit var bookListViewModel: BookListFragmentViewModel
+    val bookListViewModel: BookListFragmentViewModel by viewModels()
 //    private var rootView: View? = null
     lateinit var binding: BookListFragmentBinding
     @Inject
@@ -127,10 +130,10 @@ class BookListFragment : BaseFragment() {
         observeViewModel()
     }
     private fun createViewModel() {
-        bookListViewModel = ViewModelProvider(this).get(BookListFragmentViewModel::class.java)
+//        bookListViewModel = ViewModelProvider(this).get(BookListFragmentViewModel::class.java)
     }
     private fun injectDagger() {
-        LibraryApplication.instance.libraryComponent.inject(this)
+
     }
     private fun setBinding() {
 //        if ( rootView == null)
@@ -215,7 +218,7 @@ class BookListFragment : BaseFragment() {
         if (booksAdapter == null) {
             val recycler_view_books = binding!!.recyclerViewBooks
             recycler_view_books.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
-            booksAdapter = BooksAdapter(bookList)
+            booksAdapter = BooksAdapter(bookList,bookClickHandlers)
             recycler_view_books.adapter = booksAdapter
             val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
             itemTouchHelper.attachToRecyclerView(recycler_view_books)

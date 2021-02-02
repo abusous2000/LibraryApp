@@ -14,7 +14,7 @@ import com.sample.libraryapplication.view.BookClickHandlers
 import javax.inject.Inject
 
 
-class BooksAdapter(private var bookList: List<BookEntity>?) : RecyclerView.Adapter<BooksAdapter.BookViewHolder>() {
+class BooksAdapter @Inject constructor(private var bookList: List<BookEntity>?, val bookClickHandlers: BookClickHandlers) : RecyclerView.Adapter<BooksAdapter.BookViewHolder>() {
     companion object{
         var cnt = 0;
         val images = arrayListOf<String>("https://www.palestineremembered.com/Acre/al-Bassa/Picture907.jpg",
@@ -33,11 +33,7 @@ class BooksAdapter(private var bookList: List<BookEntity>?) : RecyclerView.Adapt
         }
     }
 
-    @Inject
-    lateinit var bookClickHandler: BookClickHandlers
-
     init{
-        LibraryApplication.instance.libraryComponent.inject(this)
     }
     fun updateBookList(newBooksList: List<BookEntity>?) {
         val diffResult = DiffUtil.calculateDiff(BooksDiffCallback(bookList, newBooksList), false)
@@ -58,7 +54,7 @@ class BooksAdapter(private var bookList: List<BookEntity>?) : RecyclerView.Adapt
         val book = bookList?.get(position)
         book?.url = getRandomImageURL()
         holder.dataBinding.setVariable(BR.book, book)
-        holder.dataBinding.setVariable(BR.clickHandlers, bookClickHandler)
+        holder.dataBinding.setVariable(BR.clickHandlers, bookClickHandlers)
 //        holder.dataBinding.imageView.setImageResource(bookList!!.get(position).resourceId)
     }
 

@@ -9,13 +9,8 @@ import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import javax.inject.Inject
 
-class BOBook @javax.inject.Inject constructor(): BOAbstract<BookEntity>() {
+class BOBook @javax.inject.Inject constructor(val bookDAO: BookDAO): BOAbstract<BookEntity>() {
     lateinit var book: LiveData<BookEntity>
-    @Inject
-    lateinit var bookDAO: BookDAO
-    init{
-        LibraryApplication.instance.libraryComponent.inject(this)
-    }
     override fun getDAO(): BaseDAO<BookEntity> {
         return bookDAO;
     }

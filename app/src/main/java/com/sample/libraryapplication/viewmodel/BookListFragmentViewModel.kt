@@ -1,5 +1,6 @@
 package com.sample.libraryapplication.viewmodel
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.sample.libraryapplication.LibraryApplication
@@ -9,21 +10,14 @@ import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import javax.inject.Inject
 
-class BookListFragmentViewModel(): BaseViewModel() {
+class BookListFragmentViewModel @ViewModelInject constructor(val boCategory: BOCategory): BaseViewModel() {
     companion object{
         private const val TAG = "BookListFragmentViewModel"
         public var selectedCategory: CategoryEntity? = null
     }
 
-    @Inject
-    lateinit var boCategory: BOCategory
 
     public var isLoading = MutableLiveData<Boolean>()
-
-    override fun registerWithComponent() {
-        LibraryApplication.instance.libraryComponent.inject( this)
-    }
-
     fun getBooksListSelectedCategory(categoryID: Long) : LiveData<List<BookEntity>> {
         selectedCategory = boCategory.categories.value?.filter { it.id == categoryID }?.first() as CategoryEntity
 

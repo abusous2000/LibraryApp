@@ -14,19 +14,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class BOCategory @Inject constructor(): BOAbstract<CategoryEntity>(){
+class BOCategory @Inject constructor(val categoryDAO: CategoryDAO, val boBook: BOBook): BOAbstract<CategoryEntity>(){
     lateinit var category: LiveData<CategoryEntity>
     lateinit var books: LiveData<List<BookEntity>>
     var categories = MutableLiveData(mutableListOf<CategoryEntity>())
     //This is a hack, for some reason observer of categories are not notified only once
     public var categoryListUpdated = MutableLiveData<Boolean>()
-    @Inject
-    lateinit var boBook: BOBook
-    @Inject
-    lateinit var categoryDAO: CategoryDAO
-    init{
-        LibraryApplication.instance.libraryComponent.inject(this)
-    }
     override fun getDAO(): BaseDAO<CategoryEntity> {
         listOf<CategoryEntity>()
         return categoryDAO

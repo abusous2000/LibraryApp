@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.sample.libraryapplication.LibraryApplication
@@ -20,14 +21,16 @@ import com.sample.libraryapplication.databinding.CategoryFragmentBinding
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.view.MainActivity
 import com.sample.libraryapplication.viewmodel.CategoryViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CategoryFragment  : Fragment() {
     companion object {
         val TAG = "CategoryFragment"
         val is_update_category = "is_update_category"
         val selected_category = "selected_category"
     }
-    private lateinit var viewModel: CategoryViewModel
+    private val viewModel: CategoryViewModel by viewModels()
     private lateinit var binding: CategoryFragmentBinding
     private var isUpdateCategory: Boolean = false
     private var selectedCategory: CategoryEntity? = null
@@ -51,8 +54,6 @@ class CategoryFragment  : Fragment() {
         super.onCreate(savedInstanceState)
     }
     private fun injectDagger() {
-
-        LibraryApplication.instance.libraryComponent.inject(this)
     }
 
     private fun parseArguments() {
@@ -62,8 +63,8 @@ class CategoryFragment  : Fragment() {
     }
 
     private fun createViewModel() {
-        if ( !this::viewModel.isInitialized)
-            viewModel = ViewModelProvider(this).get(CategoryViewModel::class.java)
+//        if ( !this::viewModel.isInitialized)
+//            viewModel = ViewModelProvider(this).get(CategoryViewModel::class.java)
         viewModel.clear()
         binding.viewModel = viewModel
         viewModel.selectedCategory = selectedCategory

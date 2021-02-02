@@ -1,6 +1,8 @@
 package com.sample.libraryapplication.viewmodel
 
+import android.content.Intent
 import android.util.Log
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavOptions
 import com.sample.libraryapplication.LibraryApplication
@@ -13,10 +15,8 @@ import com.sample.libraryapplication.view.fragment.BookFragment
 import com.sample.libraryapplication.view.fragment.BookFragmentDirections
 import javax.inject.Inject
 
-class BookViewModel: BaseViewModel()  {
+class BookViewModel @ViewModelInject constructor(val boCategory: BOCategory): BaseViewModel()  {
     private val TAG = "BookViewModel"
-    @Inject
-    lateinit var boCategory: BOCategory
 
     val isBookNameEmpty = MutableLiveData<Boolean>()
     val isBookPriceEmpty = MutableLiveData<Boolean>()
@@ -27,8 +27,11 @@ class BookViewModel: BaseViewModel()  {
     var bookName: String? = null
     var bookPrice: String? = null
 
-    override fun registerWithComponent() {
-        LibraryApplication.instance.libraryComponent.inject( this)
+    init{
+        registerWithComponent()
+    }
+    fun registerWithComponent() {
+
         selectedCategoryId?.let { boCategory.find(it) }
     }
 
@@ -79,13 +82,16 @@ class BookViewModel: BaseViewModel()  {
 //            while(mainActivity.supportFragmentManager.getBackStackEntryCount() > 0) { mainActivity.supportFragmentManager.popBackStackImmediate(); }
 //            mainActivity.navController.popBackStack(R.id.bookListFragment, true);
 //            BookFragmentDirections.actionBookFragmentToBookListFragment()
-            var navOptions = androidx.navigation.NavOptions.Builder().setLaunchSingleTop(true)
-                                                                    .setPopUpTo(R.id.bookListFragment,true)
-                                                                    .build()
+//            var navOptions = androidx.navigation.NavOptions.Builder().setLaunchSingleTop(true)
+//                                                                    .setPopUpTo(R.id.bookListFragment,true)
+//                                                                    .build()
 
 //            mainActivity.navController.navigate(BookFragmentDirections.actionBookFragmentToBookListFragment(),navOptions)
 //
 //            mainActivity.finishAffinity()
+            mainActivity?.startActivity(Intent(mainActivity,MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            mainActivity.finish();
+
             shouldFinishActivity.value = true
         } else
             shouldFinishActivity.value = false

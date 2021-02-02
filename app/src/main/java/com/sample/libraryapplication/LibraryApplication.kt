@@ -2,29 +2,17 @@ package com.sample.libraryapplication
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.sample.libraryapplication.dagger.DaggerLibraryComponent
-import com.sample.libraryapplication.dagger.LibraryComponent
-import com.sample.libraryapplication.dagger.module.RoomDatabaseModule
-import com.sample.libraryapplication.service.MyMQTTHandler
-import javax.inject.Inject
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class LibraryApplication : Application() {
 
     companion object {
         lateinit var instance: LibraryApplication
-        lateinit var roomDatabaseModule : RoomDatabaseModule
     }
-    lateinit var libraryComponent: LibraryComponent
-
     override fun onCreate() {
         super.onCreate()
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         instance = this
-        roomDatabaseModule = RoomDatabaseModule(this)
-        libraryComponent = DaggerLibraryComponent
-            .builder()
-            .roomDatabaseModule(roomDatabaseModule)
-            .build()
-        LibraryApplication.instance.libraryComponent.inject(this)
     }
 }

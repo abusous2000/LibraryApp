@@ -26,7 +26,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DBPopulator @Inject constructor() {
+class DBPopulator @Inject constructor(val boCategory: BOCategory, val boBook: BOBook) {
     companion object{
         val defaultGithubJsonDbAccount = "abusous2000"
         val GITHUB_JSON_DB_ACCOUNT = "GithubJsonDbAccount"
@@ -34,13 +34,8 @@ class DBPopulator @Inject constructor() {
     }
     val TAG = "DBPopulator"
     init {
-        LibraryApplication.instance.libraryComponent.inject(this)
-    }
 
-    @Inject
-    lateinit var boCategory: BOCategory
-    @Inject
-    lateinit var boBook: BOBook
+    }
     val myPrefs: MyPrefsRespository by lazy {
         MyPrefsRespository(LibraryApplication.instance.applicationContext)
     }
@@ -58,7 +53,6 @@ class DBPopulator @Inject constructor() {
     fun populateDB() {
         dbPopulated.postValue(true)
   //        val gson = GsonBuilder().serializeNulls().create()
-        LibraryApplication.instance.libraryComponent.inject(this)
         val githubJsonDbAccount = myPrefs.getString(GITHUB_JSON_DB_ACCOUNT, defaultGithubJsonDbAccount)
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)

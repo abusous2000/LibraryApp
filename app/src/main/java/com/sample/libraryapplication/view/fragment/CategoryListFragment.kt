@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -29,14 +30,16 @@ import com.sample.libraryapplication.view.BookClickHandlers
 import com.sample.libraryapplication.view.recyclerView.BooksAdapter
 import com.sample.libraryapplication.view.recyclerView.CategoriesAdapter
 import com.sample.libraryapplication.viewmodel.CategoryListFragmentViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class CategoryListFragment : Fragment() {
     companion object {
         val TAG = "CategoryListFragment"
     }
     private var roootView: View? = null
-    lateinit var categoryListFragmentViewModel: CategoryListFragmentViewModel
+    val categoryListFragmentViewModel: CategoryListFragmentViewModel by viewModels()
     private lateinit var binding: CategoryListFragmentBinding
     @Inject
     lateinit var boCategory: BOCategory
@@ -77,10 +80,9 @@ class CategoryListFragment : Fragment() {
         return roootView
     }
     private fun createViewModel() {
-        categoryListFragmentViewModel = ViewModelProvider(this).get(CategoryListFragmentViewModel::class.java)
+//        categoryListFragmentViewModel = ViewModelProvider(this).get(CategoryListFragmentViewModel::class.java)
     }
     private fun injectDagger() {
-        LibraryApplication.instance.libraryComponent.inject(this)
     }
     private fun setBinding() {
         binding = CategoryListFragmentBinding.inflate(layoutInflater,container,false)
@@ -134,7 +136,7 @@ class CategoryListFragment : Fragment() {
         if (categoriesAdapter == null) {
             var recycler_view_categories = binding.recyclerViewCategories
             recycler_view_categories.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
-            categoriesAdapter = CategoriesAdapter(categoryList)
+            categoriesAdapter = CategoriesAdapter(categoryList,bookClickHandlers)
             recycler_view_categories.adapter = categoriesAdapter
             val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
             itemTouchHelper.attachToRecyclerView(recycler_view_categories)

@@ -3,6 +3,8 @@ package com.sample.libraryapplication.view
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Html
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -11,6 +13,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
+import dagger.hilt.android.AndroidEntryPoint
 
 data class MenuItemDataModel(var icon: Int, var name: String)
 //class MainActivity2 : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -240,6 +243,7 @@ data class MenuItemDataModel(var icon: Int, var name: String)
 /**
  * An activity that inflates a layout that has a [BottomNavigationView].
  */
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
         companion object {
             val TAG = MainActivity::class.java.simpleName
@@ -248,7 +252,7 @@ class MainActivity : AppCompatActivity() {
             val MQTT_SETTINGS_MENU_NDX = 2
             val QUITE_APP_MENU_NDX = 3
         }
-    private var currentNavController: LiveData<NavController>? = null
+    var currentNavController: LiveData<NavController>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -256,7 +260,7 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             setupBottomNavigationBar()
         } // Else, need to wait for onRestoreInstanceState
-                ActivityWeakMapRef.put(TAG, this);
+        ActivityWeakMapRef.put(TAG, this);
     }
 
     /**
@@ -295,7 +299,9 @@ class MainActivity : AppCompatActivity() {
                 super.onBackPressed()
                 return
             }
-
+            var toast = Toast.makeText(baseContext,
+                    Html.fromHtml("<font color='red' ><b>Double press to exist</b></font>", Html.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
+            toast.show()
             this.doubleBackToExitPressedOnce = true
             //        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show()
 

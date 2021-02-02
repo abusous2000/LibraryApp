@@ -8,9 +8,11 @@ import android.os.Looper
 import android.text.Html
 import android.util.Log
 import android.widget.Toast
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.navigation.fragment.findNavController
 import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
+import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.service.MyMQTTHandler
 import com.sample.libraryapplication.view.fragment.BookListFragment
@@ -19,19 +21,11 @@ import com.sample.libraryapplication.view.MainActivity
 import com.sample.libraryapplication.view.fragment.MQTTFragmentDirections
 import javax.inject.Inject
 
-class MQTTViewModel: BaseViewModel() {
+class MQTTViewModel @ViewModelInject constructor(val myMQTTHandler: MyMQTTHandler): BaseViewModel() {
     val TAG = "MQTTViewModel"
-    @Inject
-    lateinit var myMQTTHandler: MyMQTTHandler
-    lateinit var mqttSettings:  MutableMap<String, String>
+    val mqttSettings = myMQTTHandler.mqttSettings()
 
-    override fun registerWithComponent() {
-        LibraryApplication.instance.libraryComponent.inject(this)
-
-        mqttSettings = myMQTTHandler.mqttSettings()
-    }
-
-    fun getBroker(): String?{
+     fun getBroker(): String?{
         return mqttSettings.get(MyMQTTHandler.BROKER_PREFS)
     }
     fun setBroker(charSequence: CharSequence){
@@ -55,9 +49,9 @@ class MQTTViewModel: BaseViewModel() {
 //        toast.show()
         myMQTTHandler.reConnect()
         val mqttFragment = ActivityWeakMapRef.get(MQTTFragment.TAG) as MQTTFragment
-        var navOptions = androidx.navigation.NavOptions.Builder().setLaunchSingleTop(true)
-                                                                  .setPopUpTo(R.id.bookListFragment,true)
-                                                                  .build()
+//        var navOptions = androidx.navigation.NavOptions.Builder().setLaunchSingleTop(true)
+//                                                                  .setPopUpTo(R.id.bookListFragment,true)
+//                                                                  .build()
 //        mqttFragment.findNavController().navigate(MQTTFragmentDirections.actionMQTTFragmentToBookListFragment(),navOptions)
 //        val uri = Uri.parse("myapp://booklibrary/bookListFragment")
 //        mqttFragment.findNavController().navigate(R.id.book_list_nav)

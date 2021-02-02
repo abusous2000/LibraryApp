@@ -4,27 +4,23 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.databinding.BookFragmentBinding
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
-import com.sample.libraryapplication.view.MainActivity
 import com.sample.libraryapplication.view.recyclerView.BooksAdapter
 import com.sample.libraryapplication.viewmodel.BookViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class BookFragment  : Fragment() {
     companion object {
         val TAG = "BookFragment"
@@ -32,7 +28,7 @@ class BookFragment  : Fragment() {
         val selected_book = "selected_book"
         val selected_category_id = "selected_category_id"
     }
-    private lateinit var viewModel: BookViewModel
+    private val viewModel: BookViewModel by viewModels()
     private lateinit var binding: BookFragmentBinding
     private var isUpdateBook: Boolean = false
     private var selectedBook: BookEntity? = null
@@ -57,8 +53,6 @@ class BookFragment  : Fragment() {
         super.onCreate(savedInstanceState)
     }
     private fun injectDagger() {
-
-        LibraryApplication.instance.libraryComponent.inject(this)
     }
 
     private fun parseArguments() {
@@ -69,8 +63,6 @@ class BookFragment  : Fragment() {
     }
 
     private fun createViewModel() {
-        if ( !this::viewModel.isInitialized)
-            viewModel = ViewModelProvider(this).get(BookViewModel::class.java)
         viewModel.clear()
         binding.viewModel = viewModel
 //        Thread(Runnable {

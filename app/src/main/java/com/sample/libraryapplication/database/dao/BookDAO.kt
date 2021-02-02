@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import com.sample.libraryapplication.database.entity.BookEntity
-import com.sample.libraryapplication.database.entity.CategoryEntity
 
 @Dao
 interface BookDAO: BaseDAO<BookEntity> {

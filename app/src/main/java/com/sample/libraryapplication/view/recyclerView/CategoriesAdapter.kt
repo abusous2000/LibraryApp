@@ -14,13 +14,8 @@ import com.sample.libraryapplication.view.BookClickHandlers
 import javax.inject.Inject
 
 
-class CategoriesAdapter(private var categoryList: List<CategoryEntity>?) : RecyclerView.Adapter<CategoriesAdapter.CategoryViewHolder>() {
-    @Inject
-    lateinit var bookClickHandler: BookClickHandlers
-
-    init{
-        LibraryApplication.instance.libraryComponent.inject(this)
-    }
+class CategoriesAdapter(private var categoryList: List<CategoryEntity>?, val bookClickHandler: BookClickHandlers) :
+      RecyclerView.Adapter<CategoriesAdapter.CategoryViewHolder>() {
     fun updateCategoryList(newCategoriesList: List<CategoryEntity>?) {
         val diffResult = DiffUtil.calculateDiff(CategoriesDiffCallback(categoryList, newCategoriesList), false)
         categoryList = newCategoriesList
