@@ -300,7 +300,7 @@ class MainActivity : AppCompatActivity() {
                 return
             }
             var toast = Toast.makeText(baseContext,
-                    Html.fromHtml("<font color='red' ><b>Double press to exist</b></font>", Html.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
+                    Html.fromHtml("<font color='red' ><b>Double back press to exist</b></font>", Html.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
             toast.show()
             this.doubleBackToExitPressedOnce = true
             //        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show()

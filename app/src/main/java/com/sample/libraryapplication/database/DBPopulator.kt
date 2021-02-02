@@ -26,7 +26,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DBPopulator @Inject constructor(val boCategory: BOCategory, val boBook: BOBook) {
+class DBPopulator @Inject constructor(val boCategory: BOCategory, val boBook: BOBook, val booksRestfulService :BooksRestfulService) {
     companion object{
         val defaultGithubJsonDbAccount = "abusous2000"
         val GITHUB_JSON_DB_ACCOUNT = "GithubJsonDbAccount"
@@ -53,20 +53,20 @@ class DBPopulator @Inject constructor(val boCategory: BOCategory, val boBook: BO
     fun populateDB() {
         dbPopulated.postValue(true)
   //        val gson = GsonBuilder().serializeNulls().create()
-        val githubJsonDbAccount = myPrefs.getString(GITHUB_JSON_DB_ACCOUNT, defaultGithubJsonDbAccount)
-        val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val okHttpClient = OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
-                .build()
-        val retrofit = Retrofit.Builder()
-                .baseUrl("https://my-json-server.typicode.com/$githubJsonDbAccount/demo/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .callbackExecutor(Executors.newSingleThreadExecutor())
-                .client(okHttpClient)
-                .build()
+//        val githubJsonDbAccount = myPrefs.getString(GITHUB_JSON_DB_ACCOUNT, defaultGithubJsonDbAccount)
+//        val loggingInterceptor = HttpLoggingInterceptor()
+//        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+//        val okHttpClient = OkHttpClient.Builder()
+//                .addInterceptor(loggingInterceptor)
+//                .build()
+//        val retrofit = Retrofit.Builder()
+//                .baseUrl("https://my-json-server.typicode.com/$githubJsonDbAccount/demo/")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .callbackExecutor(Executors.newSingleThreadExecutor())
+//                .client(okHttpClient)
+//                .build()
 
-        val booksRestfulService = retrofit.create(BooksRestfulService::class.java)
+//        val booksRestfulService = retrofit.create(BooksRestfulService::class.java)
         val call: Call<List<CategoryEntity>> = booksRestfulService.getCategories()
         call.enqueue(object : Callback<List<CategoryEntity>> {
             override fun onResponse(call: Call<List<CategoryEntity>>, response: Response<List<CategoryEntity>>
