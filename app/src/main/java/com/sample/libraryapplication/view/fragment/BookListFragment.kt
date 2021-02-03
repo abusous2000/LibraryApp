@@ -34,9 +34,7 @@ class BookListFragment : BaseFragment() {
     companion object {
         val TAG = "BookListFragment"
     }
-
     val bookListViewModel: BookListFragmentViewModel by viewModels()
-//    private var rootView: View? = null
     lateinit var binding: BookListFragmentBinding
     @Inject
     lateinit var boCategory: BOCategory
@@ -48,7 +46,6 @@ class BookListFragment : BaseFragment() {
     private var booksAdapter: BooksAdapter? = null
     private var selectedCategory: CategoryEntity? = null
     private var container: ViewGroup? = null
-
 
     override fun onCreatePersistentView(inflater: LayoutInflater,container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // I used data-binding
@@ -71,14 +68,12 @@ class BookListFragment : BaseFragment() {
         super.onPersistentViewCreated(view, savedInstanceState)
         ActivityWeakMapRef.put(TAG, this);
         setBinding()
-
-        if (dbPopulator.doesDbExist(requireContext()) == false) {
+       if (dbPopulator.doesDbExist(requireContext()) == false) {
             dbPopulator.dbPopulated.observe(viewLifecycleOwner, Observer {
                 if (it) {
                     postDBStart()
                 }
             })
-
             Handler(Looper.getMainLooper()).postDelayed({
                 Log.d(TAG, "onCreate: repopulating DB from main thread")
                 dbPopulator.populateDB()
@@ -92,7 +87,7 @@ class BookListFragment : BaseFragment() {
             bookListViewModel.isLoading.value = false
             binding!!.progressBar.visibility = View.GONE
             Log.d(TAG, "onCreate: isLoading=true")
-        }, 1000)
+        }, 500)
     }
 
     private fun postDBStart() {
@@ -105,7 +100,6 @@ class BookListFragment : BaseFragment() {
         binding!!.viewModel = bookListViewModel
         binding!!.lifecycleOwner = viewLifecycleOwner
         binding!!.clickHandlers = bookClickHandlers
-//        }
     }
     fun observeViewModel() {
         //This is a hack, for some reason observer of categories are not notified only once
@@ -120,8 +114,7 @@ class BookListFragment : BaseFragment() {
             if (!isDetached) {
                 bookListViewModel.isLoading.value = false
                 list.forEach {
-                    Log.d(TAG + ": observeViewModel", "${it.id}-->Category Name: ${it.categoryName} - Category Desc: ${it.categoryDesc}"
-                    )
+                    Log.d(TAG + ": observeViewModel", "${it.id}-->Category Name: ${it.categoryName} - Category Desc: ${it.categoryDesc}")
                 }
                 setDataToSpinner(list)
             }

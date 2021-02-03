@@ -12,9 +12,7 @@ class BookListFragmentViewModel @ViewModelInject constructor(val boCategory: BOC
         private const val TAG = "BookListFragmentViewModel"
         public var selectedCategory: CategoryEntity? = null
     }
-
-
-    public var isLoading = MutableLiveData<Boolean>()
+    var isLoading = MutableLiveData<Boolean>()
     fun getBooksListSelectedCategory(categoryID: Long) : LiveData<List<BookEntity>> {
         selectedCategory = boCategory.categories.value?.filter { it.id == categoryID }?.first() as CategoryEntity
 
