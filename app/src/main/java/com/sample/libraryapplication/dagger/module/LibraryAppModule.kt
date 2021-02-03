@@ -5,7 +5,7 @@ import com.sample.libraryapplication.BuildConfig
 import com.sample.libraryapplication.bo.BOBook
 import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.database.DBPopulator
-import com.sample.libraryapplication.database.LibraryDatabase
+import com.sample.libraryapplication.database.LibraryRoomDB
 import com.sample.libraryapplication.database.dao.BookDAO
 import com.sample.libraryapplication.database.dao.CategoryDAO
 import com.sample.libraryapplication.service.BooksRestfulService
@@ -26,8 +26,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
-class RoomDatabaseModule() {
-
+class LibraryAppModule() {
     companion object {
         private const val EDUCATIONAL_BOOKS_CATEGORY_ID = 1L
         private const val NOVELS_CATEGORY_ID = 2L
@@ -36,11 +35,11 @@ class RoomDatabaseModule() {
     }
     @Singleton
     @Provides
-    fun providesCategoryDAO(@ApplicationContext appContext: Context) = LibraryDatabase.getInstance(appContext).getCategoryDAO()
+    fun providesCategoryDAO(@ApplicationContext appContext: Context) = LibraryRoomDB.getInstance(appContext).getCategoryDAO()
 
     @Singleton
     @Provides
-    fun providesBookDAO(@ApplicationContext appContext: Context) = LibraryDatabase.getInstance(appContext).getBookDAO()
+    fun providesBookDAO(@ApplicationContext appContext: Context) = LibraryRoomDB.getInstance(appContext).getBookDAO()
 
     @Singleton
     @Provides

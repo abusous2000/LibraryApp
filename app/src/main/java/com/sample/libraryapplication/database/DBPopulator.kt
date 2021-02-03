@@ -8,7 +8,7 @@ import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.bo.BOBook
 import com.sample.libraryapplication.bo.BOCategory
-import com.sample.libraryapplication.dagger.module.RoomDatabaseModule
+import com.sample.libraryapplication.dagger.module.LibraryAppModule
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.service.BooksRestfulService
@@ -42,7 +42,7 @@ class DBPopulator @Inject constructor(val boCategory: BOCategory, val boBook: BO
 
 
     fun doesDbExist(context: Context): Boolean {
-        val dbFile: File = context.getDatabasePath(RoomDatabaseModule.DB_NAME)
+        val dbFile: File = context.getDatabasePath(LibraryAppModule.DB_NAME)
         return dbFile.exists()
     }
     fun populateDB() {

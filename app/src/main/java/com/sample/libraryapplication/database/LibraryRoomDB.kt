@@ -10,7 +10,7 @@ import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 
 @Database(entities = [CategoryEntity::class, BookEntity::class], version = 1,exportSchema = false)
-abstract class LibraryDatabase : RoomDatabase() {
+abstract class LibraryRoomDB : RoomDatabase() {
 
     abstract fun getCategoryDAO(): CategoryDAO
     abstract fun getBookDAO(): BookDAO
@@ -18,9 +18,9 @@ abstract class LibraryDatabase : RoomDatabase() {
     companion object {
         const val DB_NAME = "library_database"
         @Volatile
-        private var INSTANCE: LibraryDatabase? = null
+        private var INSTANCE: LibraryRoomDB? = null
 
-        fun getInstance(appCtx: Context): LibraryDatabase {
+        fun getInstance(appCtx: Context): LibraryRoomDB {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
             // it once by using synchronized. Only one thread may enter a synchronized block at a
             // time.
@@ -29,7 +29,7 @@ abstract class LibraryDatabase : RoomDatabase() {
                 // Smart cast is only available to local variables.
                 var instance = INSTANCE
                 if (instance == null) {
-                    instance = Room.databaseBuilder(appCtx, LibraryDatabase::class.java, DB_NAME)
+                    instance = Room.databaseBuilder(appCtx, LibraryRoomDB::class.java, DB_NAME)
                                     .fallbackToDestructiveMigration()
                                     //            .addCallback(databaseCallback)
                                     //            .allowMainThreadQueries()
