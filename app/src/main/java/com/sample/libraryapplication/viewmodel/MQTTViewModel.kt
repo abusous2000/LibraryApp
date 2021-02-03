@@ -2,25 +2,15 @@ package com.sample.libraryapplication.viewmodel
 
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.net.Uri
 import android.os.Handler
 import android.os.Looper
-import android.text.Html
 import android.util.Log
-import android.widget.Toast
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.navigation.fragment.findNavController
-import com.sample.libraryapplication.LibraryApplication
-import com.sample.libraryapplication.R
-import com.sample.libraryapplication.bo.BOCategory
-import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.service.MyMQTTHandler
+import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.utils.showColoredToast
-import com.sample.libraryapplication.view.fragment.BookListFragment
-import com.sample.libraryapplication.view.fragment.MQTTFragment
 import com.sample.libraryapplication.view.MainActivity
-import com.sample.libraryapplication.view.fragment.MQTTFragmentDirections
-import javax.inject.Inject
+import com.sample.libraryapplication.view.fragment.BookListFragment
 
 class MQTTViewModel @ViewModelInject constructor(val myMQTTHandler: MyMQTTHandler): BaseViewModel() {
     val TAG = "MQTTViewModel"

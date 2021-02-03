@@ -6,7 +6,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.databinding.ListItemBookBinding

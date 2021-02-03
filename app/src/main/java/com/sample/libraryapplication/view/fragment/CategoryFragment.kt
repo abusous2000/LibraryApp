@@ -4,22 +4,18 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.CategoryFragmentBinding
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
-import com.sample.libraryapplication.view.MainActivity
+import com.sample.libraryapplication.utils.showColoredToast
 import com.sample.libraryapplication.viewmodel.CategoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,7 +34,6 @@ class CategoryFragment  : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         this.container = container
         ActivityWeakMapRef.put(TAG, this);
-        injectDagger()
         if ( this::binding.isInitialized == false ) {
             binding = CategoryFragmentBinding.inflate(layoutInflater, container, false)
          }
@@ -49,13 +44,6 @@ class CategoryFragment  : Fragment() {
 
         return binding.root
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-    private fun injectDagger() {
-    }
-
     private fun parseArguments() {
         if( requireArguments().get("is_update_category") !=null)
             isUpdateCategory = requireArguments().getBoolean("is_update_category", false)
@@ -63,8 +51,6 @@ class CategoryFragment  : Fragment() {
     }
 
     private fun createViewModel() {
-//        if ( !this::viewModel.isInitialized)
-//            viewModel = ViewModelProvider(this).get(CategoryViewModel::class.java)
         viewModel.clear()
         binding.viewModel = viewModel
         viewModel.selectedCategory = selectedCategory
@@ -100,13 +86,8 @@ class CategoryFragment  : Fragment() {
         viewModel.shouldFinishActivity.observe(this, Observer {
             if (it && !isDetached) {
                 Handler(Looper.getMainLooper()).postDelayed({
-                    var mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
                     val info = "Category has been " + (if ( isUpdateCategory ) "Updated" else "Inserted")
-                    var toast = Toast.makeText(activity?.baseContext,
-                            Html.fromHtml("<font color='red' ><b>" + info + "</b></font>", Html.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
-                    toast.show()
-
-//                    mainActivity.selectItem(MainActivity.CATEGORY_LIST_MENU_NDX)
+                    showColoredToast(info)
                     Log.d(CategoryListFragment.TAG, "Re-Routing to MainActivity")
                 }, 200)
             }

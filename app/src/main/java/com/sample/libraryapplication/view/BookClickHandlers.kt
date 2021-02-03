@@ -1,7 +1,6 @@
 package com.sample.libraryapplication.view
 
 
-import android.R.string
 import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -12,7 +11,6 @@ import android.view.View
 import android.widget.*
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.sample.libraryapplication.R
@@ -49,11 +47,6 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
             requireArguments().putParcelable(CategoryFragment.selected_category, category)
         }
 
-//        val tx = mainActivity.supportFragmentManager.beginTransaction()
-//
-//        tx.replace(R.id.content_frame, categoryFragment, BookFragment.TAG)
-//        tx.addToBackStack(null)
-//        tx.commit()
         Log.d(TAG, "selectItem: Serving BookFragment for update")
     }
     fun onBookItemClicked(view: View?, book: BookEntity) {
@@ -64,23 +57,7 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
         arguments.putLong(BookFragment.selected_category_id, book.bookCategoryID!!)
 
         mainActivity.currentNavController?.value?.navigate(R.id.action_bookListFragment_to_bookFragment, arguments)
-//        val bookFragment= mainActivity.supportFragmentManager.findFragmentByTag(BookFragment.TAG)?:BookFragment()
-//
-//        with(bookFragment){
-//            if ( arguments == null )
-//                arguments = Bundle()
-//            requireArguments().clear()
-//            requireArguments().putBoolean(BookFragment.is_update_book, book.id != null)
-//            requireArguments().putParcelable(BookFragment.selected_book, book)
-//            requireArguments().putLong(BookFragment.selected_category_id, book.bookCategoryID!!)
-//        }
 
-//        val tx = mainActivity.supportFragmentManager.beginTransaction()
-//
-//        tx.replace(R.id.content_frame, bookFragment, BookFragment.TAG)
-//        tx.addToBackStack(null)
-//        tx.commit()
-//        Log.d(TAG, "selectItem: Serving BookFragment for update")
     }
     fun onFABClicked(view: View) {
         val popup = PopupMenu(view.context, view)

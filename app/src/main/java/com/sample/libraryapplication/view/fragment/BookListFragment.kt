@@ -4,29 +4,22 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.core.graphics.drawable.DrawableCompat.setLayoutDirection
-import androidx.core.view.ViewCompat
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.database.DBPopulator
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.BookListFragmentBinding
-
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.view.BookClickHandlers
 import com.sample.libraryapplication.view.MainActivity
@@ -35,22 +28,12 @@ import com.sample.libraryapplication.viewmodel.BookListFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 @Suppress("DEPRECATION")
 @AndroidEntryPoint
 class BookListFragment : BaseFragment() {
     companion object {
         val TAG = "BookListFragment"
-//        var rootView: View? = null
-//        var binding: BookListFragmentBinding? = null
     }
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     val bookListViewModel: BookListFragmentViewModel by viewModels()
 //    private var rootView: View? = null
@@ -61,27 +44,16 @@ class BookListFragment : BaseFragment() {
     lateinit var bookClickHandlers: BookClickHandlers
     @Inject
     lateinit var dbPopulator: DBPopulator
-
     private var categoryArrayAdapter: ArrayAdapter<String>? = null
     private var booksAdapter: BooksAdapter? = null
     private var selectedCategory: CategoryEntity? = null
     private var container: ViewGroup? = null
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-        retainInstance = true
-    }
     override fun onCreatePersistentView(inflater: LayoutInflater,container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // I used data-binding
         Log.d(TAG, "onCreatePersistentView--->inflate: ")
-        injectDagger()
         binding = BookListFragmentBinding.inflate(layoutInflater, container, false)
-        createViewModel()
         setBinding()
 
 //        ViewCompat.setLayoutDirection(binding.root, ViewCompat.LAYOUT_DIRECTION_RTL)
@@ -98,8 +70,6 @@ class BookListFragment : BaseFragment() {
     override fun onPersistentViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onPersistentViewCreated(view, savedInstanceState)
         ActivityWeakMapRef.put(TAG, this);
-        injectDagger()
-        createViewModel()
         setBinding()
 
         if (dbPopulator.doesDbExist(requireContext()) == false) {
@@ -129,16 +99,7 @@ class BookListFragment : BaseFragment() {
         boCategory.categories = boCategory.findAll() as MutableLiveData<MutableList<CategoryEntity>>
         observeViewModel()
     }
-    private fun createViewModel() {
-//        bookListViewModel = ViewModelProvider(this).get(BookListFragmentViewModel::class.java)
-    }
-    private fun injectDagger() {
-
-    }
     private fun setBinding() {
-//        if ( rootView == null)
-//        {
-            //binding = BookListFragmentBinding.inflate(layoutInflater, container, false)
         if ( !this::binding.isInitialized)
             binding = BookListFragmentBinding.inflate(layoutInflater, container, false)
         binding!!.viewModel = bookListViewModel

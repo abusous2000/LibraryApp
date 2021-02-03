@@ -13,15 +13,10 @@ import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.service.BooksRestfulService
 import com.sample.libraryapplication.service.MyPrefsRespository
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
-import java.util.concurrent.Executors
 import javax.inject.Inject
 import javax.inject.Singleton
 

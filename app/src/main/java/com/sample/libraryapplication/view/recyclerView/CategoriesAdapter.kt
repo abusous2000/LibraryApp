@@ -6,12 +6,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.library.baseAdapters.BR
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.ListItemRvCategoryBinding
 import com.sample.libraryapplication.view.BookClickHandlers
-import javax.inject.Inject
 
 
 class CategoriesAdapter(private var categoryList: List<CategoryEntity>?, val bookClickHandler: BookClickHandlers) :

@@ -4,30 +4,20 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.sample.libraryapplication.LibraryApplication
-import com.sample.libraryapplication.R
 import com.sample.libraryapplication.bo.BOCategory
-import com.sample.libraryapplication.database.DBPopulator
-import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.CategoryListFragmentBinding
-
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
-import com.sample.libraryapplication.service.MyMQTTHandler
 import com.sample.libraryapplication.view.BookClickHandlers
-import com.sample.libraryapplication.view.recyclerView.BooksAdapter
 import com.sample.libraryapplication.view.recyclerView.CategoriesAdapter
 import com.sample.libraryapplication.viewmodel.CategoryListFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,7 +28,7 @@ class CategoryListFragment : Fragment() {
     companion object {
         val TAG = "CategoryListFragment"
     }
-    private var roootView: View? = null
+    private var rootView: View? = null
     val categoryListFragmentViewModel: CategoryListFragmentViewModel by viewModels()
     private lateinit var binding: CategoryListFragmentBinding
     @Inject
@@ -55,17 +45,14 @@ class CategoryListFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         this.container = container
-        if (roootView !=null ) {
+
+        ActivityWeakMapRef.put(TAG, this);
+        if (rootView !=null ) {
             updateCategoryList()
             return binding.root
         }
-
-        ActivityWeakMapRef.put(TAG, this);
-        injectDagger()
-        createViewModel()
         setBinding()
         updateCategoryList()
-
         binding.progressBar.visibility = View.VISIBLE
 
         //sumulate heavy DB work on the background
@@ -75,14 +62,9 @@ class CategoryListFragment : Fragment() {
             Log.d(TAG, "onCreate: isLoading=true")
         }, 200)
 
-        roootView = binding.root
+        rootView = binding.root
 
-        return roootView
-    }
-    private fun createViewModel() {
-//        categoryListFragmentViewModel = ViewModelProvider(this).get(CategoryListFragmentViewModel::class.java)
-    }
-    private fun injectDagger() {
+        return rootView
     }
     private fun setBinding() {
         binding = CategoryListFragmentBinding.inflate(layoutInflater,container,false)
@@ -159,5 +141,6 @@ class CategoryListFragment : Fragment() {
         catch( t: Throwable){
             Log.e(TAG, "onDestroy: ", t)
         }
+        rootView = null
      }
 }
