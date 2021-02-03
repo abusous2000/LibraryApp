@@ -37,7 +37,6 @@ class BookFragment  : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         this.container = container
         ActivityWeakMapRef.put(TAG, this);
-        injectDagger()
         if ( this::binding.isInitialized == false ) {
             binding = BookFragmentBinding.inflate(layoutInflater, container, false)
          }
@@ -52,9 +51,6 @@ class BookFragment  : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-    private fun injectDagger() {
-    }
-
     private fun parseArguments() {
         if( requireArguments().get("is_update_book") !=null)
             isUpdateBook = requireArguments().getBoolean("is_update_book", false)
@@ -65,20 +61,6 @@ class BookFragment  : Fragment() {
     private fun createViewModel() {
         viewModel.clear()
         binding.viewModel = viewModel
-//        Thread(Runnable {
-//            Glide.get(requireContext()).clearDiskCache() //1
-//        }).start()
-//        Glide.get(requireContext()).clearMemory()
-//        val options = RequestOptions()
-//        options.centerCrop()
-////        Glide.with(this).load("https://source.unsplash.com/random").into(binding.imageTest);
-//        Glide.with(this)
-//                .load("https://www.palestineremembered.com/images/AhmadElaian86.jpg")
-//                .apply(options)
-//                .into(binding.imageTest)
-
-        if ( selectedBook != null )
-            selectedBook!!.url = "https://www.palestineremembered.com/images/AhmadElaian86.jpg"
         viewModel.selectedCategoryId = selectedCategoryId
         viewModel.selectedBook = selectedBook
         viewModel.isUpdateBook = isUpdateBook
@@ -113,17 +95,8 @@ class BookFragment  : Fragment() {
 
         viewModel.shouldFinishActivity.observe(this, Observer {
             if (it && !isDetached) {
-                Handler(Looper.getMainLooper()).postDelayed({
-//                    var mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
-//                    val info = "Book has been " + (if (isUpdateBook) "Updated" else "Inserted")
-//                    var toast = Toast.makeText(activity?.baseContext, Html.fromHtml("<font color='red' ><b>" + info + "</b></font>", Html.FROM_HTML_MODE_LEGACY), Toast.LENGTH_LONG)
-//                    toast.show()
-//
-//                    mainActivity.selectItem(MainActivity.BOOK_LIST_MENU_NDX)
-                    Log.d(BookListFragment.TAG, "Re-Routing to MainActivity")
-                }, 200)
-
-            }
+                    //TODO
+             }
         })
     }
 }

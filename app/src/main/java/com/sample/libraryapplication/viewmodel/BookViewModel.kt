@@ -1,19 +1,17 @@
 package com.sample.libraryapplication.viewmodel
 
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
-import androidx.navigation.NavOptions
-import com.sample.libraryapplication.LibraryApplication
-import com.sample.libraryapplication.R
 import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
+import com.sample.libraryapplication.utils.showColoredToast
 import com.sample.libraryapplication.view.MainActivity
-import com.sample.libraryapplication.view.fragment.BookFragment
-import com.sample.libraryapplication.view.fragment.BookFragmentDirections
-import javax.inject.Inject
+import com.sample.libraryapplication.view.fragment.BookListFragment
 
 class BookViewModel @ViewModelInject constructor(val boCategory: BOCategory): BaseViewModel()  {
     private val TAG = "BookViewModel"
@@ -63,6 +61,7 @@ class BookViewModel @ViewModelInject constructor(val boCategory: BOCategory): Ba
 
         selectedCategoryId?.let { boCategory.find(it) }
         if (!bookName.isNullOrEmpty() && !bookPrice.isNullOrEmpty()) {
+            var info = "Book updated"
             if (isUpdateBook) {
                 selectedBook?.let { book ->
                     book.bookName = bookName
@@ -75,22 +74,15 @@ class BookViewModel @ViewModelInject constructor(val boCategory: BOCategory): Ba
                 newBook.bookUnitPrice = bookPrice?.toDouble()
                 newBook.bookCategoryID = selectedCategoryId
                 addNewBook(newBook)
+                info = "Book added"
             }
-            val mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
-//            val bookFragment = ActivityWeakMapRef.get(BookFragment.TAG) as BookFragment
-//
-//            while(mainActivity.supportFragmentManager.getBackStackEntryCount() > 0) { mainActivity.supportFragmentManager.popBackStackImmediate(); }
-//            mainActivity.navController.popBackStack(R.id.bookListFragment, true);
-//            BookFragmentDirections.actionBookFragmentToBookListFragment()
-//            var navOptions = androidx.navigation.NavOptions.Builder().setLaunchSingleTop(true)
-//                                                                    .setPopUpTo(R.id.bookListFragment,true)
-//                                                                    .build()
-
-//            mainActivity.navController.navigate(BookFragmentDirections.actionBookFragmentToBookListFragment(),navOptions)
-//
-//            mainActivity.finishAffinity()
-            mainActivity?.startActivity(Intent(mainActivity,MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-            mainActivity.finish();
+            showColoredToast(info)
+            Handler(Looper.getMainLooper()).postDelayed({
+                val mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
+                mainActivity.startActivity(Intent(mainActivity,MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                mainActivity.finish();
+                Log.d(BookListFragment.TAG, "Re-Routing to MainActivity")
+            }, 600)
 
             shouldFinishActivity.value = true
         } else

@@ -1,12 +1,9 @@
 package com.sample.libraryapplication.viewmodel
 
-import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
-import com.sample.libraryapplication.LibraryApplication
 import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.database.entity.CategoryEntity
-import javax.inject.Inject
 
 class CategoryViewModel @ViewModelInject constructor(val boCategory: BOCategory): BaseViewModel()  {
     private val TAG = "CategoryViewModel"
