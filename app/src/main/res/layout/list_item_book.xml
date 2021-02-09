@@ -30,8 +30,9 @@
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="125dp"
-                android:layout_height="0dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".20"
                 app:glideExactDiminisions="@{book.url}"
                 app:layout_constraintDimensionRatio="h,1:1"
                 app:layout_constraintEnd_toEndOf="parent"

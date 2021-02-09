@@ -55,7 +55,7 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
         arguments.putBoolean(BookFragment.is_update_book, book.id != null)
         arguments.putParcelable(BookFragment.selected_book, book)
         arguments.putLong(BookFragment.selected_category_id, book.bookCategoryID!!)
-
+        arguments.putString("dynamicTitle","My Book Label")
         mainActivity.currentNavController?.value?.navigate(R.id.action_bookListFragment_to_bookFragment, arguments)
 
     }

@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -171,7 +172,10 @@ class BookListFragment : BaseFragment() {
     private fun showBookList(bookList: List<BookEntity>) {
         if (booksAdapter == null) {
             val recycler_view_books = binding!!.recyclerViewBooks
-            recycler_view_books.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
+
+//            recycler_view_books.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
+            recycler_view_books.layoutManager = GridLayoutManager(context,3)
+
             booksAdapter = BooksAdapter(bookList,bookClickHandlers)
             recycler_view_books.adapter = booksAdapter
             val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)

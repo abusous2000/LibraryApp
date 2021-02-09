@@ -8,11 +8,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.databinding.BookFragmentBinding
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.view.recyclerView.BooksAdapter
+import com.sample.libraryapplication.view.setupWithNavController
 import com.sample.libraryapplication.viewmodel.BookViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,6 +48,16 @@ class BookFragment  : Fragment() {
         setBinding()
         observeViewModel()
 
+//        val toolbar = activity?.bar
+//        val appBarConfiguration = AppBarConfiguration(setOf(
+//                R.id.bookListFragment,
+//                R.id.bookFragment,
+//                R.id.categoryListFragment,
+//                R.id.MQTTFragment)
+//                                                     )
+//
+//        val navHostFragment = NavHostFragment.findNavController(this);
+//        NavigationUI.setupWithNavController(toolbar, navHostFragment,appBarConfiguration)
         return binding.root
     }
 

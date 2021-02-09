@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.sample.libraryapplication.R
@@ -37,6 +39,7 @@ class MainActivity : AppCompatActivity() {
             setupBottomNavigationBar()
         } // Else, need to wait for onRestoreInstanceState
         ActivityWeakMapRef.put(TAG, this);
+
     }
 
     /**
@@ -56,27 +59,34 @@ class MainActivity : AppCompatActivity() {
 
         // Whenever the selected controller changes, setup the action bar.
         controller.observe(this, Observer { navController ->
-            setupActionBarWithNavController(navController)
+                    val appBarConfiguration = AppBarConfiguration(setOf(
+                            R.id.bookListFragment,
+                            R.id.bookFragment,
+                            R.id.categoryListFragment,
+                            R.id.MQTTFragment))
+            setupActionBarWithNavController(navController,appBarConfiguration)
         })
         currentNavController = controller
-    }
+        //        bottomNavigationView.menu.findItem(R.id.mqtt_nav).isEnabled = false
+        //        bottomNavigationView.selectedItemId =R.id.mqtt_nav
+  }
 
     override fun onSupportNavigateUp(): Boolean {
         return currentNavController?.value?.navigateUp() ?: false
     }
-        private var doubleBackToExitPressedOnce = false
-    override fun onBackPressed() {
-        val backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount()
-        if ( backStackEntryCount == 0 ){
-            if (doubleBackToExitPressedOnce) {
-                super.onBackPressed()
-                return
-            }
-            showColoredToast("Double back press to exist")
-            this.doubleBackToExitPressedOnce = true
-            Handler(Looper.getMainLooper()).postDelayed(Runnable { doubleBackToExitPressedOnce = false }, 1000)
-        }
-        else
-            super.onBackPressed()
-     }
+//        private var doubleBackToExitPressedOnce = false
+//    override fun onBackPressed() {
+//        val backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount()
+//        if ( backStackEntryCount == 0 ){
+//            if (doubleBackToExitPressedOnce) {
+//                super.onBackPressed()
+//                return
+//            }
+//            showColoredToast("Double back press to exist")
+//            this.doubleBackToExitPressedOnce = true
+//            Handler(Looper.getMainLooper()).postDelayed(Runnable { doubleBackToExitPressedOnce = false }, 1000)
+//        }
+//        else
+//            super.onBackPressed()
+//     }
 }

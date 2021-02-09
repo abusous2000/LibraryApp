@@ -11,16 +11,19 @@
         <deepLink app:uri="myapp://booklibrary/bookListFragment"/>
         <action
             android:id="@+id/action_bookListFragment_to_bookFragment"
-            app:destination="@id/bookFragment" />
+            app:destination="@id/bookFragment"/>
         <action
             android:id="@+id/action_MQTTFragment_to_bookListFragment"
             app:destination="@id/bookListFragment" />
-
     </fragment>
      <fragment
         android:id="@+id/bookFragment"
         android:name="com.sample.libraryapplication.view.fragment.BookFragment"
-        android:label="Book" >
+
+         android:label="{dynamicTitle}">
+         <argument
+             android:name="dynamicTitle"
+             app:argType="string"/>
         <action
             android:id="@+id/action_bookFragment_to_bookListFragment"
 
