@@ -59,6 +59,12 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
         mainActivity.currentNavController?.value?.navigate(R.id.action_bookListFragment_to_bookFragment, arguments)
 
     }
+    fun onShowTown(view: View?) {
+        val mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
+
+        mainActivity.currentNavController?.value?.navigate(R.id.action_bookListFragment_to_townFragment)
+
+    }
     fun onFABClicked(view: View) {
         val popup = PopupMenu(view.context, view)
         popup.setOnMenuItemClickListener(this)
