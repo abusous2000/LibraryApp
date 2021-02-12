@@ -11,3 +11,22 @@ fun showColoredToast(info: String){
     toast.show()
 
 }
+class CommonUtils{
+    companion object{
+        var cnt = 0;
+        val images = arrayListOf<String>("https://www.palestineremembered.com/Acre/al-Bassa/Picture907.jpg",
+                "https://www.palestineremembered.com/Acre/al-Bassa/Picture909.jpg",
+                "https://www.palestineremembered.com/Acre/al-Bassa/Picture913.jpg",
+                "https://www.palestineremembered.com/Acre/al-Bassa/Picture917.jpg",
+                "https://www.palestineremembered.com/Acre/al-Bassa/Picture176.jpg",
+                "https://www.palestineremembered.com/Acre/al-Bassa/Picture2983.jpg",
+                "https://www.palestineremembered.com/Acre/al-Bassa/Picture2985.jpg",
+                "https://www.palestineremembered.com/Acre/al-Bassa/Picture2987.jpg",
+                "https://www.palestineremembered.com/Acre/al-Bassa/Picture7177.jpg",
+                "https://www.palestineremembered.com/Acre/al-Bassa/Picture7179.jpg")
+
+        fun getRandomImageURL(): String? {
+            return images.get((cnt++) % images.size)
+        }
+    }
+}

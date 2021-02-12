@@ -1,5 +1,6 @@
 package com.sample.libraryapplication.view.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,23 +9,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.database.DBPopulator
 import com.sample.libraryapplication.database.entity.BookEntity
 import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.BookListFragmentBinding
+import com.sample.libraryapplication.databinding.ListItemBookBinding
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
+import com.sample.libraryapplication.utils.CommonUtils
+import com.sample.libraryapplication.view.recyclerView.GenericAdapter
 import com.sample.libraryapplication.view.BookClickHandlers
 import com.sample.libraryapplication.view.MainActivity
-import com.sample.libraryapplication.view.recyclerView.BooksAdapter
 import com.sample.libraryapplication.viewmodel.BookListFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -173,31 +174,33 @@ class BookListFragment : BaseFragment() {
         if (booksAdapter == null) {
             val recycler_view_books = binding.recyclerViewBooks
 
-//            recycler_view_books.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
+            booksAdapter = BooksAdapter(requireContext(),bookList)
             recycler_view_books.layoutManager = GridLayoutManager(context,3)
-
-            booksAdapter = BooksAdapter(bookList,bookClickHandlers)
             recycler_view_books.adapter = booksAdapter
-            val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
-            itemTouchHelper.attachToRecyclerView(recycler_view_books)
+            booksAdapter?.getToucCallback()?.attachToRecyclerView(recycler_view_books)
         } else
-            booksAdapter?.updateBookList(bookList)
-    }
-    private var simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object : ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
-        override fun onMove(recyclerView: RecyclerView,  viewHolder: RecyclerView.ViewHolder,target: RecyclerView.ViewHolder ): Boolean {
-            return false
-        }
-        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-            if (swipeDir == ItemTouchHelper.LEFT) {
-                if (viewHolder is BooksAdapter.BookViewHolder) {
-                    bookListViewModel.deleteBook(viewHolder.dataBinding.book as BookEntity)
-                }
-            }
-        }
+            booksAdapter?.updateList(bookList)
     }
     override fun onDestroy() {
         super.onDestroy()
         if ( bookListViewModel.boCategory.booksInitalized())
             bookListViewModel.boCategory.books.removeObservers(this)
     }
+
+    inner class BooksAdapter(context: Context, bookList: List<BookEntity>): GenericAdapter<BookEntity, ListItemBookBinding>(context, bookList) {
+        override fun getLayoutResId(): Int {
+            return R.layout.list_item_book
+        }
+        override fun onBindData(book: BookEntity?, position: Int, dataBinding: ListItemBookBinding?) {
+            book?.url = CommonUtils.getRandomImageURL()
+            dataBinding?.setVariable(BR.book, book)
+            dataBinding?.setVariable(BR.clickHandlers, bookClickHandlers)
+        }
+        override fun onItemClick(model: BookEntity?, position: Int) {
+        }
+        override fun onLeftSwip(viewHolder: RecyclerView.ViewHolder?) {
+            bookListViewModel.deleteBook(booksAdapter?.getCustomViewHolder(viewHolder)?.book!!)
+        }
+    }
 }
+
