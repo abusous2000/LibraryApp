@@ -12,7 +12,6 @@ import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sample.libraryapplication.R
@@ -21,7 +20,7 @@ import com.sample.libraryapplication.database.entity.CategoryEntity
 import com.sample.libraryapplication.databinding.CategoryListFragmentBinding
 import com.sample.libraryapplication.databinding.ListItemRvCategoryBinding
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
-import com.sample.libraryapplication.view.recyclerView.GenericAdapter
+import com.sample.libraryapplication.view.recyclerView.GenericRecyclerViewAdapter
 import com.sample.libraryapplication.view.BookClickHandlers
 import com.sample.libraryapplication.viewmodel.CategoryListFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,7 +43,7 @@ class CategoryListFragment : Fragment() {
     lateinit var bookClickHandlers: BookClickHandlers
     private var container: ViewGroup? = null
 
-    private var categoriesAdapter : CategoriesAdapter? = null
+    private var categoriesAdapter : CategoriesRecyclerViewAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -117,7 +116,7 @@ class CategoryListFragment : Fragment() {
             var recycler_view_categories = binding.recyclerViewCategories
             recycler_view_categories.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
-            categoriesAdapter = CategoriesAdapter(requireContext(), categoryList)
+            categoriesAdapter = CategoriesRecyclerViewAdapter(requireContext(), categoryList)
             recycler_view_categories.adapter = categoriesAdapter
             categoriesAdapter?.getToucCallback()?.attachToRecyclerView(recycler_view_categories)
         }
@@ -145,7 +144,7 @@ class CategoryListFragment : Fragment() {
     }
 
 
-    inner class CategoriesAdapter(context: Context, categoryList: List<CategoryEntity>) : GenericAdapter<CategoryEntity, ListItemRvCategoryBinding>(context, categoryList) {
+    inner class CategoriesRecyclerViewAdapter(context: Context, categoryList: List<CategoryEntity>) : GenericRecyclerViewAdapter<CategoryEntity, ListItemRvCategoryBinding>(context, categoryList) {
         override fun getLayoutResId(): Int {
             return R.layout.list_item_rv_category
         }

@@ -16,15 +16,21 @@ import com.sample.libraryapplication.database.entity.BaseEntity;
 import java.util.List;
 
 /**
- * @author manoj.bhadane manojbhadane777@gmail.com
- * I added couple of new methods
+ * original taken from @author manoj.bhadane
+ * https://github.com/manojbhadane/GenericAdapter/blob/master/genericadapter/src/main/java/com/manojbhadane/genericadapter/GenericAdapter.java
+ * -I added new functionality: Made onClick listener off by default
+ * -added on left and right swipes functionality on demand
+ * -added onLongClickListener
+ * -added DiffCallback
  */
-public abstract class GenericAdapter<T extends BaseEntity, D> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public abstract class GenericRecyclerViewAdapter<T extends BaseEntity, D> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     protected Context mContext;
     protected List<T> mArrayList;
+    protected View.OnLongClickListener onLongClickListener;
+    protected boolean allowOnClickListener;
 
-    public GenericAdapter(Context context, List<T> arrayList) {
+    public GenericRecyclerViewAdapter(Context context, List<T> arrayList) {
         this.mContext = context;
         this.mArrayList = arrayList;
     }
@@ -32,6 +38,12 @@ public abstract class GenericAdapter<T extends BaseEntity, D> extends RecyclerVi
     public abstract void onBindData(T model, int position, D dataBinding);
     public abstract void onItemClick(T model, int position);
 
+    public void setOnLongClickListener(View.OnLongClickListener onLongClickListener){
+        this.onLongClickListener = onLongClickListener;
+    }
+    public void allowOnClickListener(boolean allow){
+        this.allowOnClickListener =allow;
+    }
     public void updateList(List<T> newList){
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff( new DiffCallback(mArrayList, newList), false);
         mArrayList = newList;
@@ -81,13 +93,16 @@ public abstract class GenericAdapter<T extends BaseEntity, D> extends RecyclerVi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         onBindData(mArrayList.get(position), position, ((ItemViewHolder) holder).mDataBinding);
-
-        ((ViewDataBinding) ((ItemViewHolder) holder).mDataBinding).getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onItemClick(mArrayList.get(position), position);
-            }
-        });
+        if ( onLongClickListener != null )
+            holder.itemView.setOnLongClickListener(onLongClickListener);
+        if ( allowOnClickListener ) {
+            ((ViewDataBinding) ((ItemViewHolder) holder).mDataBinding).getRoot().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClick(mArrayList.get(position), position);
+                }
+            });
+        }
     }
 
     @Override

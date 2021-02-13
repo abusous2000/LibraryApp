@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
@@ -23,11 +24,12 @@ import com.sample.libraryapplication.databinding.BookListFragmentBinding
 import com.sample.libraryapplication.databinding.ListItemBookBinding
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.utils.CommonUtils
-import com.sample.libraryapplication.view.recyclerView.GenericAdapter
+import com.sample.libraryapplication.view.recyclerView.GenericRecyclerViewAdapter
 import com.sample.libraryapplication.view.BookClickHandlers
 import com.sample.libraryapplication.view.MainActivity
 import com.sample.libraryapplication.viewmodel.BookListFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.list_item_book.view.*
 import javax.inject.Inject
 
 @Suppress("DEPRECATION")
@@ -45,7 +47,7 @@ class BookListFragment : BaseFragment() {
     @Inject
     lateinit var dbPopulator: DBPopulator
     private var categoryArrayAdapter: ArrayAdapter<String>? = null
-    private var booksAdapter: BooksAdapter? = null
+    private var booksAdapter: BooksRecyclerViewAdapter? = null
     private var selectedCategory: CategoryEntity? = null
     private var container: ViewGroup? = null
 
@@ -170,16 +172,24 @@ class BookListFragment : BaseFragment() {
             bookListViewModel.boCategory.books.observe(this, CategoryBooksObserver())
         }
     }
-    private fun showBookList(bookList: List<BookEntity>) {
+    private fun showBookList(bookList: List<BookEntity>): Boolean {
         if (booksAdapter == null) {
             val recycler_view_books = binding.recyclerViewBooks
 
-            booksAdapter = BooksAdapter(requireContext(),bookList)
+            booksAdapter = BooksRecyclerViewAdapter(requireContext(),bookList)
             recycler_view_books.layoutManager = GridLayoutManager(context,3)
             recycler_view_books.adapter = booksAdapter
             booksAdapter?.getToucCallback()?.attachToRecyclerView(recycler_view_books)
+            booksAdapter?.setOnLongClickListener(View.OnLongClickListener() {
+                val bookName = it.findViewById<TextView>(R.id.bookName2)
+//                Log.d(TAG, "OnLongClickListener: "+booksAdapter?.getCustomViewHolder(it as RecyclerView.ViewHolder)?.book?.url)
+                Log.d(TAG, "OnLongClickListener: "+bookName?.text.toString())
+                return@OnLongClickListener true
+            })
         } else
             booksAdapter?.updateList(bookList)
+
+        return true;
     }
     override fun onDestroy() {
         super.onDestroy()
@@ -187,7 +197,7 @@ class BookListFragment : BaseFragment() {
             bookListViewModel.boCategory.books.removeObservers(this)
     }
 
-    inner class BooksAdapter(context: Context, bookList: List<BookEntity>): GenericAdapter<BookEntity, ListItemBookBinding>(context, bookList) {
+    inner class BooksRecyclerViewAdapter(context: Context, bookList: List<BookEntity>): GenericRecyclerViewAdapter<BookEntity, ListItemBookBinding>(context, bookList) {
         override fun getLayoutResId(): Int {
             return R.layout.list_item_book
         }
