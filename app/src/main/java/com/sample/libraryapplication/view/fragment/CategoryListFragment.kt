@@ -118,7 +118,7 @@ class CategoryListFragment : Fragment() {
 
             categoriesAdapter = CategoriesRecyclerViewAdapter(requireContext(), categoryList)
             recycler_view_categories.adapter = categoriesAdapter
-            categoriesAdapter?.getToucCallback()?.attachToRecyclerView(recycler_view_categories)
+            categoriesAdapter?.getTouchCallback()?.attachToRecyclerView(recycler_view_categories)
         }
         else
             categoriesAdapter?.updateList(categoryList)

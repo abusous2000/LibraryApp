@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.databinding.library.baseAdapters.BR
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -34,11 +35,12 @@ import javax.inject.Inject
 
 @Suppress("DEPRECATION")
 @AndroidEntryPoint
-class BookListFragment : BaseFragment() {
+class BookListFragment : Fragment() {
     companion object {
         val TAG = "BookListFragment"
     }
     val bookListViewModel: BookListFragmentViewModel by viewModels()
+    private var rootView: View? = null
     lateinit var binding: BookListFragmentBinding
     @Inject
     lateinit var boCategory: BOCategory
@@ -50,29 +52,17 @@ class BookListFragment : BaseFragment() {
     private var booksAdapter: BooksRecyclerViewAdapter? = null
     private var selectedCategory: CategoryEntity? = null
     private var container: ViewGroup? = null
-
-    override fun onCreatePersistentView(inflater: LayoutInflater,container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // I used data-binding
-        Log.d(TAG, "onCreatePersistentView--->inflate: ")
-        binding = BookListFragmentBinding.inflate(layoutInflater, container, false)
-        setBinding()
-
-//        ViewCompat.setLayoutDirection(binding.root, ViewCompat.LAYOUT_DIRECTION_RTL)
-        return binding.root
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
-
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser){
-            val mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
-            mainActivity.supportActionBar?.title = TAG
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        this.container = container
+        if (rootView != null) {
+            return binding.root
         }
-    }
-    override fun onPersistentViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onPersistentViewCreated(view, savedInstanceState)
         ActivityWeakMapRef.put(TAG, this);
         setBinding()
-       if (dbPopulator.doesDbExist(requireContext()) == false) {
+        if (dbPopulator.doesDbExist(requireContext()) == false) {
             dbPopulator.dbPopulated.observe(viewLifecycleOwner, Observer {
                 if (it) {
                     postDBStart()
@@ -92,8 +82,18 @@ class BookListFragment : BaseFragment() {
             binding!!.progressBar.visibility = View.GONE
             Log.d(TAG, "onCreate: isLoading=true")
         }, 500)
-    }
 
+        rootView = binding.root
+
+        return rootView
+    }
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser){
+            val mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
+            mainActivity.supportActionBar?.title = TAG
+        }
+    }
     private fun postDBStart() {
         boCategory.categories = boCategory.findAll() as MutableLiveData<MutableList<CategoryEntity>>
         observeViewModel()
@@ -179,11 +179,13 @@ class BookListFragment : BaseFragment() {
             booksAdapter = BooksRecyclerViewAdapter(requireContext(),bookList)
             recycler_view_books.layoutManager = GridLayoutManager(context,3)
             recycler_view_books.adapter = booksAdapter
-            booksAdapter?.getToucCallback()?.attachToRecyclerView(recycler_view_books)
+            booksAdapter?.getTouchCallback()?.attachToRecyclerView(recycler_view_books)
             booksAdapter?.setOnLongClickListener(View.OnLongClickListener() {
+//                val tmp = (it. as ListItemBookBinding).book
                 val bookName = it.findViewById<TextView>(R.id.bookName2)
 //                Log.d(TAG, "OnLongClickListener: "+booksAdapter?.getCustomViewHolder(it as RecyclerView.ViewHolder)?.book?.url)
                 Log.d(TAG, "OnLongClickListener: "+bookName?.text.toString())
+
                 return@OnLongClickListener true
             })
         } else

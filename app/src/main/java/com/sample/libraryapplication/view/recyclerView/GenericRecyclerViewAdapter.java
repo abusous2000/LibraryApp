@@ -59,7 +59,7 @@ public abstract class GenericRecyclerViewAdapter<T extends BaseEntity, D> extend
     public void onRightSwip(RecyclerView.ViewHolder viewHolder ){
 
     }
-    public ItemTouchHelper getToucCallback() {
+    public ItemTouchHelper getTouchCallback() {
         if ( itemTouchHelper == null ) {
             simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
                 @Override
@@ -94,7 +94,7 @@ public abstract class GenericRecyclerViewAdapter<T extends BaseEntity, D> extend
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         onBindData(mArrayList.get(position), position, ((ItemViewHolder) holder).mDataBinding);
         if ( onLongClickListener != null )
-            holder.itemView.setOnLongClickListener(onLongClickListener);
+            ((ViewDataBinding) ((ItemViewHolder) holder).mDataBinding).getRoot().setOnLongClickListener(onLongClickListener);
         if ( allowOnClickListener ) {
             ((ViewDataBinding) ((ItemViewHolder) holder).mDataBinding).getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -133,7 +133,6 @@ public abstract class GenericRecyclerViewAdapter<T extends BaseEntity, D> extend
             mDataBinding = (D) binding;
         }
     }
-
     private class DiffCallback extends DiffUtil.Callback {
         private List<T> oldList;
         private List<T> newList;
