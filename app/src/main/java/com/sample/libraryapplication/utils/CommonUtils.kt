@@ -1,7 +1,21 @@
 package com.sample.libraryapplication.utils
 
+import android.content.Intent
+import android.net.Uri
+import android.net.http.SslError
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.text.Html
+import android.util.Log
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.View
+import android.webkit.SslErrorHandler
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.sample.libraryapplication.view.MainActivity
 
 fun showColoredToast(info: String){
@@ -27,6 +41,62 @@ class CommonUtils{
 
         fun getRandomImageURL(): String? {
             return images.get((cnt++) % images.size)
+        }
+        fun initWebView(webView: WebView, fragment: Fragment? = null){
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setBuiltInZoomControls(true);
+            webView.setHorizontalScrollBarEnabled(true);
+            webView.getSettings().setLoadWithOverviewMode(true)
+            webView.getSettings().setUseWideViewPort(true);
+            webView.setInitialScale(180);
+            fragment?.let {
+                webView.webViewClient = WebViewClientImpl(fragment)
+            }
+            val handler: Handler = object : Handler(Looper.getMainLooper()) {
+                override fun handleMessage(message: Message) {
+                    when (message.what) {
+                        1 -> {
+                            webView.goBack()
+                        }
+                    }
+                }
+            }
+
+            webView.setOnKeyListener(object : View.OnKeyListener {
+
+                override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
+                    if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == MotionEvent.ACTION_UP && webView.canGoBack()) {
+                        handler.sendEmptyMessage(1);
+                        return true;
+                    }
+
+                    return false;
+                }
+
+            });
+        }
+    }
+    class WebViewClientImpl(fragment: Fragment) : WebViewClient() {
+        private var fragment: Fragment? = null
+        override fun shouldOverrideUrlLoading(webView: WebView, url: String): Boolean {
+            if (url.toLowerCase().indexOf("palestineremembered.com") > -1) return false
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            fragment!!.startActivity(intent)
+            return true
+        }
+        override fun onReceivedSslError(
+            view: WebView?, handler: SslErrorHandler, error: SslError
+                                       ) {
+            when (error.primaryError) {
+                SslError.SSL_UNTRUSTED   -> Log.d("WebViewClientImpl", "SslError : The certificate authority is not trusted.")
+                SslError.SSL_EXPIRED     -> Log.d("WebViewClientImpl", "SslError : The certificate has expired.")
+                SslError.SSL_IDMISMATCH  -> Log.d("WebViewClientImpl", "The certificate Hostname mismatch.")
+                SslError.SSL_NOTYETVALID -> Log.d("WebViewClientImpl", "The certificate is not yet valid.")
+            }
+            handler.proceed()
+        }
+        init {
+            this.fragment = fragment
         }
     }
 }

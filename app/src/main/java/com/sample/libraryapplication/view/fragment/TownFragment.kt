@@ -1,21 +1,25 @@
 package com.sample.libraryapplication.view.fragment
 
+import android.content.Intent
+import android.net.Uri
+import android.net.http.SslError
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.webkit.SslErrorHandler
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.sample.libraryapplication.R
+import com.sample.libraryapplication.utils.CommonUtils
 import com.sample.libraryapplication.viewmodel.TownViewModel
 
 
@@ -23,16 +27,18 @@ class TownFragment : Fragment() {
     companion object {
         fun newInstance() = TownFragment()
     }
-
+    lateinit var tabLayout :TabLayout
     private lateinit var viewModel: TownViewModel
+    private lateinit var viewPager2 :ViewPager2
     private val TAG = "TownFragment"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
                              ): View? {
         val view = inflater.inflate(R.layout.town_fragment, container, false)
 
-        val tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
-        val viewPager2 = view.findViewById<ViewPager2>(R.id.view_pager)
+        tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
+        viewPager2 = view.findViewById<ViewPager2>(R.id.view_pager)
+        viewPager2.isUserInputEnabled = false
 //        view.findViewById<TabItem>(R.id.articles)?.visibility = View.GONE
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -56,6 +62,8 @@ class TownFragment : Fragment() {
         tabLayout.addTab(tabLayout.newTab().setText("Oral History"));
         tabLayout.addTab(tabLayout.newTab().setText("Members"));
         setupViewPager(viewPager2)
+        tabLayout.getTabAt(2)?.select()
+        viewPager2.setCurrentItem(2,true)
 //        viewPager2.adapter = AppViewPagerAdapter(fragmentManager, lifecycle)
 
 //        TabLayoutMediator(tabLayout, viewPager2, object : TabLayoutMediator.OnConfigureTabCallback {
@@ -69,7 +77,6 @@ class TownFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 //        view.findViewById<TabItem>(R.id.articles)?.visibility = View.GONE
     }
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -78,7 +85,7 @@ class TownFragment : Fragment() {
         // TODO: Use the ViewModel
     }
     private fun setupViewPager(viewPager: ViewPager2) {
-        val adapter = ViewPagerAdapter(childFragmentManager,lifecycle)
+        val adapter = ViewPagerAdapter(childFragmentManager, lifecycle)
 
         adapter.addFragment(StatsAndFactsFragment(), "Stats & Facts")
         adapter.addFragment(PicturesFragment(), "Pictures")
@@ -91,7 +98,7 @@ class TownFragment : Fragment() {
 
 }
 
-internal class ViewPagerAdapter(manager: FragmentManager, lifecycle : Lifecycle) : FragmentStateAdapter(manager,lifecycle) {
+internal class ViewPagerAdapter(manager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(manager, lifecycle) {
     private val mFragmentList: MutableList<Fragment> = ArrayList()
     private val mFragmentTitleList: MutableList<String> = ArrayList()
     override fun createFragment(position: Int): Fragment {
@@ -135,6 +142,8 @@ internal class PicturesFragment : Fragment() {
 }
 
 internal class ArticlesFragment : Fragment() {
+    lateinit var webView: WebView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -143,8 +152,22 @@ internal class ArticlesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
                              ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_articles, container, false)
+        val view = inflater.inflate(R.layout.fragment_articles, container, false)
+        webView = view.findViewById<WebView>(R.id.webview)
+        CommonUtils.initWebView(webView,this)
+        webView.loadUrl("https://www.palestineremembered.com/MissionStatement.htm");
+
+        return view
     }
+//    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+//        if (keyCode == KeyEvent.KEYCODE_BACK && this.webView.canGoBack()) {
+//            this.webView.goBack()
+//            return true
+//        }
+//        return super.onKeyDown(keyCode, event)
+//    }
+
+
 }
 
 internal class OralHistoryFragment : Fragment() {

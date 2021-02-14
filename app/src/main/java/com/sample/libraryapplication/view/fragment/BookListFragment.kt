@@ -55,6 +55,7 @@ class BookListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         this.container = container
         if (rootView != null) {
@@ -181,9 +182,7 @@ class BookListFragment : Fragment() {
             recycler_view_books.adapter = booksAdapter
             booksAdapter?.getTouchCallback()?.attachToRecyclerView(recycler_view_books)
             booksAdapter?.setOnLongClickListener(View.OnLongClickListener() {
-//                val tmp = (it. as ListItemBookBinding).book
                 val bookName = it.findViewById<TextView>(R.id.bookName2)
-//                Log.d(TAG, "OnLongClickListener: "+booksAdapter?.getCustomViewHolder(it as RecyclerView.ViewHolder)?.book?.url)
                 Log.d(TAG, "OnLongClickListener: "+bookName?.text.toString())
 
                 return@OnLongClickListener true
@@ -194,6 +193,7 @@ class BookListFragment : Fragment() {
         return true;
     }
     override fun onDestroy() {
+        rootView = null
         super.onDestroy()
         if ( bookListViewModel.boCategory.booksInitalized())
             bookListViewModel.boCategory.books.removeObservers(this)
