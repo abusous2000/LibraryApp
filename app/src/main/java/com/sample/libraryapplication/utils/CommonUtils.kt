@@ -88,15 +88,19 @@ class CommonUtils{
             view: WebView?, handler: SslErrorHandler, error: SslError
                                        ) {
             when (error.primaryError) {
-                SslError.SSL_UNTRUSTED   -> Log.d("WebViewClientImpl", "SslError : The certificate authority is not trusted.")
-                SslError.SSL_EXPIRED     -> Log.d("WebViewClientImpl", "SslError : The certificate has expired.")
-                SslError.SSL_IDMISMATCH  -> Log.d("WebViewClientImpl", "The certificate Hostname mismatch.")
-                SslError.SSL_NOTYETVALID -> Log.d("WebViewClientImpl", "The certificate is not yet valid.")
+                SslError.SSL_UNTRUSTED   -> Log.d(TAG, "SslError : The certificate authority is not trusted.")
+                SslError.SSL_EXPIRED     -> Log.d(TAG, "SslError : The certificate has expired.")
+                SslError.SSL_IDMISMATCH  -> Log.d(TAG, "The certificate Hostname mismatch.")
+                SslError.SSL_NOTYETVALID -> Log.d(TAG, "The certificate is not yet valid.")
             }
             handler.proceed()
         }
         init {
             this.fragment = fragment
+        }
+
+        companion object {
+            const val TAG = "CommonUtils"
         }
     }
 }

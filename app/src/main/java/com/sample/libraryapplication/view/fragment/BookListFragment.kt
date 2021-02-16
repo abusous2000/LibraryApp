@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -39,7 +40,7 @@ class BookListFragment : Fragment() {
     companion object {
         val TAG = "BookListFragment"
     }
-    val bookListViewModel: BookListFragmentViewModel by viewModels()
+    val bookListViewModel: BookListFragmentViewModel by activityViewModels()
     private var rootView: View? = null
     lateinit var binding: BookListFragmentBinding
     @Inject

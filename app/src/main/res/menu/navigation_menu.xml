@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/book_list_nav"
-        android:title="Books"
+        android:title="@string/Books"
         android:icon="@drawable/ic_home"/>
     <item
         android:id="@+id/category_list_nav"
-        android:title="categories"
+        android:title="@string/Categories"
         android:icon="@drawable/ic_news"/>
     <item
         android:id="@+id/mqtt_nav"

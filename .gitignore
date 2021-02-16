@@ -12,3 +12,4 @@
 /captures
 .externalNativeBuild
 .cxx
+/app/libs/PR-DataObjects-2.0.jar

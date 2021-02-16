@@ -3,7 +3,9 @@ package com.sample.libraryapplication.view
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
@@ -14,6 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.sample.libraryapplication.R
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.utils.showColoredToast
+import com.sample.libraryapplication.viewmodel.BookListFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 data class MenuItemDataModel(var icon: Int, var name: String)
@@ -31,7 +34,6 @@ class MainActivity : AppCompatActivity() {
             val QUITE_APP_MENU_NDX = 3
         }
     var currentNavController: LiveData<NavController>? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)

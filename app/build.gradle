@@ -12,7 +12,7 @@ android {
     compileSdkVersion 30
     defaultConfig {
         applicationId "com.sample.libraryapplication"
-        minSdkVersion 24
+        minSdkVersion 19
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -55,6 +55,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'com.google.android.material:material:1.2.0-alpha02'
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
+    implementation files('libs/PR-DataObjects-2.0.jar')
     def nav_version = "2.3.2"
 //    implementation "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
 //    implementation 'com.google.firebase:firebase-analytics:18.0.0'

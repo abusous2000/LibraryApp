@@ -23,5 +23,7 @@
     <string name="mqtt_settings">Settings</string>
     <string name="Please_enter_the_category_desc">Please enter the category desc</string>
     <string name="Please_enter_the_category_name">Please enter the category name</string>
-    <string name="app_direction">rtl</string>
+    <string name="app_direction">ltr</string>
+    <string name="Books">Books</string>
+    <string name="Categories">Categories</string>
 </resources>
