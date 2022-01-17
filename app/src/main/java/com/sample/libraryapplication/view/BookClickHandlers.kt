@@ -1,6 +1,7 @@
 package com.sample.libraryapplication.view
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -25,7 +26,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 
-@Singleton
+@SuppressLint("NewApi") @Singleton
 class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener,
     Toolbar.OnMenuItemClickListener {
     companion object {
@@ -45,6 +46,7 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
             requireArguments().clear()
             requireArguments().putBoolean(CategoryFragment.is_update_category, category.id != null)
             requireArguments().putParcelable(CategoryFragment.selected_category, category)
+            Log.d(TAG, "selected Cat w/ Id: ${category.id}")
         }
 
         Log.d(TAG, "selectItem: Serving BookFragment for update")
@@ -56,14 +58,12 @@ class BookClickHandlers @Inject constructor(): PopupMenu.OnMenuItemClickListener
         arguments.putParcelable(BookFragment.selected_book, book)
         arguments.putLong(BookFragment.selected_category_id, book.bookCategoryID!!)
         arguments.putString("dynamicTitle","My Book Label")
-        mainActivity.currentNavController?.value?.navigate(R.id.action_bookListFragment_to_bookFragment, arguments)
+        mainActivity.getNavController().navigate(R.id.action_bookListFragment_to_bookFragment, arguments)
 
     }
     fun onShowTown(view: View?) {
         val mainActivity = ActivityWeakMapRef.get(MainActivity.TAG) as MainActivity
-
-        mainActivity.currentNavController?.value?.navigate(R.id.action_bookListFragment_to_townFragment)
-
+        mainActivity.getNavController().navigate(R.id.action_bookListFragment_to_townFragment)
     }
     fun onFABClicked(view: View) {
         val popup = PopupMenu(view.context, view)

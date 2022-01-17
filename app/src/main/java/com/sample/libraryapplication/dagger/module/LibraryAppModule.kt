@@ -10,12 +10,13 @@ import com.sample.libraryapplication.database.dao.BookDAO
 import com.sample.libraryapplication.database.dao.CategoryDAO
 import com.sample.libraryapplication.service.BooksRestfulService
 import com.sample.libraryapplication.service.MyMQTTHandler
+import com.sample.libraryapplication.service.PRServices
 import com.sample.libraryapplication.view.BookClickHandlers
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -25,7 +26,7 @@ import javax.inject.Singleton
 
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 class LibraryAppModule() {
     companion object {
         private const val EDUCATIONAL_BOOKS_CATEGORY_ID = 1L
@@ -82,7 +83,16 @@ class LibraryAppModule() {
 
         return retrofit;
     }
-
+    @Provides
+    @Singleton
+    fun retrofitPRServices(okHttpClient: OkHttpClient): PRServices {
+        return Retrofit.Builder()
+                .baseUrl("https://www.PalestineRemembered.com/json/")
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(PRServices::class.java)
+    }
     @Provides
     @Singleton
     fun provideApiService(retrofit: Retrofit): BooksRestfulService = retrofit.create(BooksRestfulService::class.java)

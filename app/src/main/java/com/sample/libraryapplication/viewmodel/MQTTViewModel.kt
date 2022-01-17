@@ -5,14 +5,16 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.hilt.lifecycle.ViewModelInject
 import com.sample.libraryapplication.service.MyMQTTHandler
 import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.utils.showColoredToast
 import com.sample.libraryapplication.view.MainActivity
 import com.sample.libraryapplication.view.fragment.BookListFragment
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MQTTViewModel @ViewModelInject constructor(val myMQTTHandler: MyMQTTHandler): BaseViewModel() {
+@HiltViewModel
+class MQTTViewModel @Inject constructor(val myMQTTHandler: MyMQTTHandler): BaseViewModel() {
     val TAG = "MQTTViewModel"
     val mqttSettings = myMQTTHandler.mqttSettings()
 

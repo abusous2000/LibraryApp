@@ -71,19 +71,19 @@ class CategoryFragment  : Fragment() {
 
     @SuppressLint("FragmentLiveDataObserve")
     private fun observeViewModel() {
-        viewModel.isCategoryNameEmpty.observe(this, Observer {
+        viewModel.isCategoryNameEmpty.observe(getViewLifecycleOwner(), Observer {
             if (!isDetached) {
                 if (it) binding.etCategoryName.error = getString(R.string.Please_enter_the_category_name)
             }
         })
 
-        viewModel.isCategoryPriceEmpty.observe(this, Observer {
+        viewModel.isCategoryPriceEmpty.observe(getViewLifecycleOwner(), Observer {
             if (!isDetached) {
                 if (it) binding.etCategoryDesc.error = getString(R.string.Please_enter_the_category_desc)
             }
         })
 
-        viewModel.shouldFinishActivity.observe(this, Observer {
+        viewModel.shouldFinishActivity.observe(getViewLifecycleOwner(), Observer {
             if (it && !isDetached) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     val info = "Category has been " + (if ( isUpdateCategory ) "Updated" else "Inserted")

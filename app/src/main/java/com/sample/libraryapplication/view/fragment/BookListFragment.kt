@@ -31,7 +31,6 @@ import com.sample.libraryapplication.view.BookClickHandlers
 import com.sample.libraryapplication.view.MainActivity
 import com.sample.libraryapplication.viewmodel.BookListFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.list_item_book.view.*
 import javax.inject.Inject
 
 @Suppress("DEPRECATION")
@@ -65,7 +64,7 @@ class BookListFragment : Fragment() {
         ActivityWeakMapRef.put(TAG, this);
         setBinding()
         if (dbPopulator.doesDbExist(requireContext()) == false) {
-            dbPopulator.dbPopulated.observe(viewLifecycleOwner, Observer {
+            dbPopulator.dbPopulated.observe(getViewLifecycleOwner(), Observer {
                 if (it) {
                     postDBStart()
                 }
@@ -109,14 +108,14 @@ class BookListFragment : Fragment() {
     }
     fun observeViewModel() {
         //This is a hack, for some reason observer of categories are not notified only once
-        boCategory.categoryListUpdated.observe(viewLifecycleOwner, Observer {
+        boCategory.categoryListUpdated.observe(getViewLifecycleOwner(), Observer {
             if (it) {
                 setDataToSpinner(boCategory.categories.value)
                 boCategory.categoryListUpdated.postValue(false)
             }
         })
         bookListViewModel.isLoading.value = true
-        boCategory.categories.observe(viewLifecycleOwner, Observer { list ->
+        boCategory.categories.observe(getViewLifecycleOwner(), Observer { list ->
             if (!isDetached) {
                 bookListViewModel.isLoading.value = false
                 list.forEach {
@@ -171,7 +170,7 @@ class BookListFragment : Fragment() {
         bookListViewModel.boCategory.removeObservers(this)
         selectedCategory?.id?.let {
             bookListViewModel.getBooksListSelectedCategory(it)
-            bookListViewModel.boCategory.books.observe(this, CategoryBooksObserver())
+            bookListViewModel.boCategory.books.observe(getViewLifecycleOwner(), CategoryBooksObserver())
         }
     }
     private fun showBookList(bookList: List<BookEntity>): Boolean {

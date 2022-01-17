@@ -7,7 +7,9 @@ import retrofit2.http.GET
 
 interface BooksRestfulService {
     @GET("books")
+    //https://my-json-server.typicode.com/abusous2000/demo/books
     fun getBooks(): Call<List<BookEntity>>
     @GET("categories")
+    //https://my-json-server.typicode.com/abusous2000/demo/categories
     fun getCategories(): Call<List<CategoryEntity>>
 }

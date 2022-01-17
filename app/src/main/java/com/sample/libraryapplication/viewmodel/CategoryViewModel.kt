@@ -1,11 +1,13 @@
 package com.sample.libraryapplication.viewmodel
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.database.entity.CategoryEntity
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class CategoryViewModel @ViewModelInject constructor(val boCategory: BOCategory): BaseViewModel()  {
+@HiltViewModel
+class CategoryViewModel @Inject constructor(val boCategory: BOCategory): BaseViewModel()  {
     private val TAG = "CategoryViewModel"
 
     val isCategoryNameEmpty = MutableLiveData<Boolean>()

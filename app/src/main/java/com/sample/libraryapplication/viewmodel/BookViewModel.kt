@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.database.entity.BookEntity
@@ -12,8 +11,11 @@ import com.sample.libraryapplication.utils.ActivityWeakMapRef
 import com.sample.libraryapplication.utils.showColoredToast
 import com.sample.libraryapplication.view.MainActivity
 import com.sample.libraryapplication.view.fragment.BookListFragment
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class BookViewModel @ViewModelInject constructor(val boCategory: BOCategory): BaseViewModel()  {
+@HiltViewModel
+class BookViewModel @Inject constructor(val boCategory: BOCategory): BaseViewModel()  {
     private val TAG = "BookViewModel"
 
     val isBookNameEmpty = MutableLiveData<Boolean>()

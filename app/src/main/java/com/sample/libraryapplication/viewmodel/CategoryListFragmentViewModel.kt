@@ -1,12 +1,14 @@
 package com.sample.libraryapplication.viewmodel
 
 import android.util.Log
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import com.sample.libraryapplication.bo.BOCategory
 import com.sample.libraryapplication.database.entity.CategoryEntity
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class CategoryListFragmentViewModel @ViewModelInject constructor(val boCategory: BOCategory): BaseViewModel() {
+@HiltViewModel
+class CategoryListFragmentViewModel @Inject constructor(val boCategory: BOCategory): BaseViewModel() {
     companion object{
         private const val TAG = "CategoryListFragmentViewModel"
     }

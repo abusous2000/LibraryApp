@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.StrictMode
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
@@ -18,20 +19,27 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.PalestineRemembered.dataobject.GPTown
-import com.PalestineRemembered.dataobject.School
 import com.google.android.material.tabs.TabLayout
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.google.gson.FieldNamingStrategy
 import com.sample.libraryapplication.R
+import com.sample.libraryapplication.dto.TownInfo
+import com.sample.libraryapplication.dto.TownPicture
+import com.sample.libraryapplication.service.PRServices
+import com.sample.libraryapplication.service.PRServicesRepo
 import com.sample.libraryapplication.utils.CommonUtils
 import com.sample.libraryapplication.viewmodel.TownViewModel
-import org.json.JSONObject
+import dagger.hilt.android.AndroidEntryPoint
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.lang.reflect.Field
 import java.util.*
-import kotlin.collections.ArrayList
+import javax.inject.Inject
 
 
 class TownFragment : Fragment() {
@@ -43,8 +51,7 @@ class TownFragment : Fragment() {
     private lateinit var viewPager2 :ViewPager2
     private val TAG = "TownFragment"
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-                             ): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.town_fragment, container, false)
 
         tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
@@ -153,9 +160,17 @@ internal class PicturesFragment : Fragment() {
     }
 }
 
+internal class CastorFieldNamingStrategy : FieldNamingStrategy {
+        override fun translateName(f: Field): String {
+            return f.name.substring(1)
+        }
+}
+@AndroidEntryPoint
 internal class ArticlesFragment : Fragment() {
     lateinit var webView: WebView
-
+    @Inject
+    lateinit var prServicesRepo: PRServicesRepo
+    lateinit var townInfo : MutableLiveData<TownInfo?>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -167,21 +182,44 @@ internal class ArticlesFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_articles, container, false)
         webView = view.findViewById<WebView>(R.id.webview)
         CommonUtils.initWebView(webView, this)
+//        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+//        StrictMode.setThreadPolicy(policy)
+//        val jsonfile2: String = URL("https://www.palestineremembered.com/json/Acre/al-Bassa/index.json").readText()
+        val urlIndex = "https://www.palestineremembered.com/json/Acre/al-Bassa/index.json"
+        val urlPics = "https://www.palestineremembered.com/json/Acre/al-Bassa/pictures.json"
 
-        val jsonfile: String = requireContext().assets.open("Acre/al-Bassa-GPTown.json").bufferedReader().use {it.readText()}
-        val geoPointDataJSONObject = JSONObject(jsonfile)
+        townInfo = prServicesRepo.getTownInfo("Acre", "al-Bassa")
+        townInfo?.observe( viewLifecycleOwner,  Observer { it ->
+            Log.d("Town Fragment", "Town Arabic Name: "+ it?.arabicName)
+        } )
+//        val jsonfile2: String = URL(urlPics).readText()
+//        val jsonfile: String = requireContext().assets.open(urlPics).bufferedReader().use {it.readText()}
+//        val bsonBuilder = GsonBuilder()
+//        val gson3: Gson = bsonBuilder.setFieldNamingPolicy( FieldNamingPolicy.IDENTITY ).create()
+//        val gson: Gson = bsonBuilder.setFieldNamingStrategy( CastorFieldNamingStrategy() ).create()
 
-        val gpTownJSON = geoPointDataJSONObject.getJSONObject("GEOPointData").getJSONObject("GPTown")
-        val gson = Gson()
-        val gpTownSchoolJSON = gpTownJSON.getJSONArray("school")
-        val gpTownPopulationJSON = gpTownJSON.getJSONArray("population")
-        val itemType = object : TypeToken<List<School>>() {}.type
-        val schools = gson.fromJson<List<School>>(gpTownSchoolJSON.toString(), itemType)
-        val gsonObj = gson.fromJson(gpTownJSON.toString(), GPTown::class.java)
-        var gp = GPTown()
-        gp.townTodayArabic = gsonObj.townTodayArabic//gpTownJSON?.getString("townTodayArabic")
-        gp.school = schools.toTypedArray()
-        webView.loadUrl("https://www.palestineremembered.com/MissionStatement.htm");
+//        val gson: Gson = bsonBuilder.create()
+//        val geoPointDataJSONObject = JSONArray(jsonfile2)
+
+//        val geoPointDataJSONObject = JSONObject(jsonfile2)
+//        val gsonObj = gson.fromJson(geoPointDataJSONObject.toString(), TownInfo::class.java)
+//        val picsItemType = object : TypeToken<List<TownPicture>>() {}.type
+//        val gsonObj = gson.fromJson<List<TownPicture>>(geoPointDataJSONObject.toString(), picsItemType)
+
+//        val gpTownJSON = geoPointDataJSONObject.getJSONObject("gpTown")
+//        val gpTownSchoolJSON = gpTownJSON.getJSONArray("school")
+//        val gpTownPopulationJSON = gpTownJSON.getJSONArray("population")
+//        val itemType = object : TypeToken<List<School>>() {}.type
+//        val schools = gson.fromJson<List<School>>(gpTownSchoolJSON.toString(), itemType)
+//        val gsonObj = gson.fromJson(gpTownJSON.toString(), GpTown::class.java)
+//        var gp = GpTown()
+//        gp.townTodayArabic = gsonObj.townTodayArabic//gpTownJSON?.getString("townTodayArabic")
+
+//        Log.d("Town Fragment", "Town Arabic Name: "+ gsonObj.arabicName)
+//        Log.d("Town Fragment", "pics: "+ gsonObj[0].title)
+
+        //        gp.school = schools
+        webView.loadUrl("https://www.palestineremembered.com/MissionStatement.htm")
         return view
     }
 //    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
